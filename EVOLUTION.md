@@ -49,3 +49,10 @@ La vision, l'avatar et une conversation collective Discord ne sont pas raccordé
 dans ce laboratoire. Les essais complets micro/voix/stream restent nécessaires.
 
 Voir [l'état actuel et les limites mesurées](version_actuelle/README.md).
+
+## Retrouver le fonctionnement de la mémoire V5
+
+La [documentation dédiée à la mémoire V5](memoire_v5/README.md) décrit le
+stockage SQLite de l’installation originale, les citations sources, l’extraction
+et le rappel lexical, avec trois modules de code. Elle précise les limites de
+la reconstitution historique et la différence avec le laboratoire actuel.

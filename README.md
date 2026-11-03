@@ -2,9 +2,10 @@
 
 **Projet en développement — aperçu public au 3 novembre 2026.**
 
-Ce dépôt présente maintenant deux étapes du projet : les extraits historiques
-de la V3 et la nouvelle direction du laboratoire indépendant.
+Ce dépôt présente les extraits historiques de la V3, le fonctionnement retrouvé
+de la mémoire de la lignée V5 et la nouvelle direction du laboratoire indépendant.
 
+- **[Comprendre la mémoire d’Alice V5](memoire_v5/README.md)**
 - **[Comprendre les progrès et la nouvelle direction](EVOLUTION.md)**
 - **[Voir la version actuelle en développement et son code](version_actuelle/README.md)**
 - **V3 historique :** les dossiers déjà présents à la racine restent conservés.
