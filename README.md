@@ -1,4 +1,19 @@
-# Alice V3 — sélection publique de code
+# Alice — de la V3 au laboratoire actuel
+
+**Projet en développement — aperçu public au 3 novembre 2026.**
+
+Ce dépôt présente maintenant deux étapes du projet : les extraits historiques
+de la V3 et la nouvelle direction du laboratoire indépendant.
+
+- **[Comprendre les progrès et la nouvelle direction](EVOLUTION.md)**
+- **[Voir la version actuelle en développement et son code](version_actuelle/README.md)**
+- **V3 historique :** les dossiers déjà présents à la racine restent conservés.
+
+La partie actuelle est une sélection de cinq fichiers du laboratoire, accompagnée
+d'un état des fonctions et des limites. Ce dépôt ne contient pas une installation
+complète et ne se synchronise pas automatiquement avec le travail privé.
+
+## La sélection historique V3
 
 Alice est un projet personnel de compagnon vocal local, développé en français
 sur Windows. Ce dépôt partage une **sélection de dix fichiers de code et de
