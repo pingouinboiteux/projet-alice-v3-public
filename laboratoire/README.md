@@ -8,7 +8,7 @@
 | `personality/` | Consigne active de personnalité, nom du propriétaire neutralisé |
 | `config/` | Sélecteur du backend mémoire uniquement |
 
-[Provenance et empreintes](PROVENANCE.json) : copies des chemins homonymes dans
+[Provenance et empreintes](../docs/provenance/laboratoire.json) : copies des chemins homonymes dans
 le projet de travail, fins de ligne normalisées ; seules les références au nom
 du propriétaire ont été remplacées par `Proprietaire` / `proprietaire`.
 Les modules expérimentaux encore présents ne sont pas tous utilisés par le
@@ -21,4 +21,4 @@ fictives ; ils doivent rester isolés des souvenirs réels.
 
 Les bancs de jugement proposent des variantes d'essai ; aucune n'est déclarée
 validée ou active. Aucun entraînement automatique n'est lancé par cette publication.
-Voir [l'état actuel](../version_actuelle/README.md) et [les critères](../EVOLUTION.md).
+Voir [l'état actuel](../docs/etat/actuel.md) et [les critères](../docs/pilotage/evolution.md).

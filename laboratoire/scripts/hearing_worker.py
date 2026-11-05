@@ -22,9 +22,8 @@ def send(value):
 
 
 def main():
-    folder = (ROOT / sys.argv[1]).resolve()
-    if not folder.is_relative_to(ROOT / 'logs') or not folder.is_dir():
-        raise ValueError('Dossier prive invalide')
+    from private_output_path import private_output_path
+    folder = private_output_path(ROOT, sys.argv[1])
     os.environ['ALICE_LOG_DIRECTORY'] = str(folder)
     with contextlib.redirect_stdout(sys.stderr):
         import numpy as np
