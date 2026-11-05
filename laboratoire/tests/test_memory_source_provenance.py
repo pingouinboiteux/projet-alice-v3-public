@@ -43,8 +43,13 @@ def test_question_about_assistant_words_keeps_the_proposal_without_confirmation(
 def test_invalid_confirmation_links_are_rejected_without_changing_the_source(pair):
     sources=[archive([('assistant','Proposition.'),('user','Oui.'),('assistant','Autre proposition.')]),archive([('user','Oui.')],'validation_other')]
     before=copy.deepcopy(sources)
-    with pytest.raises(ValueError):resolve(session({'objet':'fait_personnel','confirmations':[pair]}),sources,'Question')
+    view,meta=resolve(session({'objet':'fait_personnel','confirmations':[pair]}),sources,'Question')
     assert sources==before
+    assert meta['rejected_confirmations']==1 and meta['confirmed_contexts']==0
+    assert meta['hidden_assistant_turns']==2
+    assert all(message['role']=='user' for source in view for message in source['messages'])
+    assert [message for source in view for message in source['messages']]==[
+        message for source in sources for message in source['messages'] if message['role']=='user']
 
 def test_preference_context_is_preserved_without_becoming_admissible_evidence():
     source=archive([('user','Uniquement pour cette nuit, des reponses breves.')])

@@ -1,38 +1,20 @@
-# Regles de contribution
+# Regles de travail sur Alice
 
-Lire l'etat actuel, puis la carte du composant concerne. Un seul objectif par
-intervention, avec un resultat verifiable et un perimetre explicite.
+Ces regles s'appliquent au projet local et a sa copie publique. Les demandes
+explicites de le proprietaire priment ; les consignes locales precisent leur perimetre.
 
-## Git et GitHub
+## Commencer une intervention
 
-- Une branche `codex/<sujet>` par fonctionnalite, amelioration ou correction.
-- La demande de travail autorise la creation et le switch initial vers sa branche.
-  Tout autre switch doit correspondre a une demande explicite.
-- Examiner les modifications deja presentes : une nouvelle branche ne les isole
-  pas automatiquement. Ne pas les ecraser ou les inclure dans un commit sans revue.
-- Selectionner les fichiers explicitement ; pas de `git add .` global.
-- Commit, merge et push sur demande de l'utilisateur ; verifier source,
-  destination et diff. Pas de force-push ni de nettoyage destructeur implicite.
-- Une autorisation de publication passee n'autorise pas les suivantes.
-- Ne jamais pousser le projet prive entier vers ce depot public. Auditer la
-  selection, les secrets et les donnees, puis verifier le resultat distant.
-
-## Code, donnees et validation
-
-Chercher les fichiers utiles, puis les fonctions utiles ; ne pas tout relire.
-Separer par responsabilite, sans morceler artificiellement les petits modules.
-Avant un deplacement, verifier imports, lanceurs, chemins et tests.
-Documentation sous `docs/`, code dans son composant, donnees et sauvegardes sous
-`data/` dans l'installation privee. Ne jamais publier ces donnees personnelles.
-
-Tests avec profils fictifs `validation_`, jamais avec une memoire reelle.
-Ne pas lancer de modele, de micro, de voix ou de publication externe pour un
-simple rangement. Ne pas installer un candidat experimental non qualifie.
-Un test logiciel vert ne prouve pas la comprehension du modele. Documenter
-les mesures, leurs limites et les conditions de fin avant de passer a la suite.
+1. Lire `docs/etat/actuel.md` pour l'etat, puis `structure.md` pour choisir le composant.
+2. Dans cette copie publique, lire aussi `laboratoire/README.md`. Les consignes
+   de l installation privee ne sont pas toutes redistribuees.
+3. Definir un objectif unique, ce qui reste hors perimetre et la verification
+   qui permettra de declarer le travail termine. Ne pas ajouter de fonctionnalite
+   opportuniste pendant une correction ou un rangement.
+4. Chercher les noms avec `rg --files`, les fichiers avec `rg -l`, puis lire les
+   fonctions concernees. Ne pas charger tous les fichiers et rapports.
 
 ## Sous-agents, modeles et economie de travail
-
 
 Autorisation explicite de le proprietaire le05/11 : utiliser des sous-agents quand
 cela apporte un gain utile, sans attendre une activation manuelle de sa part.
@@ -58,3 +40,72 @@ cela apporte un gain utile, sans attendre une activation manuelle de sa part.
 - Ne pas changer les modeles locaux d'Alice au titre de cette preference : elle
   concerne les assistants de developpement, pas le moteur du produit.
 
+## Modele d'Alice conserve
+
+Decision explicite de le proprietaire : garder le modele actuel d'Alice. Diagnostiquer
+les erreurs avec ce meme modele : consignes, contexte transmis, chaine logicielle
+ou limite du LLM. Ne pas relancer de comparaison ou remplacer le modele a chaque
+defaut. Un changement reste un dernier recours pour un probleme majeur etabli,
+apres diagnostic et nouvelle decision explicite de le proprietaire. Une difficulte dans
+un long debat philosophique ne suffit pas. Cette regle ne change pas le choix
+des modeles des assistants de developpement autorise ci-dessus.
+
+## Git et GitHub : branches, switch, merge, push
+
+- Chaque nouvelle fonctionnalite, amelioration ou correction a sa propre branche
+  `codex/<sujet>`. Pas de travail nouveau directement sur `main`.
+- La demande de realiser ce travail autorise la creation de sa branche et le
+  `git switch -c` initial. Un changement vers une autre branche sans rapport
+  attend une demande explicite. Verifier la branche avant chaque modification.
+- Examiner les changements deja presents avant le switch. Une branche nouvelle
+  ne separe pas magiquement les modifications non commitees deja presentes :
+  les conserver, les signaler et ne jamais les attribuer au nouveau travail.
+- Ne jamais utiliser `git add .` ou `git add -A` dans ce projet. Selectionner
+  explicitement les fichiers et relire le diff prepare.
+- Un commit ne doit contenir que le travail concerne et ses controles ; ne pas
+  creer de commit pour cette passe sans demande de l'utilisateur.
+- **Merge et push uniquement sur demande explicite de l'utilisateur**, avec
+  branche source, destination et contenu verifies. Une ancienne autorisation de
+  publication n'autorise pas automatiquement toutes les publications futures.
+- Pas de force-push, reset destructeur, nettoyage des fichiers non suivis ou
+  reecriture de l'historique pour simplifier le travail.
+- Git local, depot prive et selection publique GitHub sont des objets distincts.
+  Ne jamais publier la racine privee comme si elle etait la selection publique.
+- Avant toute publication : selection explicite, controle des secrets et donnees
+  personnelles, puis verification du commit et de l'acces distant apres envoi.
+
+## Organisation et limites techniques
+
+- Code par responsabilite, donnees sous `data/`, documentation par sujet sous
+  `docs/`. Respecter les implantations actives indiquees dans `structure.md`.
+- Nouveaux rapports sous `data/validation/`, sauvegardes sous `data/sauvegardes/`,
+  preparation publique sous `data/publication/` ; equivalents dans le laboratoire.
+  Les anciens chemins restent valides tant qu'une migration dediee n'est pas testee.
+- Ne pas melanger memoire documentaire (`docs/memoire/`) et souvenirs personnels
+  (`data/` prive). Ne pas ranger du code executable dans les sauvegardes.
+- Avant de deplacer du code : rechercher imports, lanceurs, configurations,
+  tests et chemins relatifs. Decouper selon une responsabilite autonome, pas
+  selon un nombre arbitraire de lignes ou une economie de tokens supposee.
+- Chemins du code/configuration relatifs au projet ; PowerShell ASCII compatible
+  Windows PowerShell 5.1. Pas de chemins personnels fixes dans le code nouveau.
+- Ne pas lire un autre projet pour chercher ses consignes ou son implementation.
+
+## Ne jamais faire pendant un test
+
+- Ouvrir la memoire reelle : utiliser un profil `validation_`, puis nettoyer ses
+  donnees. Ni microphone, ni diffusion audio, ni message externe sans autorisation.
+- Modifier manuellement les souvenirs, exporter des secrets ou publier des
+  conversations, voix personnelles, bases, journaux ou sauvegardes privees.
+- Relancer un service, modifier le demarrage Windows ou deplacer des modeles
+  pour un rangement documentaire. Conserver les ressources de retour arriere.
+- Confondre un test logiciel reussi avec une preuve de comprehension du modele.
+  Verifier l'instrument avant de conclure et appliquer les gardes propres a la
+  campagne ; une exception FPS n'annule pas la garde RAM des validations.
+
+## Terminer une etape
+
+Verifier le comportement concerne et les risques introduits. Pour un rangement,
+controler chemins, liens, conservation des fichiers et absence de changement
+fonctionnel ; ne pas relancer des essais lourds sans raison. Mettre l'etat a jour
+seulement apres controle reussi. Expliquer simplement ce qui change, la preuve,
+les limites et ce qui reste a faire. Ne pas declarer termine ce qui reste incertain.

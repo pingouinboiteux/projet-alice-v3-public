@@ -4,7 +4,7 @@
 | --- | --- |
 | `scripts/` | Modules courants de dialogue, mémoire, outils, interface, voix et connexions ; scripts de campagnes anciennes exclus |
 | `src/alice/` | Composants Python d'écoute, voix, matériel et configuration |
-| `tests/` | Tests `test_*.py` et les deux bancs `check_judgment*.py` |
+| `tests/` | Tests logiciels, bancs de jugement et banc adaptatif avec fiches fictives |
 | `personality/` | Consigne active de personnalité, nom du propriétaire neutralisé |
 | `config/` | Sélecteur du backend mémoire uniquement |
 
@@ -25,3 +25,7 @@ Voir [l'état actuel](../docs/etat/actuel.md) et [les critères](../docs/pilotag
 
 `scripts/desktop_services.py` gere maintenant le demarrage et le nettoyage ;
 `scripts/alice_desktop.py` conserve la boucle de conversation.
+
+Les modules `adaptive_*_candidate.py` sont des experiences inactives, chargees
+uniquement par une option explicite du banc. Leurs tests ne qualifient pas
+leur comportement conversationnel.
