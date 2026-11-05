@@ -45,6 +45,10 @@ def main():
             'sample_rate', 'frame_samples', 'minimum_speech_seconds',
             'short_silence_seconds', 'fixed_silence_seconds',
             'maximum_silence_seconds', 'turn_confidence')}, turn_probability=turn.probability)
+    def make_stop_capture():
+        return SpeechCapture(minimum_speech_seconds=.15,
+            short_silence_seconds=.3, fixed_silence_seconds=.4,
+            maximum_silence_seconds=.6, maximum_utterance_seconds=3)
     def microphone():
         import sounddevice as sd
         devices = list(sd.query_devices())
@@ -68,7 +72,7 @@ def main():
             elif request.get('op') == 'yield_if_idle':
                 yield_requested.set()
             else:
-                if request.get('op') == 'listen':
+                if request.get('op') in {'listen', 'stop_only'}:
                     cancelled.clear()
                     yield_requested.clear()
                 commands.put(request)
@@ -100,13 +104,13 @@ def main():
                 audio=voiced_audio(request['pcm'],vad)
                 if audio is None:
                     send({'id':identifier,'status':'idle'}); continue
-            elif op == 'transcribe':
+            elif op in {'transcribe', 'transcribe_stop'}:
                 path = (ROOT / request['file']).resolve()
                 if not path.is_relative_to(folder):
                     raise ValueError('Audio hors session privee')
                 audio = decode_wav(path.read_bytes())
                 if request.get('validate_capture'):
-                    capture = make_capture()
+                    capture = make_stop_capture() if op == 'transcribe_stop' else make_capture()
                     padded = np.concatenate([audio, np.zeros(16000 * 4, dtype=np.float32)])
                     captured = None
                     for start in range(0, len(padded) - 480, 480):
@@ -123,15 +127,16 @@ def main():
                 wake.extend(time.monotonic())
                 send({'id': identifier, 'status': 'extended'})
                 continue
-            elif op == 'listen':
+            elif op in {'listen', 'stop_only'}:
                 import sounddevice as sd
-                capture = make_capture()
+                capture = make_stop_capture() if op == 'stop_only' else make_capture()
                 device, _ = microphone()
                 with sd.InputStream(samplerate=16000, channels=1, dtype='int16',
                         blocksize=480, device=device) as stream:
                     from hearing_capture_loop import capture_input
                     audio,capture_reason,speech_end_monotonic=capture_input(stream,capture,vad,np,
-                        config['speech_threshold'],cancelled,yield_requested,started)
+                        config['speech_threshold'],cancelled,yield_requested,started,
+                        restart_capture=make_stop_capture if op == 'stop_only' else None)
                 if cancelled.is_set() or audio is None:
                     send({'id': identifier, 'status': 'idle'})
                     continue
@@ -140,6 +145,12 @@ def main():
             transcription_started=time.monotonic()
             with contextlib.redirect_stdout(sys.stderr):
                 text = model.recognize(audio, sample_rate=16000, language='fr', target_language='fr').strip()
+            if op in {'stop_only', 'transcribe_stop'}:
+                from stop_command import is_stop_command
+                send({'id': identifier, 'status': 'stop' if (op == 'transcribe_stop' or not cancelled.is_set())
+                      and is_stop_command(text) else 'ignored',
+                      'capture_reason':capture_reason, 'audio_seconds':round(len(audio)/16000,3)})
+                continue
             decision = (remote_wake if op == 'remote_audio' else wake).decide(text, time.monotonic())
             send({'id': identifier, 'status': 'transcribed', 'text': text,
                   'accepted': decision.accepted, 'cleaned': decision.cleaned,
@@ -151,7 +162,10 @@ def main():
                   'turn_detection_seconds':round(transcription_started-speech_end_monotonic,3) if speech_end_monotonic is not None else None,
                   'seconds': round(time.monotonic()-started, 3)})
         except Exception as error:
-            send({'id': identifier, 'status': 'error', 'error': str(error)})
+            send({'id': identifier, 'status': 'error', 'error': str(error),
+                  'error_type':type(error).__name__,
+                  'error_code':'input_overflow' if ('Capture micro incomplete' in str(error)
+                      or 'debordements micro repetes' in str(error)) else 'worker_failed'})
 
 
 if __name__ == '__main__':

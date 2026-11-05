@@ -12,30 +12,28 @@ Ce dépôt expose son code, sans ses données privées ni ses ressources de mod�
 | Personnalité | Consignes expressives et franches conservées | Un prompt ne garantit pas un avis cohérent |
 | Actions | Outils locaux limités, confirmations et atelier encadré | Pas de contrôle général autonome du PC |
 | Twitch / Discord | Lecture Twitch et raccord vocal Discord ; contexte public séparé | Les entrées externes n'obtiennent pas de droits locaux ni de souvenirs privés |
-| Vision / initiative | Vision et parole spontanée non activées | Objectifs futurs, pas fonctions terminées |
+| Initiative | Modes discussion/animation optionnels, stop vocal et selection du chat | Calme au demarrage ; rythme en stream encore a valider |
+| Vision | Non activee | Prochaine phase, approche a definir |
 
-## Memoire retenue ; suite : initiative de parole bornee
+## Initiative livree ; essai stream attendu
 
-Le proprietaire accepte la memoire actuelle comme base viable, avec ses limites,
-et demande de poursuivre. Le modele, la voix et le backend sont conserves.
-Le jugement conversationnel reste reporte. Les retours d'usage permettront
-d'ameliorer la memoire ; elle n'est pas declaree parfaite ni qualifiee globalement.
+La memoire reste une base viable avec ses limites. Le modele, la voix et le
+backend sont conserves. Le jugement conversationnel reste reporte.
+Voir le [bilan de rappel](../technique/rappel-memoire.md).
 
-Corrections actives : budget final avec schema reel, sources entieres,
-priorite au meilleur temoin de recherche puis au reclassement, identite et
-tutoiement du lecteur factuel sans ajout d'intentions absentes des sources.
-20 rappels acceptables, dont 17 sans reserve. Lot fictif reserve de 16 cas :
-14 corrects, 2 partiels, 0 incorrect ; ton conforme 16/16 contre 3/16 avant.
-485 tests logiciels locaux reussis. Le critere propose de 36/40 n'a pas ete
-mesure. [Resultats, conditions et limites](../technique/rappel-memoire.md).
+La parole spontanee est optionnelle : discussion, animation ou calme. Les
+sequences et pauses sont bornees, le contexte public reste separe du prive.
+Le proprietaire confirme stop vocal fonctionnel et autres bruits ignores.
+594 tests logiciels locaux passes ; 68 decisions du modele sur trois scenarios
+de dix minutes simulees, sans rejet. Le rythme sera teste au prochain stream.
+Naturel, diversite et fiabilite factuelle restent limites.
+[Details, mesures et limites](../technique/initiative-parole.md).
 
-Suite retenue : initiative de parole bornee, a concevoir puis verifier avec
-silence, interruption et arret humain respectes. Aucune parole spontanee
-n'est activee par cette publication ; la vision reste un objectif futur.
-
-Cette copie est documentaire : rapports bruts, conversations et ressources
-privees exclus. Les 485 tests locaux ne sont pas integralement reproductibles
-depuis cette selection. [Code et provenance](../../laboratoire/README.md).
+Prochaine phase : vision sur une branche distincte ; perimetre et approche a
+definir avant implementation. Aucune nouvelle perception du PC n'est activee.
+Cette copie reste documentaire, sans ressources, donnees ni rapports prives.
+Les 594 tests locaux ne sont pas integralement reproductibles depuis cette
+selection. [Code et provenance](../../laboratoire/README.md).
 
 ## Migration technique locale du 5 novembre
 

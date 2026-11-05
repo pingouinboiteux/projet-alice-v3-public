@@ -33,3 +33,7 @@ logs, rapports prives et sauvegardes ne doivent pas etre envoyes sur GitHub.
 Les modules courants gardent leurs imports ; ce rangement ne modifie pas le code.
 
 `historique/voix-abandonnees/` conserve la recette vocale D retiree du code courant.
+
+Initiative et rythme : `laboratoire/scripts/conversation_initiative.py`,
+`initiative_sequence.py`, `desktop_initiative.py`, `public_chat_selection.py`
+et `stop_command.py`. Etat : [initiative](docs/technique/initiative-parole.md).

@@ -10,22 +10,19 @@ conversations publiques et privées, la personnalité expressive et les actions
 locales encadrées. Aucun remplacement de mémoire ou de personnalité par un
 candidat non qualifié.
 
-## Prochaine etape : initiative de parole bornee
+## Prochaine phase : vision, approche a definir
 
-La memoire corrigee est acceptee comme base viable par le proprietaire, avec
-ses limites. Les retours d'usage orienteront les corrections suivantes.
-Le modele actuel reste conserve ; le jugement conversationnel est reporte.
-Les candidats non qualifies ne sont pas installes pour passer a la suite.
+L'initiative de parole et le rythme sont acceptes comme version testable.
+Le proprietaire effectuera la validation d'usage au prochain stream ; les
+repetitions ou interventions mal placees recurrentes seront corrigees ensuite.
+Le stop vocal et l'ignorance des autres bruits ont ete confirmes par utilisateur.
+Le modele actuel, la voix et la memoire restent conserves.
+Voir [les mesures et limites](../technique/initiative-parole.md).
 
-Les rappels mesures comptent 20 reponses acceptables dont 17 sans reserve,
-puis 14 corrects et 2 partiels sur 16 cas fictifs reserves. Le critere propose
-de 36/40 reste non mesure ; la decision de poursuivre n'en fait pas un acquis.
-Voir [les mesures et limites](../technique/rappel-memoire.md).
-
-Concevoir puis verifier une initiative de parole bornee, avec silence,
-interruption et arret humain respectes. Le perimetre et les criteres doivent
-etre verifies avant activation. Aucune initiative spontanee n'est activee
-par la publication ; aucune fiabilite universelle du modele n'est promise.
+Chaque phase doit avoir sa branche. La prochaine branche sera consacree a la
+vision ; cette publication ne choisit pas son architecture et ne l'implemente
+pas. Le perimetre, les sources de perception et les criteres de validation
+seront definis avec le proprietaire avant de commencer.
 
 ## Possibilités futures à évaluer séparément
 

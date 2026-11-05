@@ -36,3 +36,15 @@ factuel avec identite/tutoiement explicites. Les sources restent intactes.
 Les 485 tests reussis decrivent la suite locale : les ressources manquantes
 et les bancs prives exclus empechent de la reproduire integralement ici.
 Aucun banc ni jeu de questions issu de conversations privees n est publie.
+
+## Initiative, rythme et interruption
+
+`conversation_initiative.py` gere les occasions et pauses ;
+`initiative_sequence.py` cadre les sujets courts ; `desktop_initiative.py`
+garde le contexte public borne. `public_chat_selection.py` choisit dans les
+rafales sans accumuler une dette. `stop_command.py`, les raccords d'ecoute et
+la voix gerent l'interruption optionnelle. `validation_stop_asr.py` est un
+banc synthetique sans microphone ni diffusion, necessitant l'installation locale.
+
+La suite locale mesuree compte maintenant 594 tests. Les preuves brutes et les
+campagnes modeles ne sont pas copiees. Voir [fonctionnement et limites](../docs/technique/initiative-parole.md).

@@ -29,6 +29,8 @@ def build(app,root):
     app.diagnostic_enabled=tk.BooleanVar(master=window,value='--diagnostic' in __import__('sys').argv)
     app.observation_status=tk.StringVar(master=window,value='Observation locale; aucun envoi externe.')
     app.external_status=tk.StringVar(master=window,value='Twitch et Discord : coupes.')
+    app.stop_status=tk.StringVar(master=window,value='Stop vocal : desactive')
+    app.stop_checked=tk.BooleanVar(master=window,value=False)
     app.external_states={'twitch':'coupe','discord':'coupe'}
 
     top=tk.Frame(window,bg=BG);top.pack(fill='x',padx=24,pady=(18,12))
@@ -72,6 +74,13 @@ def build(app,root):
     controls=tk.Frame(main,bg=BG);controls.pack(fill='x',pady=(10,0))
     app.pause_button=button(controls,'Couper le micro',app.toggle_pause);app.pause_button.pack(side='left')
     button(controls,'Nouvelle discussion',lambda:app.inputs.put('/nouveau')).pack(side='left',padx=8)
+    button(controls,'Stop parole',app.interrupt_speech).pack(side='left')
+    initiative=tk.Frame(main,bg=BG);initiative.pack(fill='x',pady=(4,0))
+    for caption,mode in (('Calme','calme'),('Discussion','discussion'),('Animer le stream','animation')):
+        button(initiative,caption,lambda m=mode:app.initiative_mode(m)).pack(side='left',padx=2)
+    tk.Checkbutton(initiative,text='Ecouter « stop »',variable=app.stop_checked,command=app.toggle_stop_word,
+        bg=BG,fg=TEXT,selectcolor=PANEL,activebackground=BG,activeforeground=TEXT).pack(side='left')
+    label(main,textvariable=app.stop_status,anchor='w').pack(fill='x')
 
     def section(title):
         frame=tk.Frame(sidebar,bg=PANEL);frame.pack(fill='x',padx=16,pady=(16,0))

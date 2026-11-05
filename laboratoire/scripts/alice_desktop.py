@@ -24,6 +24,7 @@ from remote_channels import RemoteChannels
 from action_context import ActionContext
 import pc_tools
 from capability_state import dialogue_context
+from desktop_initiative import DesktopInitiative, mode_command
 
 ACTION_CONFIRM_SECONDS = 60
 MEMORY_CONFIRM_SECONDS = 300
@@ -120,6 +121,9 @@ class Application:
         self.finished = threading.Event()
         self.session = None
         self.hearing = None
+        self.initiative = None
+        self.stop_word_enabled = threading.Event()
+        self.speech_epoch = 0
         self.channels = None
         self.channel_commands = queue.Queue()
         if '--twitch' in sys.argv:self.channel_commands.put('twitch')
@@ -129,11 +133,31 @@ class Application:
         build(self, ROOT)
         self.append('Alice', "Dis Alice, puis ta demande. Tu peux aussi écrire ci-dessous. "
                     "Le micro se ferme pendant mon travail et mes réponses. "
+                    "Les boutons Discussion et Animer le stream activent mes initiatives ; Calme les coupe. "
+                    "L'écoute du mot stop est optionnelle. "
                     "Les connexions Twitch et Discord se commandent à droite. F12 arrête la session.")
         self.window.protocol('WM_DELETE_WINDOW', self.shutdown)
         threading.Thread(target=self.run, daemon=True).start()
         threading.Thread(target=self.observe, daemon=True).start()
         self.window.after(100, self.poll)
+
+    def initiative_mode(self, mode):
+        if mode == 'calme': self.interrupt_speech()
+        self.inputs.put("/initiative " + mode)
+        if self.initiative: self.initiative.active()
+        if self.hearing: self.hearing.cancel()
+
+    def interrupt_speech(self):
+        if self.initiative: self.initiative.set_mode("quiet")
+        if self.session and self.session.voice: self.session.voice.interrupt()
+
+    def toggle_stop_word(self):
+        if self.stop_checked.get():
+            self.stop_word_enabled.set()
+            self.stop_status.set('Stop vocal : arme pour la prochaine reponse')
+        else:
+            self.stop_word_enabled.clear()
+            self.stop_status.set('Stop vocal : desactive')
 
     def open_observation(self):
         from observer_view import open_window
@@ -153,12 +177,14 @@ class Application:
     def submit(self, _event=None):
         text = self.entry.get().strip()
         if text and not self.stop.is_set():
+            if self.initiative: self.initiative.active()
             self.inputs.put(text[:5000])
             self.entry.delete(0, 'end')
             if self.hearing:
                 self.hearing.cancel()
 
     def toggle_pause(self):
+        if self.initiative: self.initiative.set_mode("quiet")
         if self.paused.is_set():
             self.paused.clear()
             self.pause_button.configure(text='Couper le micro')
@@ -176,6 +202,7 @@ class Application:
                 self.window.destroy()
             return
         self.stop.set()
+        if self.initiative: self.initiative.set_mode('quiet')
         self.status.set('Arret et nettoyage en cours...')
         for event, result in self.confirmations:
             result.append(False)
@@ -225,6 +252,11 @@ class Application:
                     self.history.configure(state='disabled')
                 elif kind == 'status' and not self.stop.is_set():
                     self.status.set(value)
+                elif kind == 'stop_status':
+                    labels = {'requested':'ecoute demandee', 'idle':'aucun mot detecte',
+                        'ignored':'parole detectee, commande non reconnue',
+                        'stop':'STOP reconnu', 'error':'ERREUR ecoute : utiliser le bouton'}
+                    self.stop_status.set('Stop vocal : ' + labels.get(value, value))
                 elif kind == 'resources':
                     self.resources.set(value)
                 elif kind == 'remote_status':
@@ -302,14 +334,17 @@ class Application:
             self.finished.wait(2)
 
     def say(self, text):
+        if self.session.voice.interruption_epoch != self.speech_epoch:
+            return False
         self.observation.emit('turn.reply',{'characters':len(text)}, {'text':text})
         self.events.put(('text', ('Alice', text)))
-        self.events.put(('status', 'Alice parle. Microphone ferme.'))
+        self.events.put(('status', 'Alice parle. Ecoute stop seule.' if self.stop_word_enabled.is_set() else 'Alice parle. Microphone ferme.'))
         with self.observation.span('voice_delivery'):
             voice = self.session.voice
+            self.speech_epoch = voice.interruption_epoch
             voice.capture_allowed = True
             try:
-                voice.speak(text)
+                return voice.speak(text)
             finally:
                 voice.capture_allowed = False
 
@@ -325,14 +360,25 @@ class Application:
             hearing, memory = services.hearing, services.memory
             library, public_memory = services.library, services.public_memory
             thoughts = services.thoughts
+            self.initiative = DesktopInitiative(self.session)
+            voice = self.session.voice
+            voice.stop_listener = lambda: hearing.stop_only(voice,
+                enabled=self.stop_word_enabled.is_set() and not self.paused.is_set(),
+                cancel_if=lambda: self.stop.is_set() or self.paused.is_set() or not self.stop_word_enabled.is_set(),
+                on_status=lambda state:self.events.put(('stop_status', state)))
+            voice.on_interrupt = lambda: self.initiative.set_mode('quiet')
             actions = Actions(pc_tools, webbrowser.open, self.confirm, pc_tools.Monitor())
             messages = [{'role': 'system', 'content': SYSTEM}]
             action_context=ActionContext()
             while not self.stop.is_set():
                 self.session.check()
+                self.initiative.refresh_public(self.channels)
+                if self.paused.is_set(): self.initiative.active()
                 if not self.channel_commands.empty():
+                    self.initiative.active()
                     if self.channels is None: self.channels=RemoteChannels(self.session,self.events,store=public_memory,library=library)
                     self.channels.toggle(self.channel_commands.get_nowait())
+                    self.initiative.idle(messages[1:], self.channels)
                     continue
                 if self.paused.is_set() or (self.channels and not self.channels.pending.empty()):
                     thoughts.active()
@@ -340,23 +386,38 @@ class Application:
                 if not self.inputs.empty():
                     text = self.inputs.get_nowait()
                 elif self.channels and self.channels.handle_one(hearing,self.session.voice):
+                    self.initiative.active()
+                    self.initiative.idle(messages[1:], self.channels)
                     thoughts.idle(messages[1:])
                     continue
                 elif self.paused.is_set():
                     self.events.put(('status', 'Microphone coupe. Tu peux ecrire ou reprendre l ecoute.'))
                     self.stop.wait(.2)
                     continue
+                elif self.initiative.has_ready():
+                    thoughts.active()
+                    self.speech_epoch = self.session.voice.interruption_epoch
+                    self.initiative.deliver(self.say, messages, lambda: self.stop.is_set() or self.paused.is_set() or not self.inputs.empty())
+                    continue
                 else:
                     self.events.put(('status', 'Ecoute active. Dis Alice, puis ta demande.'))
                     heard = hearing.command('listen', cancel_if=lambda:
                         self.paused.is_set() or self.stop.is_set() or not self.inputs.empty() or not self.channel_commands.empty(),
-                        yield_if=lambda:bool(self.channels and self.channels.has_ready()))
+                        yield_if=lambda:self.initiative.has_ready() or bool(self.channels and self.channels.has_ready()))
                     if self.paused.is_set() or not self.inputs.empty() or self.stop.is_set() or not self.channel_commands.empty():
                         continue
                     if heard.get('status') != 'transcribed' or not heard.get('accepted'):
                         continue
                     text = heard['cleaned']
                     source='voice'
+                self.initiative.active()
+                self.speech_epoch = self.session.voice.interruption_epoch
+                selected_mode = mode_command(text)
+                if selected_mode:
+                    self.initiative.set_mode(selected_mode)
+                    self.initiative.idle(messages[1:], self.channels)
+                    self.events.put(('text', ('Conversation', 'Mode : ' + {'quiet':'calme','discussion':'discussion','animation':'animation du stream'}[selected_mode])))
+                    continue
                 thoughts.active()
                 self.observation.begin_turn(text,source,
                     speech_end_monotonic=heard.get('speech_end_monotonic') if source=='voice' else None)
@@ -372,6 +433,7 @@ class Application:
                     self.observation.emit('action.parsed',{'kind':action.kind})
                     if action.kind == 'reset':
                         thoughts.clear()
+                        self.initiative.set_mode('quiet')
                         messages = messages[:1]
                         action_context.clear();retain_context=False
                         self.say('La conversation de cette session est effacee.')
@@ -424,7 +486,9 @@ class Application:
                                 continue
                             messages = messages[:1] + messages[1:][-DIALOGUE_HISTORY_MESSAGES:] + [
                                 {'role': 'user', 'content': text}, {'role': 'assistant', 'content': answer}]
-                            self.say(answer)
+                            if self.say(answer) is False:
+                                messages[-1] = {'role':'assistant', 'content':
+                                    '[Reponse interrompue : le texte effectivement entendu est inconnu.]'}
                             hearing.command('extend')
                             continue
                         if action.kind not in {'status', 'open', 'search', 'code', 'web_read', 'wiki_search'}:
@@ -492,12 +556,16 @@ class Application:
                     if retain_context and source in {'text','voice'}:
                         action_context.record(text,action.kind if action else 'invalid',outcome)
                     thoughts.idle(messages[1:])
+                    self.initiative.idle(messages[1:], self.channels)
                     self.observation.emit('turn.end',{'seconds':time.monotonic()-turn_started})
         except Exception as error:
             self.observation.emit('session.error',{'error_type':type(error).__name__}, {'message':str(error)})
             self.events.put(('text', ('Arret', str(error))))
         finally:
-            services.close()
+            try:
+                if getattr(self, 'initiative', None): self.initiative.close()
+            finally:
+                services.close()
 
 
 

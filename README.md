@@ -29,6 +29,9 @@ Derniere refactorisation validee : [cycle des services](docs/technique/cycle-ser
 
 Bilan de dialogue reporte : [rappel long et variantes](docs/technique/dialogue-et-rappel.md).
 
-Derniere correction : [rappel de memoire et limites](docs/technique/rappel-memoire.md).
-Memoire acceptee comme base viable ; prochaine etape : initiative de parole
-bornee, encore inactive. Modele, voix et backend conserves.
+Memoire conservee : [rappel et limites](docs/technique/rappel-memoire.md).
+
+Derniere etape : [initiative de parole, stop et rythme](docs/technique/initiative-parole.md).
+594 tests logiciels locaux passes ; validation du rythme au prochain stream
+encore attendue. Prochaine phase : vision sur une branche dediee, approche a
+definir avant implementation. Aucun changement de modele, voix ou backend.
