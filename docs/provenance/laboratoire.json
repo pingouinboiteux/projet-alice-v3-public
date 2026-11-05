@@ -41,7 +41,7 @@
     {
       "path": "laboratoire/scripts/alice_desktop.py",
       "source": "laboratoire/scripts/alice_desktop.py",
-      "sha256": "9a4c84d71963b9cd094a4c13e03b94f82b0717717fc4bb1802924b4b22ecab21",
+      "sha256": "90e6cbebc5410b28b5c15d31286b2b83265a26f2a287e26a4b5cfbde320dcb2b",
       "neutralized_owner": true
     },
     {
@@ -84,6 +84,12 @@
       "path": "laboratoire/scripts/continuous_playback.py",
       "source": "laboratoire/scripts/continuous_playback.py",
       "sha256": "c32f1a87d781454dcb602a3b9e96fb67cedd02e05fa344d03ece907ae2b17d8e",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/desktop_services.py",
+      "source": "laboratoire/scripts/desktop_services.py",
+      "sha256": "fdbea2012e26267a48d722707b50a204db3599e21e55dea3cdd9e500d41be296",
       "neutralized_owner": false
     },
     {
@@ -624,6 +630,12 @@
       "path": "laboratoire/tests/test_desktop_flow.py",
       "source": "laboratoire/tests/test_desktop_flow.py",
       "sha256": "bea7069036156d73810b37d2993c155ea57e67e54258aed929b0562d85ae9c15",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_desktop_services.py",
+      "source": "laboratoire/tests/test_desktop_services.py",
+      "sha256": "ef3f6641d78f154cf1b0c81580d5f4d29efa206a4e4e6cef50e0090a9508ed57",
       "neutralized_owner": false
     },
     {

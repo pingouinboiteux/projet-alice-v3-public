@@ -22,3 +22,6 @@ fictives ; ils doivent rester isolés des souvenirs réels.
 Les bancs de jugement proposent des variantes d'essai ; aucune n'est déclarée
 validée ou active. Aucun entraînement automatique n'est lancé par cette publication.
 Voir [l'état actuel](../docs/etat/actuel.md) et [les critères](../docs/pilotage/evolution.md).
+
+`scripts/desktop_services.py` gere maintenant le demarrage et le nettoyage ;
+`scripts/alice_desktop.py` conserve la boucle de conversation.

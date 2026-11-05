@@ -12,6 +12,7 @@ import webbrowser
 import http.client
 
 from chat import Session, ROOT
+from desktop_services import DesktopServices, ServiceFactories
 from voice_link import Voice
 from hearing_link import Hearing
 from action_policy import Actions, parse
@@ -314,44 +315,16 @@ class Application:
 
     def run(self):
         os.chdir(ROOT)
-        self.session = Session(allow_game=True, context_window=16384, fps_protection=False, ram_protection=False)
-        self.session.observer = self.observation
-        hearing = None
-        memory = None
-        library = public_memory = thoughts = subtitles = None
+        services = DesktopServices(self, ROOT, ServiceFactories(
+            session=Session, memory=Memory, voice=Voice, hearing=Hearing,
+            library=Library, public_memory=PublicMemory,
+            subtitles=Subtitles, thoughts=Thoughts))
         try:
-            if '--startup' in sys.argv:
-                self.events.put(('status', 'Demarrage dans 30 secondes. Tu peux arreter Alice avec le bouton.'))
-                if self.stop.wait(30):
-                    return
-            model_name=self.session.model_spec.get('name','modele local')
-            self.events.put(('status', 'Chargement de '+model_name+'. Arrets automatiques FPS et RAM desactives a ta demande; surveillance active.'))
-            with self.observation.span('startup_model'):
-                self.session.start()
-            self.session.check()
-            self.events.put(('status', 'Chargement de la memoire locale sur CPU. Microphone ferme.'))
-            with self.observation.span('startup_memory'):
-                memory = Memory(self.session)
-            self.session.check()
-            self.events.put(('status', 'Chargement de la voix. Microphone ferme.'))
-            self.session.voice = Voice(self.session)
-            with self.observation.span('startup_voice'):
-                self.session.voice.start()
-            self.events.put(('text', ('Configuration vocale', self.session.voice.status_text())))
-            self.session.check()
-            self.events.put(('status', 'Chargement de l ecoute originale. Microphone ferme.'))
-            hearing = self.hearing = Hearing(self.session)
-            with self.observation.span('startup_hearing'):
-                hearing.start()
-            library = self.session.library = Library(self.session)
-            ready = library.start()
-            self.events.put(('text', ('Bibliotheque locale', 'Disponible hors ligne.' if ready else 'Indisponible : Alice continue sans documents.')))
-            public_memory = PublicMemory(ROOT/'data/public/public_channels.db','public_channels',allow_public=True)
-            subtitles = Subtitles(ROOT/'sous_titre.txt',lambda: self.observation.emit('subtitles.write_error'))
-            self.session.voice.subtitles = subtitles
-            thoughts = self.session.thoughts = Thoughts(self.session)
-            thoughts.start()
-            self.observation.ready()
+            if not services.start(startup='--startup' in sys.argv):
+                return
+            hearing, memory = services.hearing, services.memory
+            library, public_memory = services.library, services.public_memory
+            thoughts = services.thoughts
             actions = Actions(pc_tools, webbrowser.open, self.confirm, pc_tools.Monitor())
             messages = [{'role': 'system', 'content': SYSTEM}]
             action_context=ActionContext()
@@ -524,36 +497,8 @@ class Application:
             self.observation.emit('session.error',{'error_type':type(error).__name__}, {'message':str(error)})
             self.events.put(('text', ('Arret', str(error))))
         finally:
-            if thoughts: thoughts.close()
-            for service in (subtitles,library,public_memory):
-                if service:
-                    try:
-                        if service is subtitles: service.clear()
-                        else: service.close()
-                    except Exception: self.observation.emit("social.close_error")
-            if self.channels:
-                try: self.channels.close()
-                except Exception:
-                    self.observation.emit('external.close_error')
-            try:
-                if memory: memory.close()
-            except Exception as error:
-                self.observation.emit('session.error',{'error_type':type(error).__name__,'phase':'memory_close'}, {'message':str(error)})
-                self.events.put(('text', ('Nettoyage', str(error))))
-            try:
-                if hearing:
-                    hearing.close()
-            except Exception as error:
-                self.events.put(('text', ('Nettoyage', str(error))))
-            finally:
-                try:
-                    self.session.close()
-                except Exception as error:
-                    self.events.put(('text', ('Nettoyage', str(error))))
-            if thoughts: thoughts.join()
-            self.finished.set()
-            self.events.put(('finished', None))
-            self.observation.close()
+            services.close()
+
 
 
 def main():

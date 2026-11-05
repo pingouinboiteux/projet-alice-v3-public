@@ -24,3 +24,5 @@ La consultation publique n'ajoute pas de licence generale de reutilisation ;
 les dependances et modeles conservent leurs propres licences.
 
 Derniere passe : [audit et archives](docs/technique/audit-obsoletes.md).
+
+Derniere refactorisation validee : [cycle des services](docs/technique/cycle-services.md).
