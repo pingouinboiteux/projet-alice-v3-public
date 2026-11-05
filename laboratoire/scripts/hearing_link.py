@@ -4,11 +4,65 @@ import os
 from pathlib import Path
 import subprocess
 import threading
+from contextlib import contextmanager
 from voice_link import Voice, ROOT
 from observation import emit, span
 
 
 class Hearing(Voice):
+    @contextmanager
+    def stop_only(self, voice, *, enabled=False, cancel_if=None, on_status=None):
+        """Own the idle hearing worker while speaking; no parallel command allowed.
+
+        Opt-in: acoustic echo cancellation is not implemented. Headphones and a
+        real microphone trial are required before claiming reliable recognition.
+        """
+        if not enabled:
+            yield
+            return
+        finished = threading.Event()
+        errors = []
+        def status(value):
+            emit(self.session, 'hearing.stop_state', {'status':value})
+            if on_status is not None: on_status(value)
+        def stopped():
+            if cancel_if is not None and cancel_if():
+                finished.set()  # A later toggle must not reopen this utterance.
+            return finished.is_set()
+        def watch():
+            try:
+                status('requested')
+                while not stopped():
+                    result = self.command('stop_only', cancel_if=stopped)
+                    if stopped(): break
+                    status(result.get('status', 'error'))
+                    if result.get('status') == 'stop' and not stopped():
+                        voice.interrupt()
+                        return
+                    if result.get('status') not in {'idle', 'ignored', 'stop'}:
+                        raise RuntimeError('Reponse ecoute stop invalide')
+            except Exception as error:
+                errors.append(error)
+                status('error')
+        thread = threading.Thread(target=watch, daemon=True)
+        thread.start()
+        try:
+            yield
+        finally:
+            finished.set()
+            self.cancel()
+            thread.join(timeout=15)
+            if thread.is_alive():
+                # A pending reader must never consume the next normal command.
+                # Leave this worker visibly stopped rather than reusing its pipe.
+                if self.process and self.process.poll() is None:
+                    self.process.terminate()
+                    self.process.wait(timeout=10)
+                thread.join(timeout=2)
+                raise RuntimeError('Ecoute stop non terminee; ne pas reutiliser le micro')
+            if errors:
+                raise RuntimeError('Ecoute stop indisponible') from errors[0]
+
     def start(self):
         manifest = json.loads((ROOT / 'config/hearing.lock.json').read_text(encoding='utf-8'))
         for relative, info in manifest['files'].items():
@@ -61,6 +115,11 @@ class Hearing(Voice):
             result = self.receive(180,on_poll=poll_cancel) if cancel_if is not None or yield_if is not None else self.receive(180)
         if result.get('id') != self.sequence:
             raise RuntimeError('Reponse de transcription incoherente')
+        if op in {'stop_only', 'transcribe_stop'}:
+            # Only status crosses this boundary, including diagnostic mode.
+            emit(self.session, 'hearing.stop_result', {key:result.get(key) for key in
+                ('status','error_type','error_code','capture_reason','audio_seconds')})
+            return {'status':result.get('status')}
         emit(self.session,'hearing.result',{'source':'discord' if op=='remote_audio' else 'local',
             'status':result.get('status'),'accepted':result.get('accepted'),
             'seconds':result.get('seconds'),'wake_reason':result.get('wake_reason'),

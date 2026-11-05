@@ -273,6 +273,12 @@ class Session:
         try: return self._ask(messages, schema, max_tokens=256)
         finally: self.inference_lock.release()
 
+    def ask_initiative(self, messages, schema):
+        """Low-priority spoken dialogue uses the existing dialogue sampling."""
+        if not self.inference_lock.acquire(blocking=False): return None
+        try: return self._ask(messages, schema, max_tokens=256, dialogue=True)
+        finally: self.inference_lock.release()
+
     def ask_dialogue(self, messages, response_schema=None):
         """Natural conversation can sample while the JSON grammar stays enforced."""
         from observation import span

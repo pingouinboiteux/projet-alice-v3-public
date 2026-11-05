@@ -88,7 +88,7 @@ def test_discord_owner_command_stays_remote_and_reservation_failure_prevents_rep
 
 def test_queue_bounded_stale_and_disconnected_entries_rejected():
     channels,session,_=make_channels()
-    for _ in range(50): channels.enqueue('twitch',0,RemoteText('twitch','validation_1','Alice bonjour'))
+    for index in range(50): channels.enqueue('twitch',0,RemoteText('twitch','validation_'+str(index),'Alice bonjour'))
     assert channels.pending.qsize()==16
     channels.disconnect('twitch')
     while not channels.pending.empty(): channels.handle_one(Mock(),Mock())

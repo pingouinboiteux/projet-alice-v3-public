@@ -56,6 +56,14 @@ class RemoteDialogue:
             self.store.record(message.source,message.author,message.text,answer)
             self.store.delivered(message.source,message.author)
 
+    def discard_reply(self, message, answer):
+        """A generated but unplayed reply must not become spoken history."""
+        entry=self.histories.get((message.source,message.author))
+        if entry:
+            history=entry[1]
+            if history and history[-1]=={'role':'assistant','content':answer}:
+                history.pop()
+
     def clear(self):
         self.histories.clear()
 

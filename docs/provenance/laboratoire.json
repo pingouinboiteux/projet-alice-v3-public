@@ -41,7 +41,7 @@
     {
       "path": "laboratoire/scripts/alice_desktop.py",
       "source": "laboratoire/scripts/alice_desktop.py",
-      "sha256": "90e6cbebc5410b28b5c15d31286b2b83265a26f2a287e26a4b5cfbde320dcb2b",
+      "sha256": "dd92c01b8079a9ddbac53bcf79fee21baf530d4214ed74d3a6ea8f8463201133",
       "neutralized_owner": true
     },
     {
@@ -71,7 +71,7 @@
     {
       "path": "laboratoire/scripts/chat.py",
       "source": "laboratoire/scripts/chat.py",
-      "sha256": "9292a18bb4bc7cf6fadda0aa3c3fea347cdaa4ee8f34fdf6db99782845e96b40",
+      "sha256": "76cfc0c6df13017f7688efa33e79fce8280ca6caf462ffed6b93bc452ad6a592",
       "neutralized_owner": true
     },
     {
@@ -87,6 +87,18 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/scripts/conversation_initiative.py",
+      "source": "laboratoire/scripts/conversation_initiative.py",
+      "sha256": "f492e4889392846668be842ac0e4449f0c424bce581824ab93c8722b11c73261",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/desktop_initiative.py",
+      "source": "laboratoire/scripts/desktop_initiative.py",
+      "sha256": "01cf126ce0b2813dc7408b3f9ca668abfa870bcabb79477ee0f75b9fb88adf1b",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/desktop_services.py",
       "source": "laboratoire/scripts/desktop_services.py",
       "sha256": "fdbea2012e26267a48d722707b50a204db3599e21e55dea3cdd9e500d41be296",
@@ -95,7 +107,7 @@
     {
       "path": "laboratoire/scripts/desktop_style.py",
       "source": "laboratoire/scripts/desktop_style.py",
-      "sha256": "7f3f822e8b5e378f1773ac493b50628229d422962d538130834643a1902356ad",
+      "sha256": "95f9c6f7f129520309ee986f7f65b15e0b8c274b43ec89d04b1387f35bfaef3f",
       "neutralized_owner": false
     },
     {
@@ -179,19 +191,25 @@
     {
       "path": "laboratoire/scripts/hearing_capture_loop.py",
       "source": "laboratoire/scripts/hearing_capture_loop.py",
-      "sha256": "08869e7a2e8c00a85a325a6375e45609b32c2db24c6bc42448b884d4a3b2fc04",
+      "sha256": "526bbc7104c31f225016bbe20a403494f00b60e6b5c2ce9e464ac61e1701a5d8",
       "neutralized_owner": false
     },
     {
       "path": "laboratoire/scripts/hearing_link.py",
       "source": "laboratoire/scripts/hearing_link.py",
-      "sha256": "5417f74a192d80f9c6e5e7b893e5367b2da58670e62fef2b1f2b42b1a0f8ac5a",
+      "sha256": "089b8fc7c21734600cb285bf37ce46aacc54bfdc94fb70c584572cef8d711f72",
       "neutralized_owner": false
     },
     {
       "path": "laboratoire/scripts/hearing_worker.py",
       "source": "laboratoire/scripts/hearing_worker.py",
-      "sha256": "9966381417348d70dfeaf75aff6240cf68921f1a8f0927347b4d0ed83cc81bdf",
+      "sha256": "44fec26c94ff3ad6dc098fda67b977d065278c7d04fd536499b5dcdac4422aef",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/initiative_sequence.py",
+      "source": "laboratoire/scripts/initiative_sequence.py",
+      "sha256": "bf61803713da2ff6758cc01be7c0da999e9a5b243ac44c2e00512de82d504c2a",
       "neutralized_owner": false
     },
     {
@@ -297,6 +315,12 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/scripts/public_chat_selection.py",
+      "source": "laboratoire/scripts/public_chat_selection.py",
+      "sha256": "7ca0bee3d9a427ef554d018760f1aa596f8a20dc8d08dac10f4d33e5d2858e38",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/remote_audio.py",
       "source": "laboratoire/scripts/remote_audio.py",
       "sha256": "9b9329a73ba8c6b5d7a02f6d4d86c41752952f3571b15632ccb218cabf64728d",
@@ -311,7 +335,7 @@
     {
       "path": "laboratoire/scripts/remote_channels.py",
       "source": "laboratoire/scripts/remote_channels.py",
-      "sha256": "3c87cf4c9ec8ce06d5bb0eaa1f790914c0d6c0df5d7f82e8959553161be9a6e1",
+      "sha256": "edc035057777c95ea5683496004a25bbe726bd35e2e2d25e258089a7cab189f4",
       "neutralized_owner": false
     },
     {
@@ -323,7 +347,7 @@
     {
       "path": "laboratoire/scripts/remote_dialogue.py",
       "source": "laboratoire/scripts/remote_dialogue.py",
-      "sha256": "3d4b99fc365c5285a2eebc15e9923bdbdd027fb1e40da146aca93690afec9c1d",
+      "sha256": "d37f64f6c46e95512538c1c38f6208b1400cee583f77fd73c1200de79eecc0bb",
       "neutralized_owner": true
     },
     {
@@ -369,6 +393,12 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/scripts/stop_command.py",
+      "source": "laboratoire/scripts/stop_command.py",
+      "sha256": "4abea7ec106b340393776838b66a6d97e477e814ec0f780a2235d629eb661360",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/twitch_reader.py",
       "source": "laboratoire/scripts/twitch_reader.py",
       "sha256": "8eccc9cf3864a7b060ac1de55a395c1c5778a2a4154080779efcb477d935a4f3",
@@ -384,6 +414,12 @@
       "path": "laboratoire/scripts/validation_sopro_resonance.py",
       "source": "laboratoire/scripts/validation_sopro_resonance.py",
       "sha256": "3a0005a21cb26d324ad6c30046af3760f6465f44f2bff00478decd2dcf97ee06",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/validation_stop_asr.py",
+      "source": "laboratoire/scripts/validation_stop_asr.py",
+      "sha256": "0e1635f78e9d46d17c7483c4e66aca5c12e4de7bdde99c7f3b489021baaddbd2",
       "neutralized_owner": false
     },
     {
@@ -407,7 +443,7 @@
     {
       "path": "laboratoire/scripts/voice_link.py",
       "source": "laboratoire/scripts/voice_link.py",
-      "sha256": "d1c611471bbee6fbbdf6cce89060cd50bc64d41bfc9285262c3b3ba9aedcb276",
+      "sha256": "d861b02b27844d016edb58a3d12a3249886168d901c99eda5677d5fa26ec47b2",
       "neutralized_owner": false
     },
     {
@@ -669,9 +705,27 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/tests/test_conversation_initiative.py",
+      "source": "laboratoire/tests/test_conversation_initiative.py",
+      "sha256": "fda0d8466007188af50c266f91bf5ff05f0fccdc35b6cc981dff499aa8f41030",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/tests/test_desktop_flow.py",
       "source": "laboratoire/tests/test_desktop_flow.py",
       "sha256": "bea7069036156d73810b37d2993c155ea57e67e54258aed929b0562d85ae9c15",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_desktop_initiative.py",
+      "source": "laboratoire/tests/test_desktop_initiative.py",
+      "sha256": "520b77ef64e68797dadbd127704b26898d52a4ee59096086cb183ae44caad80a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_desktop_initiative_flow.py",
+      "source": "laboratoire/tests/test_desktop_initiative_flow.py",
+      "sha256": "9e6ceb0f95b909d69abc0dd44cf1cd1123bc70a89657b933b4bbe49d90c278c9",
       "neutralized_owner": false
     },
     {
@@ -738,6 +792,12 @@
       "path": "laboratoire/tests/test_hearing_service.py",
       "source": "laboratoire/tests/test_hearing_service.py",
       "sha256": "1e984fed598cee7481e3a1c9d7248ae9d82ae4eae13631cf49e9e38e0f3dc205",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_initiative_sequence.py",
+      "source": "laboratoire/tests/test_initiative_sequence.py",
+      "sha256": "1d5808dabd3d951a34cdf69f44895a863d1b7cd7d59c84044f8a9acf6503cd9a",
       "neutralized_owner": false
     },
     {
@@ -831,9 +891,15 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/tests/test_public_chat_selection.py",
+      "source": "laboratoire/tests/test_public_chat_selection.py",
+      "sha256": "9ac2b16a89c0a4d1916f5faa9260b773579b2d72b8ae4a35abcc3c28660ea9a2",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/tests/test_remote_channels.py",
       "source": "laboratoire/tests/test_remote_channels.py",
-      "sha256": "f18ee1442ef914a96b6f966cd1de2f87025713cc4284feb80ad3f51b3a694b49",
+      "sha256": "5863f54a1c7e9d5499c106c8e94f8a0639e457af131fab0d9e3845288e39a67b",
       "neutralized_owner": true
     },
     {
@@ -876,6 +942,24 @@
       "path": "laboratoire/tests/test_sopro_voice.py",
       "source": "laboratoire/tests/test_sopro_voice.py",
       "sha256": "c87f9e84b1f068d2d5cbc81614ed856a30da1b25bc20ea0a33c608d3218486fb",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_stop_asr_instrument.py",
+      "source": "laboratoire/tests/test_stop_asr_instrument.py",
+      "sha256": "4a6172afd824423e3731e1c866d64054023ec956573d84432db058ce47d773d7",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_stop_capture_overflow.py",
+      "source": "laboratoire/tests/test_stop_capture_overflow.py",
+      "sha256": "dd7c5682b7e4a16db4f9dafc249f63fa2c66dfda844c1bc4fe963850692b6099",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_stop_only.py",
+      "source": "laboratoire/tests/test_stop_only.py",
+      "sha256": "96a7c53ba36b03e98c1b292f827a15c0b8bdcc36dc307af4665fd6b581fe5a0e",
       "neutralized_owner": false
     },
     {

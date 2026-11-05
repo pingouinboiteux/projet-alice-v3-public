@@ -18,6 +18,7 @@ import wave
 from remote_bridge import DiscordBridgeClient
 from remote_dialogue import RemoteDialogue, RemoteText
 from remote_filter import Reglages, examiner_sortie
+from public_chat_selection import PublicChatSelection
 
 ROOT=Path(__file__).resolve().parents[1]
 PROJECT=ROOT.parent
@@ -64,6 +65,12 @@ class RemoteChannels:
         self.next_remote=0
         self.last_status={}
         self.connection_status={}
+        self.selection=PublicChatSelection()
+
+    def public_history(self):
+        """Recent Twitch-only context, never local dialogue or private memories."""
+        with self.pending_lock:
+            return self.selection.history(time.monotonic())
 
     def status(self,source,state):
         if state in {'ready','off','connecting','disconnected','not_configured'}:
@@ -80,6 +87,8 @@ class RemoteChannels:
             self.trace('external.skipped',source,reason='not_addressed');return
         with self.pending_lock:
             if self.closed or generation!=self.generations[source] or not self.enabled[source]:return
+            if source=='twitch' and not self.selection.admit(payload,time.monotonic()):
+                self.trace('external.skipped',source,reason='duplicate');return
             try:
                 self.pending.put_nowait((source,generation,time.monotonic(),payload))
                 self.trace('external.received',source,queued=self.pending.qsize())
@@ -118,6 +127,30 @@ class RemoteChannels:
                     or now-received>PENDING_SECONDS[source] or source!='twitch'
                     or now>=self.next_twitch
                     for source,generation,received,_ in self.pending.queue)
+
+    def select_twitch_batch(self, first):
+        """Detach one snapshot before asking the model; arrivals stay for next turn.
+
+        Non-selected entries of this snapshot are discarded, not queued as debt.
+        Discord and other transport generations remain independent.
+        """
+        now=time.monotonic()
+        batch=[first]
+        with self.pending_lock:
+            for _ in range(self.pending.qsize()):
+                item=self.pending.get_nowait()
+                source,generation,received,_=item
+                if source!='twitch':
+                    self.pending.put_nowait(item)
+                elif generation==self.generations[source] and self.enabled[source] and now-received<=PENDING_SECONDS[source]:
+                    batch.append(item)
+            # Snapshot selection context under lock; no lock during model call.
+            selection=PublicChatSelection()
+            selection.answered.extend(self.selection.answered)
+            selection.public.extend(self.selection.public)
+        chosen=selection.choose(batch,self.session.ask,now)
+        self.trace('external.selection','twitch',candidates=len(batch),selected=chosen is not None)
+        return chosen
 
     def trace(self,kind,source,**metrics):
         observer=getattr(self.session,'observer',None)
@@ -219,6 +252,8 @@ class RemoteChannels:
                     try: pipe.close()
                     except OSError: pass
         if source=='discord': self.bridge=None
+        if source=='twitch':
+            with self.pending_lock:self.selection.clear()
         self.dialogue.clear()
         self.status(source,'off')
 
@@ -233,16 +268,21 @@ class RemoteChannels:
         if time.monotonic()-received>PENDING_SECONDS[source]:
             self.trace('external.skipped',source,reason='expired',age_seconds=round(time.monotonic()-received,2))
             return True
-        bridge=None;epoch=None
+        bridge=None;epoch=None;answer=None;message=None;playing=False;completed=False
         subtitle=getattr(voice,"subtitles",None);ticket=None
         try:
             self.session.check()
             if source=='twitch':
+                self.next_twitch=time.monotonic()+15
+                item=self.select_twitch_batch(item)
+                if item is None:return True
+                source,generation,received,payload=item
+                if generation!=self.generations[source] or not self.enabled[source] or time.monotonic()-received>PENDING_SECONDS[source]:
+                    self.trace('external.skipped',source,reason='selection_expired');return True
                 message=payload
                 self.events.put(('text',('Twitch (aucun droit d action)',message.text)))
                 if not re.search(r'\balice\b',message.text,re.I):
                     self.trace('external.skipped',source,reason='not_addressed');return True
-                self.next_twitch=time.monotonic()+15
             else:
                 bridge=self.bridge;epoch=payload.human_epoch
                 result=hearing.command('remote_audio',pcm=base64.b64encode(payload.utterance.pcm_s16le).decode('ascii'))
@@ -254,9 +294,14 @@ class RemoteChannels:
             observer=getattr(self.session,'observer',None)
             if isinstance(observer,Observation):observer.begin_turn(message.text,source)
             emit(self.session,'external.turn',{'source':source,'action_access':False})
+            interruption_epoch=getattr(voice,'interruption_epoch',0)
             with span(self.session,'external_dialogue'):
                 answer=self.dialogue.answer(message)
             self.session.check()
+            if getattr(voice,'interruption_epoch',0)!=interruption_epoch:
+                self.trace('external.skipped',source,reason='reply_interrupted');return True
+            if generation!=self.generations[source] or not self.enabled[source] or time.monotonic()-received>PENDING_SECONDS[source]:
+                self.trace('external.skipped',source,reason='reply_expired');return True
             self.events.put(('text',('Alice vers '+source,answer)))
             if bridge:
                 parts=voice.audio_parts(answer)
@@ -289,13 +334,21 @@ class RemoteChannels:
                     bridge.stop()
                     raise
                 finally: parts.close()
-            else: voice.speak(answer)
-            if self.dialogue.store and (not bridge or playing):
+            else:
+                if getattr(voice,'interruption_epoch',0)!=interruption_epoch:
+                    self.trace('external.skipped',source,reason='reply_interrupted');return True
+                playing=voice.speak(answer) is not False
+                if playing:
+                    with self.pending_lock:self.selection.delivered(message,answer,time.monotonic())
+            completed=playing
+            if self.dialogue.store and completed:
                 self.dialogue.delivered(message,answer)
         except Exception as error:
             self.session.check()
             self.status(source,'error_'+type(error).__name__)
         finally:
+            if answer is not None and message is not None and not completed:
+                self.dialogue.discard_reply(message,answer)
             if subtitle and ticket is not None: subtitle.clear(ticket)
             self.next_remote=time.monotonic()+2
             if bridge and epoch is not None:

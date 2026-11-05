@@ -8,6 +8,7 @@ import subprocess
 import threading
 import time
 import wave
+from contextlib import nullcontext
 from observation import emit, span
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,6 +18,10 @@ class VoiceRequestError(RuntimeError):
     def __init__(self,value):
         super().__init__(value['error'])
         self.request_id=value.get('id')
+
+
+class SpeechInterrupted(Exception):
+    """Only this utterance was stopped; the owning session remains alive."""
 
 
 def inspect_wav(path):
@@ -44,6 +49,23 @@ class Voice:
         self.continuous_playback = False
         self.profile_name = None
         self.capture_allowed = False
+        self.interrupted = threading.Event()
+        self.interruption_epoch = 0
+        self._delivery_poll = None
+        self.stop_listener = None
+        self.on_interrupt = None
+
+    def interrupt(self):
+        self.interruption_epoch += 1
+        already_interrupted = self.interrupted.is_set()
+        self.interrupted.set()
+        if not already_interrupted and self.on_interrupt is not None:
+            self.on_interrupt()
+
+    def _check_speech(self):
+        self.session.check()
+        if self.interrupted.is_set():
+            raise SpeechInterrupted()
 
     def start(self):
         from voice_profile import selected_voice
@@ -147,7 +169,7 @@ class Voice:
             while True:
                 # Errors are terminal for a request, as is audio_end.
                 if time.monotonic()>=deadline: raise RuntimeError('Delai vocal depasse')
-                try: result=self.receive(min(180,deadline-time.monotonic()))
+                try: result=self.receive(min(180,deadline-time.monotonic()), on_poll=self._delivery_poll)
                 except VoiceRequestError as error:
                     complete=error.request_id==self.sequence
                     raise
@@ -190,6 +212,12 @@ class Voice:
                 path.unlink(missing_ok=True)
 
     def speak(self, text):
+        self.interrupted.clear()
+        context = self.stop_listener() if self.stop_listener is not None else nullcontext()
+        with context:
+            return self._speak(text)
+
+    def _speak(self, text):
         if self.continuous_playback:
             return self.speak_continuous(text)
         import winsound
@@ -197,12 +225,16 @@ class Voice:
         subtitle=getattr(self,"subtitles",None);ticket=None
         try:
             for index,(path,result) in enumerate(parts):
+                if self.interrupted.is_set():
+                    continue  # Drain the request, without ever playing stale audio.
                 winsound.PlaySound(str(path), winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NODEFAULT)
                 if index==0 and subtitle: ticket=subtitle.show(text)
                 emit(self.session,'voice.playback_started' if index==0 else 'voice.part_playback_started',{'part':index})
                 deadline=time.monotonic()+result['audio_seconds']+.03
                 while time.monotonic()<deadline:
                     self.session.check()
+                    if self.interrupted.is_set():
+                        break
                     time.sleep(.01)
                 winsound.PlaySound(None,0)
         finally:
@@ -211,10 +243,18 @@ class Voice:
             finally:
                 if subtitle and ticket is not None: subtitle.clear(ticket)
             emit(self.session,'voice.playback_stopped')
+        return not self.interrupted.is_set()
 
     def speak_continuous(self, text):
         from continuous_playback import ContinuousPCM
-        player = ContinuousPCM(self.session.check)
+        player = ContinuousPCM(self._check_speech)
+        player_closed = False
+        def poll_delivery():
+            nonlocal player_closed
+            if self.interrupted.is_set() and not player_closed:
+                player.close(complete=False)
+                player_closed = True
+        self._delivery_poll = poll_delivery
         parts = self.audio_parts(text)
         subtitle = getattr(self, 'subtitles', None)
         ticket = None
@@ -233,6 +273,9 @@ class Voice:
                 emit(self.session, 'voice.capture_error', {'error_type':type(error).__name__})
         try:
             for index, (path, result) in enumerate(parts):
+                poll_delivery()
+                if self.interrupted.is_set():
+                    continue
                 if capture is not None:
                     try: capture.append(path)
                     except (OSError, ValueError) as error:
@@ -245,11 +288,16 @@ class Voice:
                         ticket = subtitle.show(text)
                     # Submission time, not a measured physical speaker onset.
                     emit(self.session, 'voice.playback_submitted', {'part': index})
-                player.write(path)
-            complete = True
+                try:
+                    player.write(path)
+                except SpeechInterrupted:
+                    poll_delivery()
+            complete = not self.interrupted.is_set()
         finally:
+            self._delivery_poll = None
             try:
-                player.close(complete=complete)
+                if not player_closed:
+                    player.close(complete=complete)
             finally:
                 try:
                     parts.close()
@@ -262,6 +310,7 @@ class Voice:
                         subtitle.clear(ticket)
                     emit(self.session, 'voice.playback_stopped',
                          {'underflows': player.underflows, 'continuous': True})
+        return complete
 
     def close(self):
         try:
