@@ -1,59 +1,34 @@
-# Alice — de la V3 au laboratoire actuel
+# Alice — état public au 5 novembre 2026
 
-**Projet en développement — aperçu public au 3 novembre 2026.**
+Alice est un projet personnel de compagnon vocal local sous Windows, en français.
+Le but est une conversation expressive, une mémoire utile et des actions encadrées.
 
-Ce dépôt présente les extraits historiques de la V3, le fonctionnement retrouvé
-de la mémoire de la lignée V5 et la nouvelle direction du laboratoire indépendant.
+- [État actuel, limites et prochaine étape](version_actuelle/README.md)
+- [Dossiers du laboratoire actuel](laboratoire/README.md) : dialogue, mémoire,
+  voix, écoute, canaux externes, protections et tests.
+- [Direction et critères de passage à la suite](EVOLUTION.md)
+- [Contrôles de cette publication](RESULTATS.md)
+- [Mémoire de la lignée V5 originale](memoire_v5/README.md)
 
-- **[Comprendre la mémoire d’Alice V5](memoire_v5/README.md)**
-- **[Comprendre les progrès et la nouvelle direction](EVOLUTION.md)**
-- **[Voir la version actuelle en développement et son code](version_actuelle/README.md)**
-- **V3 historique :** les dossiers déjà présents à la racine restent conservés.
+Les dossiers `controle_alice`, `ecoute`, `outils`, `vision_alice` et `voix`
+conservent les extraits historiques V3. Ils ne décrivent pas tous la version active.
+Les cinq anciens extraits dans `version_actuelle/extraits` restent des archives du
+3 novembre ; le code du laboratoire publié le 5 novembre est dans `laboratoire/`.
 
-La partie actuelle est une sélection de cinq fichiers du laboratoire, accompagnée
-d'un état des fonctions et des limites. Ce dépôt ne contient pas une installation
-complète et ne se synchronise pas automatiquement avec le travail privé.
+## Portée de la copie
 
-## La sélection historique V3
+Instantané de code pour consultation, pas une distribution prête à installer.
+Les environnements Python, modèles, bibliothèques tierces, ressources natives,
+configurations privées et références vocales ne sont pas redistribués.
+Certains imports et tests ont donc besoin de ressources absentes de ce dépôt.
+Aucune synchronisation automatique avec l'installation de travail.
 
-Alice est un projet personnel de compagnon vocal local, développé en français
-sur Windows. Ce dépôt partage une **sélection de dix fichiers de code et de
-tests** issus d'une ancienne version du projet.
-
-Cette sélection reprend les fichiers déjà prévus pour le partage dans le dépôt
-d'origine. Elle a été nettoyée et publiée le 3 novembre 2026 avec un historique
-Git neuf. **Ce n'est ni le code complet d'Alice, ni un logiciel prêt à installer,
-ni une description de sa configuration actuelle.**
-
-## Ce que l'on peut consulter
-
-| Dossier | Sujet |
-| --- | --- |
-| `voix/` | Service vocal Chatterbox local |
-| `ecoute/` | Arrêt et nettoyage des processus Windows |
-| `controle_alice/interface/` | Lecture audio progressive sous Windows |
-| `controle_alice/tests/` | Exemples de tests de séparation entre interface et services |
-| `outils/` | Affectation GPU et contrôle des priorités |
-| `vision_alice/vision/hardware/` | Interrogation des cartes graphiques via DXGI |
-| `vision_alice/vision/player/` | Détection de fenêtre et arrêt d'urgence |
-
-Les [notes techniques](PIEGES.md) présentent quelques difficultés rencontrées.
-Le [bilan de vérification](RESULTATS.md) précise les contrôles de cette publication.
-
-## Limites
-
-Ces fichiers sont des extraits : certains imports, services, modèles, fichiers
-de configuration et ressources nécessaires à leur exécution ne sont pas inclus.
-Les tests sont publiés comme exemples et ne constituent pas une suite autonome.
-Il n'y a donc pas de commande d'installation complète dans cette copie.
-
-Les noms et références personnelles présents dans les fichiers sélectionnés ont
-été neutralisés. Aucun modèle, enregistrement vocal, capture d'écran, souvenir,
-journal de conversation, sauvegarde privée ou ancien historique Git n'est inclus.
+Les conversations, souvenirs, bases de données, accès aux comptes, journaux privés,
+audio et historique Git privé sont exclus. Les identifiants du propriétaire dans
+les copies de code sont remplacés par un identifiant générique.
 
 ## Droits
 
-La consultation publique du dépôt n'ajoute pas de licence générale de
-réutilisation au code. Aucune nouvelle licence n'a été choisie pour cette copie.
-Les bibliothèques et modèles mentionnés restent soumis à leurs propres licences ;
-leurs fichiers ne sont pas redistribués ici.
+Cette publication n'ajoute pas de licence générale de réutilisation au code.
+Aucune nouvelle licence n'a été choisie. Les dépendances et modèles mentionnés
+restent soumis à leurs propres licences et ne sont pas inclus ici.

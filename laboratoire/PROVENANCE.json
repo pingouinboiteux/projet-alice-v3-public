@@ -1,0 +1,840 @@
+{
+  "date": "2026-11-05",
+  "normalization": "UTF-8 LF; owner name replaced by Proprietaire/proprietaire",
+  "files": [
+    {
+      "path": "laboratoire/config/memory_backend.json",
+      "source": "laboratoire/config/memory_backend.json",
+      "sha256": "b3ced8b557e79270b514410343893c43c1cef9209b5264802eeed90b7dafa6cc",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/personality/alice.md",
+      "source": "laboratoire/personality/alice.md",
+      "sha256": "47e295a47358badc93cc96dcb16149fce7b8dfea79b02ec7bcb1d2326aac7cd4",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/action_context.py",
+      "source": "laboratoire/scripts/action_context.py",
+      "sha256": "de040b5e46ee13c9eb2b075dec55e5ff8347eab6efce3dffdc0afea865275c09",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/action_policy.py",
+      "source": "laboratoire/scripts/action_policy.py",
+      "sha256": "4fb8128c26635994d9b5d04d3c95c6d0659d1ce97a2942058ccc49c5f605bb3a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/alice_desktop.py",
+      "source": "laboratoire/scripts/alice_desktop.py",
+      "sha256": "9a4c84d71963b9cd094a4c13e03b94f82b0717717fc4bb1802924b4b22ecab21",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/alice_personality.py",
+      "source": "laboratoire/scripts/alice_personality.py",
+      "sha256": "68a8d0dc8c0076359463e95b318c5b9679a95340bd810d54a245510ad66464f6",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/audio_output_profile.py",
+      "source": "laboratoire/scripts/audio_output_profile.py",
+      "sha256": "e331b8683854ec02bc52c06e7d92a5b11bbdbd6d5bc0466c94f3cf943cc36282",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/background_thoughts.py",
+      "source": "laboratoire/scripts/background_thoughts.py",
+      "sha256": "6b58751046541ffb831efe51cef468f21d7ecf2e95c1ea4f6014e9a4be3eaa18",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/capability_state.py",
+      "source": "laboratoire/scripts/capability_state.py",
+      "sha256": "22f60b954faab8d9dad9e150d2afbfde12519fb874a8f1227a189c713fc3ebf1",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/chat.py",
+      "source": "laboratoire/scripts/chat.py",
+      "sha256": "9292a18bb4bc7cf6fadda0aa3c3fea347cdaa4ee8f34fdf6db99782845e96b40",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/codex_link.py",
+      "source": "laboratoire/scripts/codex_link.py",
+      "sha256": "6bbe13040d59f410729237059486be6055e8c3b4e367abcb77b4b1d1a2ee6c86",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/continuous_playback.py",
+      "source": "laboratoire/scripts/continuous_playback.py",
+      "sha256": "c32f1a87d781454dcb602a3b9e96fb67cedd02e05fa344d03ece907ae2b17d8e",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/desktop_style.py",
+      "source": "laboratoire/scripts/desktop_style.py",
+      "sha256": "7f3f822e8b5e378f1773ac493b50628229d422962d538130834643a1902356ad",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/dialogue_context_dedup.py",
+      "source": "laboratoire/scripts/dialogue_context_dedup.py",
+      "sha256": "caa5fd5fcf8c13ad348886a141937befb5657896deb199047fbf254a39255b40",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/dxgi.py",
+      "source": "laboratoire/scripts/dxgi.py",
+      "sha256": "aad90c5ca69ca3ec66758418ee152528a3fc085e357709724dbecb851388aacd",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/episode_conversation.py",
+      "source": "laboratoire/scripts/episode_conversation.py",
+      "sha256": "b741bf92029164cbffbc5653f0fe0d9a29199bfd0b867d6e16d10bcae1840c57",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/episode_protocol.py",
+      "source": "laboratoire/scripts/episode_protocol.py",
+      "sha256": "26de373d0433682e611534f968f42d9fb142cff469bc5e53b55b947ba2dcd100",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/episodic_memory.py",
+      "source": "laboratoire/scripts/episodic_memory.py",
+      "sha256": "fa55927d3d88b04d1d3c5e17c865557f0df18a1c1500058e4756273e7303cd51",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/fps_capture.py",
+      "source": "laboratoire/scripts/fps_capture.py",
+      "sha256": "a44b1e2085ed6623a87c89a85868a49df7e779354c469e8fa95190b6124d2276",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/fps_frames.py",
+      "source": "laboratoire/scripts/fps_frames.py",
+      "sha256": "2592511bdf33558cdb10f8102261e8621018ec2fc048d8d481180d2c8d181c69",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/fps_guard.py",
+      "source": "laboratoire/scripts/fps_guard.py",
+      "sha256": "43c8b6d34ecd7688e889fd8bfcf816e9478d01372dbd46fdf0b70e01d453fa83",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/fps_metrics.py",
+      "source": "laboratoire/scripts/fps_metrics.py",
+      "sha256": "df613ff96a2b7c25c07e1947512b90032b8ebb2e0cdf1d2e6dd78a5edde534fb",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/fps_policy.py",
+      "source": "laboratoire/scripts/fps_policy.py",
+      "sha256": "f6132c3ac74324561d974f7ce47b708135b5d600ba73f0e44df0353ef742260d",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/fps_snapshot.py",
+      "source": "laboratoire/scripts/fps_snapshot.py",
+      "sha256": "97dd4aea59f9937a06375a11598a79d7b904b842e6ae2fc84de08d214b5b84b6",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/game_focus.py",
+      "source": "laboratoire/scripts/game_focus.py",
+      "sha256": "64f31978d4703347d16f6a165c584149efecd419139255d982d11dfd35860700",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/gpu_inventory.py",
+      "source": "laboratoire/scripts/gpu_inventory.py",
+      "sha256": "426d08537d8764d61dcca81ea509dc6a4a9b6db976df87c8f644db3819f8a932",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/hearing_capture_loop.py",
+      "source": "laboratoire/scripts/hearing_capture_loop.py",
+      "sha256": "08869e7a2e8c00a85a325a6375e45609b32c2db24c6bc42448b884d4a3b2fc04",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/hearing_link.py",
+      "source": "laboratoire/scripts/hearing_link.py",
+      "sha256": "5417f74a192d80f9c6e5e7b893e5367b2da58670e62fef2b1f2b42b1a0f8ac5a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/hearing_worker.py",
+      "source": "laboratoire/scripts/hearing_worker.py",
+      "sha256": "f1e63c081f43b133c3c8ed7e45fd6c8e3833337ec1bd8d9b4be3028c9a643a96",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/intent_router.py",
+      "source": "laboratoire/scripts/intent_router.py",
+      "sha256": "af92cc92155d7f2b734e5ec6339879a4adea83fcab72f374e05b3b618d8fc30c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/library_link.py",
+      "source": "laboratoire/scripts/library_link.py",
+      "sha256": "253b7154d8110c7a1185ff5f769dab821025a3caa48fe3456a7677e9d2f275c2",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/local_knowledge.py",
+      "source": "laboratoire/scripts/local_knowledge.py",
+      "sha256": "5381322f196f12ae8ed0b56fbcfeeae3dbffc2904d8bcc8bf725fcab24c15454",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/local_memory_store.py",
+      "source": "laboratoire/scripts/local_memory_store.py",
+      "sha256": "bfdffa752e4ca43c72a50bd2bc10e08a3c153b93c74581de66a07645549b485a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/local_mood.py",
+      "source": "laboratoire/scripts/local_mood.py",
+      "sha256": "02c981e0dac3292486612b8df4b3d45719bbeb616f1d448fd01af05b3755fb24",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/memory_backend.py",
+      "source": "laboratoire/scripts/memory_backend.py",
+      "sha256": "78c855fe79b1af8b46190741a422c69b8f9ca0729c2c64a8c933d3a7f78a8d95",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/memory_forgetting.py",
+      "source": "laboratoire/scripts/memory_forgetting.py",
+      "sha256": "16c4d59d5c2c1b5f7a6ab181b51595e0d5fda9a37ceaeee93b24a6577dd903c4",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/memory_relevance.py",
+      "source": "laboratoire/scripts/memory_relevance.py",
+      "sha256": "31a9df31c2a3fac443e8c533ab0b81782d4aa1b14cf7a484ef2ac610e40cd62c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/memory_response_format.py",
+      "source": "laboratoire/scripts/memory_response_format.py",
+      "sha256": "4b390c3e333bec2d4341594e9c45f7a0c40b11a741bfe0a993721606122cd9c0",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/memory_source_provenance.py",
+      "source": "laboratoire/scripts/memory_source_provenance.py",
+      "sha256": "a85174c04a5bd8bc45af721a6b49218a7dcb6dcef09d191d82c9eb073b83d05f",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/model_profile.py",
+      "source": "laboratoire/scripts/model_profile.py",
+      "sha256": "72a708405ae4a1d2c17cbe992a78aaed922d4e55a503c291e3983879d6b7ba29",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/obs_subtitles.py",
+      "source": "laboratoire/scripts/obs_subtitles.py",
+      "sha256": "29d22e099ea2218141486f5108f63cd87d95c8a14005c2f5d1e810679b7ea407",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observation.py",
+      "source": "laboratoire/scripts/observation.py",
+      "sha256": "c5099f69caf51d7308f8ccaa1af67436938a14aeb0bfb6a254c64a4458f63fc4",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_view.py",
+      "source": "laboratoire/scripts/observer_view.py",
+      "sha256": "1dc53b35369df3366c3f0ccbe98dbc5a9ce9b17578210e24354709c6e27c4ca6",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/pc_tools.py",
+      "source": "laboratoire/scripts/pc_tools.py",
+      "sha256": "fb092360f50986582fc0171dc6019443bb19c047ee64abcbb0ea65e04c301b92",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/persistent_memory.py",
+      "source": "laboratoire/scripts/persistent_memory.py",
+      "sha256": "2af4540cbc9f532cdcbe06109ec131c16675abf04b6f0263a2b8772fbe23a174",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/remote_audio.py",
+      "source": "laboratoire/scripts/remote_audio.py",
+      "sha256": "9b9329a73ba8c6b5d7a02f6d4d86c41752952f3571b15632ccb218cabf64728d",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/remote_bridge.py",
+      "source": "laboratoire/scripts/remote_bridge.py",
+      "sha256": "7d84be22b50593ab54680b295aefd45d724333bab11bd20e531e38b96f9fa266",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/remote_channels.py",
+      "source": "laboratoire/scripts/remote_channels.py",
+      "sha256": "3c87cf4c9ec8ce06d5bb0eaa1f790914c0d6c0df5d7f82e8959553161be9a6e1",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/remote_contracts.py",
+      "source": "laboratoire/scripts/remote_contracts.py",
+      "sha256": "74d7fbb0103b29b62e66a8f83c29d0c91fb2f6860fe0e4417d5f92937395bfdd",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/remote_dialogue.py",
+      "source": "laboratoire/scripts/remote_dialogue.py",
+      "sha256": "3d4b99fc365c5285a2eebc15e9923bdbdd027fb1e40da146aca93690afec9c1d",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/scripts/remote_filter.py",
+      "source": "laboratoire/scripts/remote_filter.py",
+      "sha256": "5516b2405fcd07b883a4a31e250e1ffd596cc89001d206907a62f98aa313732e",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/reviewed_memory_reader.py",
+      "source": "laboratoire/scripts/reviewed_memory_reader.py",
+      "sha256": "41f3d1b162514211adb9fdfbce5a35f3c00b6568ea8752323b41468ec19f0fc1",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/social_memory.py",
+      "source": "laboratoire/scripts/social_memory.py",
+      "sha256": "207d955a9ba993eb28a7a90b32bcaa1c273f557dc485526e5562341b19cbf706",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/sopro_d_recipe.py",
+      "source": "laboratoire/scripts/sopro_d_recipe.py",
+      "sha256": "d9b057696024263da564a3b3baec83d62ed777fadd0c800824751ccbc9a1c933",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/sopro_protocol.py",
+      "source": "laboratoire/scripts/sopro_protocol.py",
+      "sha256": "11b6124698ef418b62f4df2c5d7537307cc2c49bbd56a6ddd0f662e04bf81038",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/sopro_sentence_synthesis.py",
+      "source": "laboratoire/scripts/sopro_sentence_synthesis.py",
+      "sha256": "54b5b4c02e2c4a47f5d3bd5e3cbae8ab3934bf90edb31003fbf17c407b199547",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/sopro_worker.py",
+      "source": "laboratoire/scripts/sopro_worker.py",
+      "sha256": "42738bb2130f8ff82822b3d7874d8e56f8d1dbf7b36b351f0b15f1ce076b4917",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/source_references.py",
+      "source": "laboratoire/scripts/source_references.py",
+      "sha256": "e7c3bf9342e02dc7ad73cf00ec5c66b91d378d77d62991b4aa244bcc971af9d1",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/twitch_reader.py",
+      "source": "laboratoire/scripts/twitch_reader.py",
+      "sha256": "8eccc9cf3864a7b060ac1de55a395c1c5778a2a4154080779efcb477d935a4f3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/v5_context_memory.py",
+      "source": "laboratoire/scripts/v5_context_memory.py",
+      "sha256": "86e6db86e755aceb436ad7429c518158592973d9451005d1ffa4a4466730d28f",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/verify_installation.py",
+      "source": "laboratoire/scripts/verify_installation.py",
+      "sha256": "1ed84a0fbdede43742c0d8f2a039374a381c67dd925fada9e288be2037331c8c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/voice_capture.py",
+      "source": "laboratoire/scripts/voice_capture.py",
+      "sha256": "7de1912bf0dac6bd246a6448ed05fca5fc3c73acdd6b039920bfd71cdae2bc3a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/voice_link.py",
+      "source": "laboratoire/scripts/voice_link.py",
+      "sha256": "d1c611471bbee6fbbdf6cce89060cd50bc64d41bfc9285262c3b3ba9aedcb276",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/voice_load_probe.py",
+      "source": "laboratoire/scripts/voice_load_probe.py",
+      "sha256": "e8f8ad8ccbaba1dfbb6383ca639e0899677dec121d333407b6616f33af1c1061",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/voice_loading.py",
+      "source": "laboratoire/scripts/voice_loading.py",
+      "sha256": "84b810c94a1f09f3b67774a81fafab1edfba8c4408eb38317438fbf9a88f4fd3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/voice_output_comparison.py",
+      "source": "laboratoire/scripts/voice_output_comparison.py",
+      "sha256": "cdefa4b86e58fdfda3f822a7027ce28b49ca1fc03613a6ed251307868c0286db",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/voice_profile.py",
+      "source": "laboratoire/scripts/voice_profile.py",
+      "sha256": "120ee7f017912e084cd596ee98ac6a4508f200517143fad25986fa2089db0aa7",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/voice_protocol.py",
+      "source": "laboratoire/scripts/voice_protocol.py",
+      "sha256": "1b43c5c35490af306ba1275c3bc8cd97be3386692ecf9717db312e933a4b5d0d",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/voice_worker.py",
+      "source": "laboratoire/scripts/voice_worker.py",
+      "sha256": "61076c8bc9ba9c9a51cd2741288ad947c7be8a3666a369fa74631d7790ef126e",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/volume_grounding.py",
+      "source": "laboratoire/scripts/volume_grounding.py",
+      "sha256": "7c3a204454f58a39dec4212435ec5d19d55ad5815581b0d75c308e1eaf55926a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/vulkan.py",
+      "source": "laboratoire/scripts/vulkan.py",
+      "sha256": "35d160cf0f13c59daec1f6a7a4de5c061397efaafdeb17722b0e67117621a8ce",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/web_reader.py",
+      "source": "laboratoire/scripts/web_reader.py",
+      "sha256": "d99e8b103250aefefa031e28370cf2380738ab12b4168ac439615dda27b980ce",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/__init__.py",
+      "source": "laboratoire/src/alice/__init__.py",
+      "sha256": "80016d6b96aa798bdc38f00f17f39a435ac6ee947d42a1f37bd45990bc92f4a5",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hardware/__init__.py",
+      "source": "laboratoire/src/alice/hardware/__init__.py",
+      "sha256": "62269da36a4bbd91751f8ddbcd4b2ca4aad54cb40665eafbca3ca647b19a92f0",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hardware/dxgi.py",
+      "source": "laboratoire/src/alice/hardware/dxgi.py",
+      "sha256": "aad90c5ca69ca3ec66758418ee152528a3fc085e357709724dbecb851388aacd",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hardware/godot_gpu.py",
+      "source": "laboratoire/src/alice/hardware/godot_gpu.py",
+      "sha256": "244b006fdf3d9343c585793a8a301d1b67b0643e1e80bb3f53a0c72971d86ef1",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hardware/gpu.py",
+      "source": "laboratoire/src/alice/hardware/gpu.py",
+      "sha256": "0afcf0f58cff664c5a844dc84e08db8f4fdd0977cf73b8ce9f387f758d3058ea",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hardware/vulkan.py",
+      "source": "laboratoire/src/alice/hardware/vulkan.py",
+      "sha256": "35d160cf0f13c59daec1f6a7a4de5c061397efaafdeb17722b0e67117621a8ce",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hearing/__init__.py",
+      "source": "laboratoire/src/alice/hearing/__init__.py",
+      "sha256": "05da7051ada68c71b2341dbb834ae0a9256798efe6fb495727d877e6ec10504e",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hearing/capture.py",
+      "source": "laboratoire/src/alice/hearing/capture.py",
+      "sha256": "6a066741bbb65902677eb88ead7aa93b3cc3bc125278ea00fab90b279af77a0d",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hearing/client.py",
+      "source": "laboratoire/src/alice/hearing/client.py",
+      "sha256": "752599d6ffdafc4326902467cf44b3eb5eeb05c6ccd116cbd4ed5ed1d2790b52",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hearing/service.py",
+      "source": "laboratoire/src/alice/hearing/service.py",
+      "sha256": "e695ae764d63d3cdded86c7c891c2706fc4652b304fc0865c88fe2e5fcb8990c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/hearing/turn.py",
+      "source": "laboratoire/src/alice/hearing/turn.py",
+      "sha256": "4f212ed85570f8f608f83d2d4fe58af4e132c4b0d4a7e0700d9a526b9099f64e",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/logging.py",
+      "source": "laboratoire/src/alice/logging.py",
+      "sha256": "e0060d84b4296f7491ee62a4359eb2c7dc9a9457ed871de223b20a4f9e067f63",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/paths.py",
+      "source": "laboratoire/src/alice/paths.py",
+      "sha256": "d0edda442bd031c10a3c306b30a89d5c8acddef3c3130fe73076330df1291bbd",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/settings.py",
+      "source": "laboratoire/src/alice/settings.py",
+      "sha256": "595e4e1351440d90e719162db846183e649fcfd33f760e9f2e3cc91586dcb767",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/voice/__init__.py",
+      "source": "laboratoire/src/alice/voice/__init__.py",
+      "sha256": "0b42079afe98baa24ba4ae0e96dc61ec0c38bb0a25163194b18937499dde66f0",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/voice/client.py",
+      "source": "laboratoire/src/alice/voice/client.py",
+      "sha256": "7b6c78afdc2126f8749dca26cf324515a8ad1d5e924ea0602ea8105d79c2804a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/voice/guards.py",
+      "source": "laboratoire/src/alice/voice/guards.py",
+      "sha256": "6b2afea836e0ce41ee51a97824e008a82913099c00ba22cef738e20ca147c976",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/voice/service.py",
+      "source": "laboratoire/src/alice/voice/service.py",
+      "sha256": "d78b715b3491f111d65c464c2c7173d0110218eb5ff4b331c8eb94249cc27d66",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/src/alice/voice/text.py",
+      "source": "laboratoire/src/alice/voice/text.py",
+      "sha256": "44b0fed5facaf4eb97e7cc27ed4cd18d41f070062d4ceae3a9e73919f482d2bd",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/check_judgment.py",
+      "source": "laboratoire/tests/check_judgment.py",
+      "sha256": "817e92e02a0127069735cf7e3368b235049974cde25adb897c276981150c67c4",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/check_judgment_ablation.py",
+      "source": "laboratoire/tests/check_judgment_ablation.py",
+      "sha256": "3ae5b125bdf70d848ae799946565c70a3cf4a66257e8bb37d35184a5758cf906",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_action_clarification.py",
+      "source": "laboratoire/tests/test_action_clarification.py",
+      "sha256": "f84857575dd7d69ff32b2acb37c4313d6f219fec3e41c49757404f14122f4339",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_action_context.py",
+      "source": "laboratoire/tests/test_action_context.py",
+      "sha256": "a9950a3edfff291313a008689f7a2f9970d3df24d1873e3d949e69738b04bc84",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_action_policy.py",
+      "source": "laboratoire/tests/test_action_policy.py",
+      "sha256": "4e35987a901cdee64c635aced7654e60e87b9ce5e8926f1be2e3a9ba179d34b3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_audio_output_profile.py",
+      "source": "laboratoire/tests/test_audio_output_profile.py",
+      "sha256": "df3473c0dd141e036ee20b283cf5a4f703f77346bf921f07f379dc6aa1534ec3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_codex_conversation.py",
+      "source": "laboratoire/tests/test_codex_conversation.py",
+      "sha256": "f2b6c256f97324e18d4087818a6fac63bdaae919b6b26d123c7fdaea5b8a1d01",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_continuous_playback.py",
+      "source": "laboratoire/tests/test_continuous_playback.py",
+      "sha256": "2a134614740be12408bc51deaa432a5989723a1606806336b70f993d1b0dfb1c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_desktop_flow.py",
+      "source": "laboratoire/tests/test_desktop_flow.py",
+      "sha256": "bea7069036156d73810b37d2993c155ea57e67e54258aed929b0562d85ae9c15",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_dialogue_context_dedup.py",
+      "source": "laboratoire/tests/test_dialogue_context_dedup.py",
+      "sha256": "f74fe74179f43f941337ea4b035e69d958608495de470458d5d981c89ceb3d98",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_dialogue_reader_scope.py",
+      "source": "laboratoire/tests/test_dialogue_reader_scope.py",
+      "sha256": "7aa06521c473bfb6d2dfaaa6833029d71cb8321b4c4c6826610b8876a2e6672f",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_dialogue_subject_contract.py",
+      "source": "laboratoire/tests/test_dialogue_subject_contract.py",
+      "sha256": "fd92973cb064554732508d71dfff35f52b67be968c00699140e1e1bee949b680",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_episode_conversation.py",
+      "source": "laboratoire/tests/test_episode_conversation.py",
+      "sha256": "ac235303f37d2e713a084eac75056a1f5215cca9b90f2dada55523e400dcc02e",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/tests/test_episodic_memory.py",
+      "source": "laboratoire/tests/test_episodic_memory.py",
+      "sha256": "6e5e2127414bdcc5c7728d6976edff38c7e713d509778f3d76a25d460e165011",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/tests/test_gemma_model_profile.py",
+      "source": "laboratoire/tests/test_gemma_model_profile.py",
+      "sha256": "654f0d76174b2de92ad031e665d8708d44a2036b8d28ee0c232b1bbbfcd4f246",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_hearing_capture.py",
+      "source": "laboratoire/tests/test_hearing_capture.py",
+      "sha256": "1a285885f7404b0953ee6b6a0f9f783b986ddacc177e00ae3da543ce153720ed",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_hearing_capture_loop.py",
+      "source": "laboratoire/tests/test_hearing_capture_loop.py",
+      "sha256": "d6444953d9ae49356546a8e7b068abff24b1a1ac606855515e067bf601ff81ae",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_hearing_ram_options.py",
+      "source": "laboratoire/tests/test_hearing_ram_options.py",
+      "sha256": "39d436f881684c735d77f503b2d08d5a6c3c5bdb8a9dc784c7e0075e332703f2",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_hearing_service.py",
+      "source": "laboratoire/tests/test_hearing_service.py",
+      "sha256": "1e984fed598cee7481e3a1c9d7248ae9d82ae4eae13631cf49e9e38e0f3dc205",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_intent_router.py",
+      "source": "laboratoire/tests/test_intent_router.py",
+      "sha256": "d44f2848d44af7e0877ddc0f83e22ef39c692136c5e0248ce94ba1c95dd66107",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_memory_dialogue_context.py",
+      "source": "laboratoire/tests/test_memory_dialogue_context.py",
+      "sha256": "671dae7ef6c3e42246e28b8bcd7ef38f8c827486cd9fa78941afb9322466201c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_memory_dispatch.py",
+      "source": "laboratoire/tests/test_memory_dispatch.py",
+      "sha256": "c1090f66f78c41d743128f9fad28f6fdfa7e549a5a92790a873c32de59a9a6df",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_memory_inference_contract.py",
+      "source": "laboratoire/tests/test_memory_inference_contract.py",
+      "sha256": "4c1dc3b00fd6265fdf44e28ac492d15007ebaca9f25f5bb8c066e1129e6c5249",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_memory_release.py",
+      "source": "laboratoire/tests/test_memory_release.py",
+      "sha256": "3b70d1c26ec9e60279307e6f723fe4c2545fe5746cfd421f79c832cceb58d656",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/tests/test_memory_relevance.py",
+      "source": "laboratoire/tests/test_memory_relevance.py",
+      "sha256": "cf182e20479c7b8f7909170c5458ba52428cec38bb7b759962835853f2ed193c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_memory_source_provenance.py",
+      "source": "laboratoire/tests/test_memory_source_provenance.py",
+      "sha256": "cf949f9c484a86d3b3cc358b75465c41e7c7394d8e4a12b0828492f1716d2998",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_native_guard_brief_dips.py",
+      "source": "laboratoire/tests/test_native_guard_brief_dips.py",
+      "sha256": "182e90b3359b3476463db397a71c9c0576ab3b9b0ed9d8a7b7f227fbba5b6d4a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_observation.py",
+      "source": "laboratoire/tests/test_observation.py",
+      "sha256": "e25e36b3b222ef9d34b60ac6440744b10ee09bc71116a5a97eef1c29e1f288b0",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_optional_fps.py",
+      "source": "laboratoire/tests/test_optional_fps.py",
+      "sha256": "994c3331bb69618abc18426fa6b2a3aa242e7bdcd5bca6a8b6d89f4985f16fa9",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_persistent_memory.py",
+      "source": "laboratoire/tests/test_persistent_memory.py",
+      "sha256": "eb513cb18f17003d349a3f0e26db928c99720a6e9f8f2a9e184c96a45f88c8d6",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/tests/test_remote_channels.py",
+      "source": "laboratoire/tests/test_remote_channels.py",
+      "sha256": "f18ee1442ef914a96b6f966cd1de2f87025713cc4284feb80ad3f51b3a694b49",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/tests/test_remote_scheduling.py",
+      "source": "laboratoire/tests/test_remote_scheduling.py",
+      "sha256": "cd45c321ab83a9bf6725c9f260b3843a984427db4b42560ddbda560752b60f99",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_repetition_context.py",
+      "source": "laboratoire/tests/test_repetition_context.py",
+      "sha256": "ee2f1233857ef5b60ad62b94157450a2acba17c136bf42edb54e4f1ae6dc63df",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_runtime_capabilities.py",
+      "source": "laboratoire/tests/test_runtime_capabilities.py",
+      "sha256": "ca2e369fc92227b3a93f17096020bc08a2d2d2ebf6bdd3fc28b616fe5c3058f4",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_social_features.py",
+      "source": "laboratoire/tests/test_social_features.py",
+      "sha256": "20ba22147a0cebe3ecd2eea75d3aa28fa76795207f157d17109b59f8b139914f",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/tests/test_sopro_sentence_synthesis.py",
+      "source": "laboratoire/tests/test_sopro_sentence_synthesis.py",
+      "sha256": "1e752099432c3c6642d96ad9e7b01f2df0047b54868876e8e87f3d2dcfc8f585",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_sopro_voice.py",
+      "source": "laboratoire/tests/test_sopro_voice.py",
+      "sha256": "c87f9e84b1f068d2d5cbc81614ed856a30da1b25bc20ea0a33c608d3218486fb",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_streaming_voice.py",
+      "source": "laboratoire/tests/test_streaming_voice.py",
+      "sha256": "53db5ee47138f3802f127d6f4d489f96281655b8e7b37945695fd6c4e2804d66",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_thought_context_lifetime.py",
+      "source": "laboratoire/tests/test_thought_context_lifetime.py",
+      "sha256": "f25b8afae70151ca66017af471a865919311342d7cfd6ae6eb106ca99810ec90",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_training_progressive_guard.py",
+      "source": "laboratoire/tests/test_training_progressive_guard.py",
+      "sha256": "42b9aed1b147b78618ab6ef749c6b7326b8c8bea8b0531d6509c39feb8dcc6f3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_twitch_transport.py",
+      "source": "laboratoire/tests/test_twitch_transport.py",
+      "sha256": "669377182510dfa0771d50b88e6398b6e2ac3608c51b0d15c1c782f385d90f5f",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_v5_context_memory.py",
+      "source": "laboratoire/tests/test_v5_context_memory.py",
+      "sha256": "208d9265f0c8fce9ee7a8c423a00fd11eca22f3e331b06a7bfab1c5eb495d4fc",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_voice_capture.py",
+      "source": "laboratoire/tests/test_voice_capture.py",
+      "sha256": "aa32f286f9b7db50ee4be2bef680ba3c1ba5400f5dd18377c8955a93a50b1baa",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_voice_output_comparison.py",
+      "source": "laboratoire/tests/test_voice_output_comparison.py",
+      "sha256": "b5f0c7b2a22e0c2f42b95575f90559ca01e758475c3dba1ba7b13997c4e096df",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_volume_grounding.py",
+      "source": "laboratoire/tests/test_volume_grounding.py",
+      "sha256": "2965d6a0a4e23167337a5c80e7c60df3164a3164677d22f814d7f83dc9658973",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_web_address_policy.py",
+      "source": "laboratoire/tests/test_web_address_policy.py",
+      "sha256": "920c0b5260b4f762fc1c577cf225692cf222bbd338978a0ccd84c92a1e2f6d60",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_web_reader.py",
+      "source": "laboratoire/tests/test_web_reader.py",
+      "sha256": "5293bb3b8feeb20b5e9f8ad7defdbd1b457b161cede9865e7373bcf793337603",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_worker_shutdown.py",
+      "source": "laboratoire/tests/test_worker_shutdown.py",
+      "sha256": "dacc36b321b18d31ee1f94042af7f785198779c9e1f12fc973770bbc6e4a688c",
+      "neutralized_owner": false
+    }
+  ]
+}

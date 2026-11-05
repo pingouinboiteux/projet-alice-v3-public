@@ -1,60 +1,44 @@
-# Version actuelle — en développement
+# Alice actuelle — 5 novembre 2026
 
-Instantané public du 3 novembre 2026, issu du laboratoire indépendant.
-**Extraits consultables, pas une distribution installable.**
+L'installation originale et le laboratoire sont distincts. Le travail fonctionnel
+sur l'originale est en pause ; les essais actuels concernent le laboratoire.
+Ce dépôt expose son code, sans ses données privées ni ses ressources de modèles.
 
-## Ce qui est déjà raccordé
-
-Le laboratoire dispose d'un dialogue local avec écoute et voix, d'une mémoire
-épisodique privée, d'une bibliothèque locale, de pensées silencieuses bornées,
-de souvenirs publics distincts par personne et plateforme et de sous-titres OBS.
-Twitch est lu sans publication de texte ; les réponses peuvent passer par la
-voix locale. Discord utilise son raccord vocal. Les entrées externes n'ont pas
-accès aux actions locales ni aux souvenirs privés, même pour le propriétaire.
-
-Les actions locales restent limitées et encadrées. Le routage des intentions
-conserve des erreurs connues ; les contrôles et confirmations restent nécessaires.
-Les vérifications de connexion ne valent pas qualification d'un stream complet.
-
-## Recherche ouverte : lire fidèlement une archive
-
-L'étape 1 de la mémoire est **non qualifiée**. Les sources entières sont
-conservées ; les indices générés ne doivent pas réduire le contexte. Les
-interactions relues restent historiques, sans autorité sur les outils.
-
-| Mesure déjà consignée dans le projet | Résultat | Limite |
+| Partie | État actuel | Limites |
 | --- | --- | --- |
-| Candidat `scoped_typed` | 10 cas connus satisfaisants, puis 9/12 conversations nouvelles satisfaisantes | Trois réserves de portée, citation/contexte ou fin de permission ; non installé |
-| Candidat `historical_context` | 4/6 sondages satisfaisants | Confusion permission/demande et ajout de précision chronologique ; non installé |
-| Durée de ces lectures | Médianes 184,36 s sur 22 lectures et 180,355 s sur six sondages, respectivement | Lecture expérimentale d'archives, pas latence vocale ; lots différents, pas classement de vitesse |
-| Dernier bilan logiciel de l'étape 1 | 199 tests logiciels passent | Ne valide ni le sens des réponses, ni la mémoire active, ni le dialogue complet |
+| Dialogue | Gemma 4 26B-A4B Q4_0, moteur llama.cpp b12020 | Compréhension et cohérence non garanties |
+| Voix | Sopro, référence originale, français, FP32, 2 étapes ; choix conservé | Sibilance encore perceptible ; référence audio exclue |
+| Mémoire | Backend `v5_context`, stockage épisodique et sources | Stocker, retrouver et comprendre sont trois propriétés distinctes ; aucune fiabilité générale revendiquée |
+| Personnalité | Consignes expressives et franches conservées | Un prompt ne garantit pas un avis cohérent |
+| Actions | Outils locaux limités, confirmations et atelier encadré | Pas de contrôle général autonome du PC |
+| Twitch / Discord | Lecture Twitch et raccord vocal Discord ; contexte public séparé | Les entrées externes n'obtiennent pas de droits locaux ni de souvenirs privés |
+| Vision / initiative | Vision et parole spontanée non activées | Objectifs futurs, pas fonctions terminées |
 
-Ces résultats sont une synthèse des mesures locales déjà documentées, pas de
-nouveaux essais exécutés pour cette publication. Sources de rédaction :
-`laboratoire/PROJET.md`, `laboratoire/docs/memoire-etape1-portee.txt` et
-`laboratoire/docs/memoire-etape1-reglages.txt` dans l'installation de travail.
-Les rapports bruts et conversations ne sont pas redistribués ; ces chiffres ne
-constituent donc pas un benchmark reproductible depuis ce dépôt seul.
+## Chantier ouvert : un avis cohérent
 
-Les défauts de ton, répétitions, rectifications et interprétation ne sont pas
-déclarés résolus. Aucun de ces résultats ne garantit une fiabilité générale.
+Alice doit défendre une position fondée, résister à une simple pression et changer
+d'avis lorsqu'un argument pertinent le justifie. Dire oui ou non systématiquement
+serait un échec. Les phrases coupées sont reportées hors de ce chantier.
 
-## Lire le code publié
+Première passe : 125 réponses fictives recensées, sans correction qualifiée.
+Dernière passe : 188 réponses fictives, dont 20 relectures comparatives d'une même
+entrée et 168 réponses traversant le dialogue complet. Comparaisons du contexte,
+de la personnalité et de la préparation d'une position : progrès partiels sur
+des choix concrets, mais dérive persistante dans les discussions longues.
+**Aucune variante de ces essais n'a été installée.**
 
-| Fichier | Rôle | Statut |
-| --- | --- | --- |
-| [remote_contracts.py](extraits/remote_contracts.py) | Validation des identités et paquets audio Discord | Module du raccord existant ; ne prouve pas à lui seul l'isolation des canaux |
-| [capability_state.py](extraits/capability_state.py) | État technique réel des connexions transmis au dialogue | Module du dialogue existant |
-| [memory_stage1_coverage.py](extraits/memory_stage1_coverage.py) | Contrats de lecture et validation de structure | Recherche, pas garantie de compréhension |
-| [memory_stage1_interaction.py](extraits/memory_stage1_interaction.py) | Lecteur de référence des essais avec profils `validation_` et sources préservées | Recherche, distinct de la mémoire active |
-| [memory_stage1_historical_context.py](extraits/memory_stage1_historical_context.py) | Contexte historique sans décision de validité opérationnelle | Candidat non retenu pour installation |
+Les 347 tests logiciels de la première passe ont réussi dans l'environnement
+local complet. Ce résultat ne valide pas le sens des réponses et n'a pas été
+reproduit dans cette copie publique. La seconde passe n'a pas modifié le code
+actif de dialogue. Les lots de validation réservés restent inutilisés.
 
-Ces cinq fichiers sont des copies du code de travail, pas une réécriture de
-démonstration. La seule neutralisation textuelle remplace le nom du propriétaire
-dans `capability_state.py`. Les fins de ligne sont normalisées en LF.
-Les modules de transport, certains constructeurs de schémas, les modèles,
-configurations et dépendances ne sont pas inclus : les lecteurs ne s'exécutent
-pas seuls. Aucun service ou souvenir n'est démarré par cette publication.
+Pour la voix retenue, quatre réponses du raccord réel à 2 étapes ont été
+retranscrites complètement sans écrêtage PCM ; 36 tests ciblés ont passé.
+Cela ne prouve pas l'absence de défaut perceptif ni une latence vocale constante.
 
-Voir [la provenance des fichiers](PROVENANCE.md), [l'évolution](../EVOLUTION.md)
-et [les contrôles de publication](../RESULTATS.md).
+Prochaine étape : préparer une comparaison avec un modèle témoin avant d'empiler
+d'autres consignes. Aucun téléchargement ou entraînement lancé à ce titre.
+
+Ces résultats résument les mesures locales consignées dans les états et bilans
+du 5 novembre. Les rapports bruts ne sont pas redistribués : ce dépôt n'est pas
+un benchmark reproductible à lui seul. [Code et provenance](../laboratoire/README.md).
