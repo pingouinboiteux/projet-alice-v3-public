@@ -45,12 +45,19 @@ class _Candidate(ast.NodeTransformer):
         return self.generic_visit(node)
 
     def visit_While(self, node):
-        if ast.unparse(node.test) == 'final_count(messages) > 5500':
+        branches = [statement for statement in node.body if isinstance(statement, ast.If)
+                    and ast.unparse(statement.test) == 'include_extras']
+        if ast.unparse(node.test) == 'True' and branches:
             self.changed['final_budget'] += 1
             # Insert after extras/context removal and before the original refusal.
-            branch = node.body[0]
-            if not isinstance(branch, ast.If):
+            # The native final loop now rebuilds schema, routing and messages on
+            # each pass; preserve that body and its measurement/exit unchanged.
+            exits = [statement for statement in node.body if isinstance(statement, ast.If)
+                     and ast.unparse(statement.test) == 'tokens <= 5500'
+                     and len(statement.body) == 1 and isinstance(statement.body[0], ast.Break)]
+            if len(branches) != 1 or len(exits) != 1:
                 raise RuntimeError('Final budget loop changed; review the candidate')
+            branch = branches[0]
             while len(branch.orelse) == 1 and isinstance(branch.orelse[0], ast.If):
                 branch = branch.orelse[0]
             if len(branch.orelse) != 1 or not isinstance(branch.orelse[0], ast.Raise):

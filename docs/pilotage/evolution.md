@@ -10,27 +10,22 @@ conversations publiques et privées, la personnalité expressive et les actions
 locales encadrées. Aucun remplacement de mémoire ou de personnalité par un
 candidat non qualifié.
 
-## Prochaine etape : verifier la memoire
+## Prochaine etape : initiative de parole bornee
 
-Le proprietaire a choisi de reporter le chantier du debat avec ses limites.
-Le modele actuel reste conserve ; la comparaison avec un modele temoin est
-annulee. Les candidats non qualifies ne sont pas installes pour passer a la suite.
+La memoire corrigee est acceptee comme base viable par le proprietaire, avec
+ses limites. Les retours d'usage orienteront les corrections suivantes.
+Le modele actuel reste conserve ; le jugement conversationnel est reporte.
+Les candidats non qualifies ne sont pas installes pour passer a la suite.
 
-Verifier, sur deux sessions fictives distinctes, les rappels apres redemarrage,
-les corrections, les auteurs, les informations inconnues, les preferences
-temporaires, les negations, l'oubli et la separation des canaux prives/publics.
-Conserver le backend actuel ; distinguer stockage, recherche et formulation.
+Les rappels mesures comptent 20 reponses acceptables dont 17 sans reserve,
+puis 14 corrects et 2 partiels sur 16 cas fictifs reserves. Le critere propose
+de 36/40 reste non mesure ; la decision de poursuivre n'en fait pas un acquis.
+Voir [les mesures et limites](../technique/rappel-memoire.md).
 
-## Critere de fin propose
-
-Au moins 36 rappels exacts sur 40 cas reserves, aucun fait personnel invente,
-aucun melange prive/public, corrections et oubli verifies. Les tests logiciels
-doivent rester verts. Si un defaut apparait, corriger sa source puis verifier
-sur des cas nouveaux. Aucune fiabilite universelle ni perfection du LLM promise.
-
-Ensuite seulement : initiative de parole bornee, avec silence, interruption
-et arret humain respectes. La vision et les actions PC viendront dans leur
-propre etape. Ces fonctions ne sont pas ajoutees par cette publication.
+Concevoir puis verifier une initiative de parole bornee, avec silence,
+interruption et arret humain respectes. Le perimetre et les criteres doivent
+etre verifies avant activation. Aucune initiative spontanee n'est activee
+par la publication ; aucune fiabilite universelle du modele n'est promise.
 
 ## Possibilités futures à évaluer séparément
 

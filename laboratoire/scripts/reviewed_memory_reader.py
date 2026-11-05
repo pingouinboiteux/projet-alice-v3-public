@@ -63,6 +63,13 @@ class ReviewedReader:
         # Keep a bounded independent retrieval witness for the full-source reader.
         for source in candidates[:self.retained_retrieval]:
             if source['id'] not in {e['id'] for e in selected}:selected.append(source)
+        if kind!='general_discussion' and self.retained_retrieval:
+            # Preserve the strongest independent search witness before reranking.
+            # Leave the next place to the reranker, which may carry a correction.
+            # Appending every witness last let a mistaken reranker evict them all.
+            witnesses=candidates[:1]
+            witness_ids={source['id'] for source in witnesses}
+            selected=witnesses+[source for source in selected if source['id'] not in witness_ids]
         for (identity,) in self.episodes.db.execute('SELECT id FROM episodes ORDER BY date DESC,id DESC LIMIT 2'):
             if identity not in {e['id'] for e in selected}:selected.append(self.episodes.get(identity))
         # The reranker has already selected evidence for this personal question.

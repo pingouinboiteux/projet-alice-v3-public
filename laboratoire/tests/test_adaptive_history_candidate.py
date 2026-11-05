@@ -115,17 +115,23 @@ def test_oversized_fixed_prompt_refuses_before_generation(installed):
 
 
 @pytest.mark.parametrize('kind', ['specific_fact', 'general_preference'])
-def test_factual_routes_are_identical_with_and_without_candidate(kind):
+@pytest.mark.parametrize('final_eviction', [False, True])
+def test_factual_routes_are_identical_with_and_without_candidate(kind, final_eviction):
     history = history_pairs(10)
     source = {'id': 'validation_source', 'date': '2026-01-01',
               'messages': [{'role': 'user', 'content': 'Contexte synthetique complet.'}]}
+    sources = [source, dict(source, id='validation_lower_rank')] if final_eviction else [source]
+    def count(messages, schema):
+        shown = json.loads(messages[1]['content'].split(' : ', 1)[1])['archives']
+        return 5501 if len(shown) > 1 else 100
     def run():
-        session, store = harness(sources=[source])
-        with patch('episode_protocol._personal', return_value=([source], {'requires_general_preference': True})), \
+        session, store = harness(sources=sources, counter=count)
+        with patch('episode_protocol._personal', return_value=(sources, {'requires_general_preference': True})), \
                 patch('memory_source_provenance.resolve', side_effect=lambda session, sources, question: (sources, {'called': True})):
             result = CarefulMemoryReader(session, store, kind).answer('Question', history)
         return session.ask.call_args, result
     baseline = run()
+    assert baseline[1]['budget_omitted_sources'] == int(final_eviction)
     restore = install()
     try:
         assert run() == baseline

@@ -119,13 +119,13 @@
     {
       "path": "laboratoire/scripts/episode_protocol.py",
       "source": "laboratoire/scripts/episode_protocol.py",
-      "sha256": "26de373d0433682e611534f968f42d9fb142cff469bc5e53b55b947ba2dcd100",
+      "sha256": "756cf9cead49867c10a2fb4db5801df02614a49a8ee161440473928adaefc048",
       "neutralized_owner": false
     },
     {
       "path": "laboratoire/scripts/episodic_memory.py",
       "source": "laboratoire/scripts/episodic_memory.py",
-      "sha256": "fa55927d3d88b04d1d3c5e17c865557f0df18a1c1500058e4756273e7303cd51",
+      "sha256": "e2a1fd2d856df68adf24a859adf7f815479d8f57c93ed5d3dc956d47899c8185",
       "neutralized_owner": true
     },
     {
@@ -335,7 +335,7 @@
     {
       "path": "laboratoire/scripts/reviewed_memory_reader.py",
       "source": "laboratoire/scripts/reviewed_memory_reader.py",
-      "sha256": "41f3d1b162514211adb9fdfbce5a35f3c00b6568ea8752323b41468ec19f0fc1",
+      "sha256": "3a3ddf19861631dcbd2a166845026653368ec82b8761295240ee2c71acb51afb",
       "neutralized_owner": false
     },
     {
@@ -581,13 +581,13 @@
     {
       "path": "laboratoire/tests/adaptive_context_candidate.py",
       "source": "laboratoire/tests/adaptive_context_candidate.py",
-      "sha256": "cd8c0c79992bd9bb321f64076e2fdfee0536c8bbe466751653876185953dfb51",
+      "sha256": "8225fcfb2b306005e7ddbd5fcc867b3157bdbc281f5d5ff0dce0ab8288581596",
       "neutralized_owner": false
     },
     {
       "path": "laboratoire/tests/adaptive_history_candidate.py",
       "source": "laboratoire/tests/adaptive_history_candidate.py",
-      "sha256": "bb2075e7abd7afc56a97be37e32a273b8270f531ffdb9cd3eb78b2899d0b790b",
+      "sha256": "1596f78b51869b2bfaa256f934cf0eac97ebea113c7c858288b96cc3c1ae3bd9",
       "neutralized_owner": false
     },
     {
@@ -635,7 +635,7 @@
     {
       "path": "laboratoire/tests/test_adaptive_context_candidate.py",
       "source": "laboratoire/tests/test_adaptive_context_candidate.py",
-      "sha256": "1db7a0017d99421a12828c31e22fbb3bc95a50db5d00cab33e2fbe7158b27205",
+      "sha256": "3eb0bff0acbec84bbc5f5d2ab7bf0ff95a3caa0872368ccdc0fd566bb31ed3f8",
       "neutralized_owner": false
     },
     {
@@ -647,7 +647,7 @@
     {
       "path": "laboratoire/tests/test_adaptive_history_candidate.py",
       "source": "laboratoire/tests/test_adaptive_history_candidate.py",
-      "sha256": "c513d545a64eb76db8292da9aeef28a09086d75e0fcc250dfd062c400d4165f1",
+      "sha256": "2bb369250413121aa39d1e32321744df9ddc72de96806940afc4a608d1e89b9e",
       "neutralized_owner": false
     },
     {
@@ -759,6 +759,12 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/tests/test_memory_final_budget.py",
+      "source": "laboratoire/tests/test_memory_final_budget.py",
+      "sha256": "46ba45ac15516dd06749ef894f9fff80f82aaff3e7632dcccf99128e526f4cc2",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/tests/test_memory_inference_contract.py",
       "source": "laboratoire/tests/test_memory_inference_contract.py",
       "sha256": "4c1dc3b00fd6265fdf44e28ac492d15007ebaca9f25f5bb8c066e1129e6c5249",
@@ -774,6 +780,12 @@
       "path": "laboratoire/tests/test_memory_relevance.py",
       "source": "laboratoire/tests/test_memory_relevance.py",
       "sha256": "cf182e20479c7b8f7909170c5458ba52428cec38bb7b759962835853f2ed193c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_memory_retrieval_priority.py",
+      "source": "laboratoire/tests/test_memory_retrieval_priority.py",
+      "sha256": "25cf66d41c89f35dabb26c6a0b455358606d95d403a514f2717abd0504d25d56",
       "neutralized_owner": false
     },
     {
