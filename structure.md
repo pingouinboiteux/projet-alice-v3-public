@@ -31,3 +31,5 @@ Les donnees et sauvegardes appartiennent a `data/` dans l'installation privee,
 pas a cette copie publique. Ce dossier est volontairement absent : les souvenirs,
 logs, rapports prives et sauvegardes ne doivent pas etre envoyes sur GitHub.
 Les modules courants gardent leurs imports ; ce rangement ne modifie pas le code.
+
+`historique/voix-abandonnees/` conserve la recette vocale D retiree du code courant.

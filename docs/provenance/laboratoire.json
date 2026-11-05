@@ -3,6 +3,18 @@
   "normalization": "UTF-8 LF; owner name replaced by Proprietaire/proprietaire",
   "files": [
     {
+      "path": "historique/voix-abandonnees/sopro_d_recipe.py.txt",
+      "source": "laboratoire/scripts/sopro_d_recipe.py",
+      "sha256": "d9b057696024263da564a3b3baec83d62ed777fadd0c800824751ccbc9a1c933",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/.gitignore",
+      "source": "laboratoire/.gitignore",
+      "sha256": "4b0700b3262eb6583d2dcdb1338d76811f27c9cd8eabdecd7219cc5577cfeffd",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/config/memory_backend.json",
       "source": "laboratoire/config/memory_backend.json",
       "sha256": "b3ced8b557e79270b514410343893c43c1cef9209b5264802eeed90b7dafa6cc",
@@ -327,12 +339,6 @@
       "neutralized_owner": false
     },
     {
-      "path": "laboratoire/scripts/sopro_d_recipe.py",
-      "source": "laboratoire/scripts/sopro_d_recipe.py",
-      "sha256": "d9b057696024263da564a3b3baec83d62ed777fadd0c800824751ccbc9a1c933",
-      "neutralized_owner": false
-    },
-    {
       "path": "laboratoire/scripts/sopro_protocol.py",
       "source": "laboratoire/scripts/sopro_protocol.py",
       "sha256": "11b6124698ef418b62f4df2c5d7537307cc2c49bbd56a6ddd0f662e04bf81038",
@@ -366,6 +372,18 @@
       "path": "laboratoire/scripts/v5_context_memory.py",
       "source": "laboratoire/scripts/v5_context_memory.py",
       "sha256": "86e6db86e755aceb436ad7429c518158592973d9451005d1ffa4a4466730d28f",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/validation_sopro_resonance.py",
+      "source": "laboratoire/scripts/validation_sopro_resonance.py",
+      "sha256": "3a0005a21cb26d324ad6c30046af3760f6465f44f2bff00478decd2dcf97ee06",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/validation_tts_run.py",
+      "source": "laboratoire/scripts/validation_tts_run.py",
+      "sha256": "0f771632274b7c03da6d86e3ad2e006f04332d5fcbeb2ebc131c0123b98ee7af",
       "neutralized_owner": false
     },
     {
@@ -756,6 +774,12 @@
       "path": "laboratoire/tests/test_repetition_context.py",
       "source": "laboratoire/tests/test_repetition_context.py",
       "sha256": "ee2f1233857ef5b60ad62b94157450a2acba17c136bf42edb54e4f1ae6dc63df",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_retired_voice_options.py",
+      "source": "laboratoire/tests/test_retired_voice_options.py",
+      "sha256": "d06e3104721127b14494dc43e4240404e6b8ccbdc7b3fa942834644a29440282",
       "neutralized_owner": false
     },
     {
