@@ -20,8 +20,8 @@ def send(value):print(json.dumps(value,ensure_ascii=False),flush=True)
 def main():
     from voice_profile import sopro_settings
     from sopro_protocol import render_pcm
-    output=(ROOT/sys.argv[1]).resolve()
-    if not output.is_relative_to(ROOT/'logs') or not output.is_dir():raise ValueError('Invalid voice output')
+    from private_output_path import private_output_path
+    output=private_output_path(ROOT,sys.argv[1])
     config=sopro_settings()
     with contextlib.redirect_stdout(sys.stderr):
         import numpy as np

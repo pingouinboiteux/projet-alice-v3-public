@@ -1,34 +1,24 @@
-# Alice — état public au 5 novembre 2026
+# Alice — code et etat du projet
 
-Alice est un projet personnel de compagnon vocal local sous Windows, en français.
-Le but est une conversation expressive, une mémoire utile et des actions encadrées.
+Compagnon vocal local en francais, sur Windows. Instantane technique du
+5 novembre 2026, presentation reorganisee a la demande du proprietaire.
 
-- [État actuel, limites et prochaine étape](version_actuelle/README.md)
-- [Dossiers du laboratoire actuel](laboratoire/README.md) : dialogue, mémoire,
-  voix, écoute, canaux externes, protections et tests.
-- [Direction et critères de passage à la suite](EVOLUTION.md)
-- [Contrôles de cette publication](RESULTATS.md)
-- [Mémoire de la lignée V5 originale](memoire_v5/README.md)
+- [Structure des dossiers](structure.md)
+- [Etat actuel et limites](docs/etat/actuel.md)
+- [Direction et criteres de progression](docs/pilotage/evolution.md)
+- [Regles de contribution, Git et GitHub](REGLES.md)
+- [Code courant du laboratoire](laboratoire/README.md)
+- [Memoire de la lignee V5 originale](historique/memoire_v5/README.md)
+- [Verification de la publication precedente](docs/technique/verification-publication.md)
+- [Difficultes techniques historiques](docs/technique/pieges.md)
 
-Les dossiers `controle_alice`, `ecoute`, `outils`, `vision_alice` et `voix`
-conservent les extraits historiques V3. Ils ne décrivent pas tous la version active.
-Les cinq anciens extraits dans `version_actuelle/extraits` restent des archives du
-3 novembre ; le code du laboratoire publié le 5 novembre est dans `laboratoire/`.
+Copie pour consultation, pas une distribution prete a installer. Les modeles,
+environnements, configurations privees et dependances natives sont exclus.
+Les tests publies ne sont pas une suite autonome. L'historique V3 et les anciens
+extraits sont separes du code courant ; ils ne constituent pas des fonctions
+nouvellement activees.
 
-## Portée de la copie
-
-Instantané de code pour consultation, pas une distribution prête à installer.
-Les environnements Python, modèles, bibliothèques tierces, ressources natives,
-configurations privées et références vocales ne sont pas redistribués.
-Certains imports et tests ont donc besoin de ressources absentes de ce dépôt.
-Aucune synchronisation automatique avec l'installation de travail.
-
-Les conversations, souvenirs, bases de données, accès aux comptes, journaux privés,
-audio et historique Git privé sont exclus. Les identifiants du propriétaire dans
-les copies de code sont remplacés par un identifiant générique.
-
-## Droits
-
-Cette publication n'ajoute pas de licence générale de réutilisation au code.
-Aucune nouvelle licence n'a été choisie. Les dépendances et modèles mentionnés
-restent soumis à leurs propres licences et ne sont pas inclus ici.
+Aucun souvenir, conversation privee, secret, enregistrement vocal ou historique
+Git prive n'est inclus. La copie publique n'est pas synchronisee automatiquement.
+La consultation publique n'ajoute pas de licence generale de reutilisation ;
+les dependances et modeles conservent leurs propres licences.

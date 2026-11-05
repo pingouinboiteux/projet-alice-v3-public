@@ -25,9 +25,8 @@ def send(value):
 
 
 def main():
-    output = (ROOT / sys.argv[1]).resolve()
-    if not output.is_relative_to(ROOT / 'logs') or not output.is_dir():
-        raise RuntimeError('Invalid private output directory')
+    from private_output_path import private_output_path
+    output = private_output_path(ROOT, sys.argv[1])
     os.environ['ALICE_LOG_DIRECTORY'] = str(output)
     with contextlib.redirect_stdout(sys.stderr):
         import numpy as np

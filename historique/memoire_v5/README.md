@@ -19,7 +19,7 @@ V5 précise. Les réglages indiqués sont ceux du code/configuration consultés,
 pas une garantie de réglages identiques pour tous les anciens essais V5.
 
 Ce mécanisme est distinct de la mémoire épisodique et des nouveaux lecteurs du
-[laboratoire actuel](../version_actuelle/README.md).
+[laboratoire actuel](../../docs/etat/actuel.md).
 
 ## L'idée générale
 
@@ -137,7 +137,7 @@ Le laboratoire travaille maintenant sur une lecture plus fidèle des échanges
 entiers : faits, corrections, chronologie, incertitudes et intentions historiques.
 Il possède d'autres mécanismes de recherche et d'oubli ; ils ne doivent pas être
 attribués rétroactivement au magasin décrit ici. Ses nouveaux lecteurs restent
-non qualifiés, comme indiqué dans la [présentation actuelle](../version_actuelle/README.md).
+non qualifiés, comme indiqué dans la [présentation actuelle](../../docs/etat/actuel.md).
 
 ## Code et sources consultables
 
@@ -149,4 +149,4 @@ non qualifiés, comme indiqué dans la [présentation actuelle](../version_actue
 Ces modules sont publiés pour lecture. Leurs imports `alice.*`, le cerveau,
 le résolveur de chemins, la configuration et les modèles ne sont pas tous inclus.
 Ce n'est pas un programme autonome à lancer ni une migration de mémoire.
-Le statut des droits reste celui indiqué dans le [README principal](../README.md).
+Le statut des droits reste celui indiqué dans le [README principal](../../README.md).

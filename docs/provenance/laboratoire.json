@@ -173,7 +173,7 @@
     {
       "path": "laboratoire/scripts/hearing_worker.py",
       "source": "laboratoire/scripts/hearing_worker.py",
-      "sha256": "f1e63c081f43b133c3c8ed7e45fd6c8e3833337ec1bd8d9b4be3028c9a643a96",
+      "sha256": "9966381417348d70dfeaf75aff6240cf68921f1a8f0927347b4d0ed83cc81bdf",
       "neutralized_owner": false
     },
     {
@@ -273,6 +273,12 @@
       "neutralized_owner": true
     },
     {
+      "path": "laboratoire/scripts/private_output_path.py",
+      "source": "laboratoire/scripts/private_output_path.py",
+      "sha256": "834ddc585d342a79aee2b6d580c1fb21a093d32c1c7aeefe8ee755e95b3cf168",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/remote_audio.py",
       "source": "laboratoire/scripts/remote_audio.py",
       "sha256": "9b9329a73ba8c6b5d7a02f6d4d86c41752952f3571b15632ccb218cabf64728d",
@@ -341,7 +347,7 @@
     {
       "path": "laboratoire/scripts/sopro_worker.py",
       "source": "laboratoire/scripts/sopro_worker.py",
-      "sha256": "42738bb2130f8ff82822b3d7874d8e56f8d1dbf7b36b351f0b15f1ce076b4917",
+      "sha256": "844fdb89b33c7b5a34b8f3b9fd234a347423dccebe8b27b24e047eebc7db35f6",
       "neutralized_owner": false
     },
     {
@@ -413,7 +419,7 @@
     {
       "path": "laboratoire/scripts/voice_worker.py",
       "source": "laboratoire/scripts/voice_worker.py",
-      "sha256": "61076c8bc9ba9c9a51cd2741288ad947c7be8a3666a369fa74631d7790ef126e",
+      "sha256": "602c2340e96ab27b2421182d864ea67f0649b1599ed0c78b382ed6e11e40d614",
       "neutralized_owner": false
     },
     {
@@ -727,6 +733,12 @@
       "source": "laboratoire/tests/test_persistent_memory.py",
       "sha256": "eb513cb18f17003d349a3f0e26db928c99720a6e9f8f2a9e184c96a45f88c8d6",
       "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/tests/test_private_output_path.py",
+      "source": "laboratoire/tests/test_private_output_path.py",
+      "sha256": "bd98e14e99c87ce9c6713b6160b0dbafd0337daf24e204a965648b4a0ac6de1b",
+      "neutralized_owner": false
     },
     {
       "path": "laboratoire/tests/test_remote_channels.py",

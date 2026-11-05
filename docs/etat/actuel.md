@@ -41,4 +41,16 @@ d'autres consignes. Aucun téléchargement ou entraînement lancé à ce titre.
 
 Ces résultats résument les mesures locales consignées dans les états et bilans
 du 5 novembre. Les rapports bruts ne sont pas redistribués : ce dépôt n'est pas
-un benchmark reproductible à lui seul. [Code et provenance](../laboratoire/README.md).
+un benchmark reproductible à lui seul. [Code et provenance](../../laboratoire/README.md).
+
+## Migration technique locale du 5 novembre
+
+Journaux, caches, sorties et rapports regroupes sous data dans l installation
+privee ; anciens chemins conserves par jonctions Windows, sans double copie.
+Controle commun des chemins audio adapte : 349 tests logiciels laboratoire
+et 18 tests originaux passent apres migration. Profil Sopro original a 2 etapes
+conserve. Aucun essai micro ou son en direct pendant cette migration.
+Ces controles ne changent pas le bilan de jugement conversationnel ci-dessus.
+
+Apres migration, le proprietaire a effectue un essai et confirme le fonctionnement.
+Ce retour utilisateur complete les tests logiciels, sans garantir tous les usages.
