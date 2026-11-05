@@ -149,15 +149,20 @@ def test_oversized_fixed_input_refuses_without_generation(installed):
 
 
 @pytest.mark.parametrize('kind', ['specific_fact', 'general_preference'])
-def test_factual_routes_preserve_exact_requests_and_result(kind):
+@pytest.mark.parametrize('final_eviction', [False, True])
+def test_factual_routes_preserve_exact_requests_and_result(kind, final_eviction):
     sources = [source('validation_source')]
+    if final_eviction:sources.append(source('validation_lower_rank'))
+    def count(messages, schema):
+        return 5501 if len(payload(messages)['archives']) > 1 else 100
     def run():
-        session, store = harness(sources)
+        session, store = harness(sources, count)
         with patch('episode_protocol._personal', return_value=(sources, {'requires_general_preference': True})), \
                 patch('memory_source_provenance.resolve', side_effect=lambda session, sources, question: (sources, {'called': True})):
             result = CarefulMemoryReader(session, store, kind).answer('Question', pairs(9))
         return session.ask.call_args, result
     baseline = run()
+    assert baseline[1]['budget_omitted_sources'] == int(final_eviction)
     restore = install()
     try:
         assert run() == baseline

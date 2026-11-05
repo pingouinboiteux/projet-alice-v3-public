@@ -27,4 +27,8 @@ Derniere passe : [audit et archives](docs/technique/audit-obsoletes.md).
 
 Derniere refactorisation validee : [cycle des services](docs/technique/cycle-services.md).
 
-Derniere correction : [rappel long et bilan de dialogue](docs/technique/dialogue-et-rappel.md).
+Bilan de dialogue reporte : [rappel long et variantes](docs/technique/dialogue-et-rappel.md).
+
+Derniere correction : [rappel de memoire et limites](docs/technique/rappel-memoire.md).
+Memoire acceptee comme base viable ; prochaine etape : initiative de parole
+bornee, encore inactive. Modele, voix et backend conserves.

@@ -350,31 +350,48 @@ class Reader:
             allowed=[by_id[a['id']] for a in allowed]
             contextual=[by_id[a['id']] for a in contextual]
             if history_view:history_view=by_id['__recent_dialogue__']['messages']
-        messages=reply_messages(allowed,contextual,reading)
-        answer=getattr(self.session,'ask_memory',self.session.ask) if recall and allowed else self.session.ask
-        if self.sample_dialogue and gate.get('route') in {'general','general_discussion'}:
-            answer=getattr(self.session,'ask_dialogue',self.session.ask)
-        isolated=source_task and (bool(allowed) or unknown_preference)
         from source_references import bind_references
-        contract=bind_references(REPLY_SCHEMA if isolated else (response_schema or REPLY_SCHEMA),
-            'evidence_ids',[e['id'] for e in allowed])
         plan_subject=bool(dialogue_task and self.progress_dialogue and compatible_schema)
-        if plan_subject:
-            from episode_protocol import dialogue_subject_contract
-            contract=dialogue_subject_contract(contract)
         # Account for the real final schema and extra context before generation.
         precise=getattr(self.session,'count_response_tokens',None)
-        def final_count(value):
-            if callable(precise):return precise(value,contract)
-            return reply_counter(value) if callable(reply_counter) else 0
-        while final_count(messages)>5500:
+        rank={source['id']:index for index,source in enumerate(selected)}
+        omitted_contexts=omitted_proofs=0
+        while True:
+            unknown_preference=preference_question and not allowed
+            isolated=source_task and (bool(allowed) or unknown_preference)
+            answer=getattr(self.session,'ask_memory',self.session.ask) if recall and allowed else self.session.ask
+            if self.sample_dialogue and gate.get('route') in {'general','general_discussion'}:
+                answer=getattr(self.session,'ask_dialogue',self.session.ask)
+            contract=bind_references(REPLY_SCHEMA if isolated else (response_schema or REPLY_SCHEMA),
+                'evidence_ids',[e['id'] for e in allowed])
+            if plan_subject:
+                from episode_protocol import dialogue_subject_contract
+                contract=dialogue_subject_contract(contract)
+            messages=reply_messages(allowed,contextual,reading)
+            final_counter=getattr(self.session,'count_memory_tokens',counter) if recall and allowed else counter
+            tokens=precise(messages,contract) if callable(precise) else (final_counter(messages) if callable(final_counter) else 0)
+            if type(tokens) is not int or tokens<0:raise ValueError('Invalid final reply token measurement')
+            if tokens<=5500:break
             if include_extras:
                 include_extras=False
-            elif contextual:
-                contextual.pop()
-                reading['contextes_omis_pour_budget']=len(archives)-len(allowed)-len(contextual)
+            elif contextual or allowed:
+                # Retrieval order is relevance order; presentation order is time.
+                # Remove optional context first, then the least relevant proof,
+                # always as a whole source. Rebind the schema on the next pass.
+                pool=contextual if contextual else allowed
+                removed=max(pool,key=lambda source:rank[source['id']])
+                pool.remove(removed)
+                selected=[source for source in selected if source['id']!=removed['id']]
+                archives=[source for source in archives if source['id']!=removed['id']]
+                if pool is contextual:omitted_contexts+=1
+                else:omitted_proofs+=1
+                if reading is not None:
+                    # Selected counts consulted sources, including those omitted
+                    # from the final payload; admission counts displayed proof.
+                    reading.update(sources_admises=len(allowed),
+                        contextes_omis_pour_budget=omitted_contexts)
+                    if omitted_proofs:reading['preuves_omises_pour_budget']=omitted_proofs
             else:raise ValueError('Final memory reply exceeds the input budget; sources unchanged')
-            messages=reply_messages(allowed,contextual,reading)
         raw, _, _ = answer(messages, response_schema=contract)
         result = json.loads(raw)
         # This label only helps generation. It is never a remembered personal fact.

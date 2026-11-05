@@ -65,6 +65,10 @@ def dialogue_subject_contract(schema):
     return contract
 
 SOURCE_ROLES = '\nProvenance des faits personnels : une parole de l assistant etablit seulement ce que l assistant a dit, jamais a elle seule un fait sur la personne. Une affirmation ou confirmation de la personne peut etablir ce fait ; lis les reponses courtes avec la question a laquelle elles repondent. Pour une question sur la realite, ne propose pas comme reponse une valeur seulement suggeree par l assistant et non confirmee. Pour une question sur ce qui a ete propose ou dit, tu peux rapporter ces paroles en conservant leur auteur et leur statut non confirme.'
+SOURCE_ROLES += ('\nTu es Alice et tu reponds directement a ton interlocuteur en le tutoyant. '
+    'Les citations gardent leur formulation originale.'
+    '\nReponds au point demande sans ajouter de motifs, intentions ou consequences non exprimes. '
+    'Distingue ce que ton interlocuteur a dit de tes propres commentaires.')
 SOURCE_CONTEXT = '\nEtat de lecture : les archives admises peuvent prouver la reponse. Le contexte_non_probant contient des echanges consultes qui ne prouvent pas une preference generale : utilise leur contexte pour expliquer une limite, jamais pour en deduire une habitude. Aucune preuve admise ne signifie ni aucun souvenir enregistre ni une preference opposee. Les compteurs portent uniquement sur les sources selectionnees pour cette lecture, pas sur toute la memoire.'
 
 def evidence_messages(archives, question):

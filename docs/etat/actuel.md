@@ -14,27 +14,28 @@ Ce dépôt expose son code, sans ses données privées ni ses ressources de mod�
 | Twitch / Discord | Lecture Twitch et raccord vocal Discord ; contexte public séparé | Les entrées externes n'obtiennent pas de droits locaux ni de souvenirs privés |
 | Vision / initiative | Vision et parole spontanée non activées | Objectifs futurs, pas fonctions terminées |
 
-## Chantier suivant : memoire entre sessions
+## Memoire retenue ; suite : initiative de parole bornee
 
-Le proprietaire demande de passer a la suite en conservant le modele actuel.
-Le jugement conversationnel reste imparfait : il est reporte, pas declare resolu.
-La voix et la personnalite actives sont conservees.
+Le proprietaire accepte la memoire actuelle comme base viable, avec ses limites,
+et demande de poursuivre. Le modele, la voix et le backend sont conserves.
+Le jugement conversationnel reste reporte. Les retours d'usage permettront
+d'ameliorer la memoire ; elle n'est pas declaree parfaite ni qualifiee globalement.
 
-Derniere campagne : 75 reponses synthetiques adaptatives examinees ; trois
-variantes non qualifiees et non activees. Un defaut technique du rappel long
-a ete corrige : lots de sources entieres, budget mesure avec schema et rejet
-conservateur des associations invalides. 448 tests logiciels locaux passent.
-Le rappel du scenario fictif auparavant bloquant a reussi avec le vrai modele.
-[Mesures et limites](../technique/dialogue-et-rappel.md).
+Corrections actives : budget final avec schema reel, sources entieres,
+priorite au meilleur temoin de recherche puis au reclassement, identite et
+tutoiement du lecteur factuel sans ajout d'intentions absentes des sources.
+20 rappels acceptables, dont 17 sans reserve. Lot fictif reserve de 16 cas :
+14 corrects, 2 partiels, 0 incorrect ; ton conforme 16/16 contre 3/16 avant.
+485 tests logiciels locaux reussis. Le critere propose de 36/40 n'a pas ete
+mesure. [Resultats, conditions et limites](../technique/rappel-memoire.md).
 
-Prochaine etape : verifier stockage, recherche et lecture apres redemarrage,
-avec des profils fictifs. Criteres proposes : 36 rappels exacts sur 40 cas
-reserves, aucun fait personnel invente, aucune fuite prive/public, corrections
-et oublis respectes. Aucun changement de backend ni de modele prevu.
-Ces mesures restent a effectuer ; elles ne sont pas acquises par la publication.
+Suite retenue : initiative de parole bornee, a concevoir puis verifier avec
+silence, interruption et arret humain respectes. Aucune parole spontanee
+n'est activee par cette publication ; la vision reste un objectif futur.
 
-Cette copie est documentaire : les rapports bruts et les ressources privees
-sont exclus. [Code et provenance](../../laboratoire/README.md).
+Cette copie est documentaire : rapports bruts, conversations et ressources
+privees exclus. Les 485 tests locaux ne sont pas integralement reproductibles
+depuis cette selection. [Code et provenance](../../laboratoire/README.md).
 
 ## Migration technique locale du 5 novembre
 

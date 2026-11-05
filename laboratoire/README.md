@@ -29,3 +29,10 @@ Voir [l'état actuel](../docs/etat/actuel.md) et [les critères](../docs/pilotag
 Les modules `adaptive_*_candidate.py` sont des experiences inactives, chargees
 uniquement par une option explicite du banc. Leurs tests ne qualifient pas
 leur comportement conversationnel.
+
+Le [rappel de memoire](../docs/technique/rappel-memoire.md) utilise maintenant
+le budget final avec schema, une priorite equilibree des sources et un lecteur
+factuel avec identite/tutoiement explicites. Les sources restent intactes.
+Les 485 tests reussis decrivent la suite locale : les ressources manquantes
+et les bancs prives exclus empechent de la reproduire integralement ici.
+Aucun banc ni jeu de questions issu de conversations privees n est publie.
