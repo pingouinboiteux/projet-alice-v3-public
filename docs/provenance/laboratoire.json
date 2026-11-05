@@ -251,7 +251,7 @@
     {
       "path": "laboratoire/scripts/memory_source_provenance.py",
       "source": "laboratoire/scripts/memory_source_provenance.py",
-      "sha256": "a85174c04a5bd8bc45af721a6b49218a7dcb6dcef09d191d82c9eb073b83d05f",
+      "sha256": "238ee87fd07ede7c5b658410acc0b11d68d36a7d2e28d022453e02d6878b888f",
       "neutralized_owner": false
     },
     {
@@ -579,6 +579,24 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/tests/adaptive_context_candidate.py",
+      "source": "laboratoire/tests/adaptive_context_candidate.py",
+      "sha256": "cd8c0c79992bd9bb321f64076e2fdfee0536c8bbe466751653876185953dfb51",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/adaptive_history_candidate.py",
+      "source": "laboratoire/tests/adaptive_history_candidate.py",
+      "sha256": "bb2075e7abd7afc56a97be37e32a273b8270f531ffdb9cd3eb78b2899d0b790b",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/check_adaptive_dialogue.py",
+      "source": "laboratoire/tests/check_adaptive_dialogue.py",
+      "sha256": "e7185656a5a2bfbb5ebae9ae2417c477419d0b267c307eb7ba76d0f723a783de",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/tests/check_judgment.py",
       "source": "laboratoire/tests/check_judgment.py",
       "sha256": "817e92e02a0127069735cf7e3368b235049974cde25adb897c276981150c67c4",
@@ -588,6 +606,12 @@
       "path": "laboratoire/tests/check_judgment_ablation.py",
       "source": "laboratoire/tests/check_judgment_ablation.py",
       "sha256": "3ae5b125bdf70d848ae799946565c70a3cf4a66257e8bb37d35184a5758cf906",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/fixtures/debat_adaptatif.json",
+      "source": "laboratoire/tests/fixtures/debat_adaptatif.json",
+      "sha256": "bc9533e4ce27ccf1590a31ee335225d99231cecd9cdd5f9381e3905dc1ed9c05",
       "neutralized_owner": false
     },
     {
@@ -606,6 +630,24 @@
       "path": "laboratoire/tests/test_action_policy.py",
       "source": "laboratoire/tests/test_action_policy.py",
       "sha256": "4e35987a901cdee64c635aced7654e60e87b9ce5e8926f1be2e3a9ba179d34b3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_adaptive_context_candidate.py",
+      "source": "laboratoire/tests/test_adaptive_context_candidate.py",
+      "sha256": "1db7a0017d99421a12828c31e22fbb3bc95a50db5d00cab33e2fbe7158b27205",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_adaptive_dialogue.py",
+      "source": "laboratoire/tests/test_adaptive_dialogue.py",
+      "sha256": "9dcce88bc8c00eb0ea57090081a03dc2a4def2ce8504e0fe3c6e18fce59b289d",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_adaptive_history_candidate.py",
+      "source": "laboratoire/tests/test_adaptive_history_candidate.py",
+      "sha256": "c513d545a64eb76db8292da9aeef28a09086d75e0fcc250dfd062c400d4165f1",
       "neutralized_owner": false
     },
     {
@@ -737,7 +779,13 @@
     {
       "path": "laboratoire/tests/test_memory_source_provenance.py",
       "source": "laboratoire/tests/test_memory_source_provenance.py",
-      "sha256": "cf949f9c484a86d3b3cc358b75465c41e7c7394d8e4a12b0828492f1716d2998",
+      "sha256": "5c8bad35c031fb6692b8b7b912c0568c46bd648694edf9b53ae6b4ff5c706c26",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_memory_source_provenance_budget.py",
+      "source": "laboratoire/tests/test_memory_source_provenance_budget.py",
+      "sha256": "6f8cc73eae90dae8e9cb580cfdedf63301ce3eace9639264aab60268f49deec0",
       "neutralized_owner": false
     },
     {

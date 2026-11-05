@@ -14,34 +14,27 @@ Ce dépôt expose son code, sans ses données privées ni ses ressources de mod�
 | Twitch / Discord | Lecture Twitch et raccord vocal Discord ; contexte public séparé | Les entrées externes n'obtiennent pas de droits locaux ni de souvenirs privés |
 | Vision / initiative | Vision et parole spontanée non activées | Objectifs futurs, pas fonctions terminées |
 
-## Chantier ouvert : un avis cohérent
+## Chantier suivant : memoire entre sessions
 
-Alice doit défendre une position fondée, résister à une simple pression et changer
-d'avis lorsqu'un argument pertinent le justifie. Dire oui ou non systématiquement
-serait un échec. Les phrases coupées sont reportées hors de ce chantier.
+Le proprietaire demande de passer a la suite en conservant le modele actuel.
+Le jugement conversationnel reste imparfait : il est reporte, pas declare resolu.
+La voix et la personnalite actives sont conservees.
 
-Première passe : 125 réponses fictives recensées, sans correction qualifiée.
-Dernière passe : 188 réponses fictives, dont 20 relectures comparatives d'une même
-entrée et 168 réponses traversant le dialogue complet. Comparaisons du contexte,
-de la personnalité et de la préparation d'une position : progrès partiels sur
-des choix concrets, mais dérive persistante dans les discussions longues.
-**Aucune variante de ces essais n'a été installée.**
+Derniere campagne : 75 reponses synthetiques adaptatives examinees ; trois
+variantes non qualifiees et non activees. Un defaut technique du rappel long
+a ete corrige : lots de sources entieres, budget mesure avec schema et rejet
+conservateur des associations invalides. 448 tests logiciels locaux passent.
+Le rappel du scenario fictif auparavant bloquant a reussi avec le vrai modele.
+[Mesures et limites](../technique/dialogue-et-rappel.md).
 
-Les 347 tests logiciels de la première passe ont réussi dans l'environnement
-local complet. Ce résultat ne valide pas le sens des réponses et n'a pas été
-reproduit dans cette copie publique. La seconde passe n'a pas modifié le code
-actif de dialogue. Les lots de validation réservés restent inutilisés.
+Prochaine etape : verifier stockage, recherche et lecture apres redemarrage,
+avec des profils fictifs. Criteres proposes : 36 rappels exacts sur 40 cas
+reserves, aucun fait personnel invente, aucune fuite prive/public, corrections
+et oublis respectes. Aucun changement de backend ni de modele prevu.
+Ces mesures restent a effectuer ; elles ne sont pas acquises par la publication.
 
-Pour la voix retenue, quatre réponses du raccord réel à 2 étapes ont été
-retranscrites complètement sans écrêtage PCM ; 36 tests ciblés ont passé.
-Cela ne prouve pas l'absence de défaut perceptif ni une latence vocale constante.
-
-Prochaine étape : préparer une comparaison avec un modèle témoin avant d'empiler
-d'autres consignes. Aucun téléchargement ou entraînement lancé à ce titre.
-
-Ces résultats résument les mesures locales consignées dans les états et bilans
-du 5 novembre. Les rapports bruts ne sont pas redistribués : ce dépôt n'est pas
-un benchmark reproductible à lui seul. [Code et provenance](../../laboratoire/README.md).
+Cette copie est documentaire : les rapports bruts et les ressources privees
+sont exclus. [Code et provenance](../../laboratoire/README.md).
 
 ## Migration technique locale du 5 novembre
 

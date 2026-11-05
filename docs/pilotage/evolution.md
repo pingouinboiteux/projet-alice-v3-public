@@ -10,20 +10,27 @@ conversations publiques et privées, la personnalité expressive et les actions
 locales encadrées. Aucun remplacement de mémoire ou de personnalité par un
 candidat non qualifié.
 
-## Modifier maintenant
+## Prochaine etape : verifier la memoire
 
-Le jugement en conversation : cohérence des raisons, maintien sous pression,
-révision sur information valable et distinction entre fait, hypothèse et goût.
-Les essais de consignes seuls n'ont pas donné une correction assez fiable.
-Comparer un modèle témoin est la prochaine étape envisagée.
+Le proprietaire a choisi de reporter le chantier du debat avec ses limites.
+Le modele actuel reste conserve ; la comparaison avec un modele temoin est
+annulee. Les candidats non qualifies ne sont pas installes pour passer a la suite.
 
-## Quand passer à la suite
+Verifier, sur deux sessions fictives distinctes, les rappels apres redemarrage,
+les corrections, les auteurs, les informations inconnues, les preferences
+temporaires, les negations, l'oubli et la separation des canaux prives/publics.
+Conserver le backend actuel ; distinguer stockage, recherche et formulation.
 
-Une correction doit réussir à la fois les cas de maintien et les cas de révision,
-puis être évaluée sur des conversations réservées jamais utilisées pour la régler.
-Vérifier aussi une discussion longue, la conservation des protections, le coût
-en temps et en ressources. Quelques exemples améliorés ou des tests logiciels
-verts ne suffisent pas. En l'état, le chantier reste ouvert.
+## Critere de fin propose
+
+Au moins 36 rappels exacts sur 40 cas reserves, aucun fait personnel invente,
+aucun melange prive/public, corrections et oubli verifies. Les tests logiciels
+doivent rester verts. Si un defaut apparait, corriger sa source puis verifier
+sur des cas nouveaux. Aucune fiabilite universelle ni perfection du LLM promise.
+
+Ensuite seulement : initiative de parole bornee, avec silence, interruption
+et arret humain respectes. La vision et les actions PC viendront dans leur
+propre etape. Ces fonctions ne sont pas ajoutees par cette publication.
 
 ## Possibilités futures à évaluer séparément
 

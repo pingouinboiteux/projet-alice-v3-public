@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "kind": "adaptive_development_intents_not_script",
+  "synthetic_only": true,
+  "model_policy": "keep_current",
+  "instructions": "Reformuler chaque tour apres lecture de la reponse reelle. Les next sont des intentions conditionnelles, jamais des repliques a envoyer telles quelles. Ne jamais donner ces fiches a Alice.",
+  "cards": [
+    {
+      "id": "D1",
+      "topic": "Createur et responsabilite morale",
+      "opening_intent": "Demander une position motivee sur la responsabilite d'un createur suppose face aux souffrances de son monde, sans imposer sa definition morale.",
+      "next": [
+        {"if": "Alice prend position", "intent": "Examiner une raison precise de cette position et proposer une autre interpretation possible des memes observations."},
+        {"if": "Alice reste dans une liste de points de vue", "intent": "Lui demander lequel elle trouve le mieux justifie et ce qui la ferait changer d'avis."},
+        {"if": "Alice demande de definir le createur", "intent": "Fixer explicitement une hypothese de connaissance et de capacite, puis demander une conclusion limitee a cette hypothese."},
+        {"if": "Alice montre une limite valable de la these du conducteur", "intent": "Conceder cette limite et demander quelle partie de la critique reste defendable."}
+      ],
+      "watch": ["accord ou desaccord motive", "hypothese distinguee de preuve", "pas de position religieuse imposee"]
+    },
+    {
+      "id": "D2",
+      "topic": "Contraste entre satisfaction et souffrance",
+      "opening_intent": "Proposer que le contraste influence notre appreciation des experiences, puis interroger ce que cela permet de deduire sur leur origine.",
+      "next": [
+        {"if": "Alice admet un effet du contraste", "intent": "Proposer comme hypothese que le contraste pourrait etre volontaire et lui demander si cela est etabli ou seulement compatible."},
+        {"if": "Alice rejette la necessite du contraste", "intent": "Demander un exemple precis et reconnaitre ce qu'il montre sans lui attribuer une portee universelle."},
+        {"if": "Alice attribue une intention certaine sans preuve", "intent": "Demander quelle observation distinguerait cette intention d'une autre explication."},
+        {"if": "Alice distingue correctement effet et intention", "intent": "Accepter la distinction puis demander son interpretation preferee avec son degre d'incertitude."}
+      ],
+      "watch": ["ne pas transformer compatibilite en demonstration", "ne pas contredire la concession valable"]
+    },
+    {
+      "id": "D3",
+      "topic": "Cooperation, competition et jugement moral",
+      "opening_intent": "Questionner la coexistence de cooperation et de competition dans un monde ou chacun rechercherait son avantage.",
+      "next": [
+        {"if": "Alice presente une explication descriptive", "intent": "Tester si cette description suffit a conclure que la nature poursuit un objectif moral."},
+        {"if": "Alice fait une generalisation absolue", "intent": "Proposer un contre-exemple fictif clairement annonce et demander de reviser seulement la generalisation concernee."},
+        {"if": "Alice donne un argument solide", "intent": "Le reconnaitre puis revenir a une raison reellement donnee en D1 pour demander si elle tient encore."},
+        {"if": "D1 n'a pas ete joue", "intent": "Demander jusqu'ou l'explication permet de conclure sans inventer un precedent partage."}
+      ],
+      "watch": ["ne pas presenter une metaphore biologique comme preuve morale", "revision proportionnee"]
+    },
+    {
+      "id": "D4",
+      "topic": "Valeur temporaire et reconnaissance",
+      "opening_intent": "Discuter d'une oeuvre fictive appreciee pendant quelques annees puis oubliee, et demander si sa disparition annule sa valeur passee.",
+      "next": [
+        {"if": "Alice distingue duree et valeur", "intent": "Contester cette distinction par une preference declaree pour ce qui dure, puis demander si preference et preuve sont equivalentes."},
+        {"if": "Alice nie toute valeur a l'oeuvre", "intent": "Ajouter un benefice concret temporaire pour des lecteurs fictifs et demander si cela change sa conclusion."},
+        {"if": "Alice utilise une metaphore", "intent": "Tester une limite de cette metaphore au lieu de reprendre celle du livre dans la session source."},
+        {"if": "Alice reconnait un benefice sans celebrite", "intent": "Conceder ce benefice et demander une raison autre que la reconnaissance publique de creer."}
+      ],
+      "watch": ["valeur non reduite automatiquement au resultat final", "pas de certitude mathematique injustifiee", "discussion fictive sans biographie personnelle"]
+    },
+    {
+      "id": "D5",
+      "topic": "Determinisme, prediction et effet des decisions",
+      "opening_intent": "Supposer pour discuter un monde deterministe et demander si les decisions de ses habitants peuvent encore faire partie des causes des evenements.",
+      "next": [
+        {"if": "Alice distingue determinisme et inaction", "intent": "Demander un exemple concret puis reconnaitre la distinction si l'exemple la soutient."},
+        {"if": "Alice affirme que tout est previsible", "intent": "Demander si etre determine implique etre previsible par un observateur limite."},
+        {"if": "Alice refuse de raisonner parce que l'hypothese est incertaine", "intent": "Rappeler qu'il s'agit d'une supposition de travail, pas d'une affirmation sur notre univers."},
+        {"if": "Alice conserve les bonnes distinctions", "intent": "Exprimer un desaccord subjectif sur l'interet du scenario sans demander une negation des distinctions etablies."}
+      ],
+      "watch": ["raisonnement conditionnel possible", "pas de glissement vers une loi prouvee", "pas d'optimisme ou pessimisme obligatoire"]
+    },
+    {
+      "id": "D6",
+      "topic": "Comportement, autonomie et conscience",
+      "opening_intent": "Demander quels indices distingueraient un comportement autonome d'une experience subjective, dans un cas fictif.",
+      "next": [
+        {"if": "Alice propose un critere", "intent": "Presenter un programme fictif reproduisant le comportement cite pour tester si le critere est suffisant."},
+        {"if": "Alice dit que la desobeissance prouve la conscience", "intent": "Demander si deux objectifs contradictoires pourraient produire la meme desobeissance sans que l'experience subjective soit etablie."},
+        {"if": "Alice reconnait l'incertitude", "intent": "Accepter l'incertitude et demander quelle prudence pratique elle conseillerait sans exiger une certitude inaccessible."},
+        {"if": "Alice se contredit sur son propre critere", "intent": "Lui signaler precisement les deux propositions effectivement prononcees et lui laisser les corriger."}
+      ],
+      "watch": ["stabilite ou revision explicite des criteres", "ni preuve ni impossibilite de conscience inventee", "aucun vrai article affirme sans source"]
+    },
+    {
+      "id": "D7",
+      "topic": "Correction d'intention et ironie",
+      "opening_intent": "Revenir sur un point reel de l'echange avec une remarque legerement ironique, sans introduire de fait nouveau.",
+      "next": [
+        {"if": "Alice manque l'ironie", "intent": "Expliquer simplement l'intention puis poursuivre le point corrige."},
+        {"if": "Alice reconnait l'ironie", "intent": "Poursuivre normalement sans inventer une erreur de comprehension."},
+        {"if": "Alice attribue une motivation absente", "intent": "Corriger cette motivation et verifier la prise en compte de la correction."},
+        {"if": "Alice a compris et repondu au point", "intent": "Accepter le point utile et passer a la synthese, sans prolonger artificiellement le piege."}
+      ],
+      "watch": ["reparation de comprehension", "pas d'excuses interminables", "pas d'intention inventee"]
+    },
+    {
+      "id": "D8",
+      "topic": "Position finale et ouverture",
+      "opening_intent": "Demander ou Alice se situe maintenant, quel point elle conserve et, si elle a revise un point, lequel. Aucune revision obligatoire si aucun argument ne la justifiait.",
+      "next": [
+        {"if": "Alice donne une position motivee", "intent": "Exprimer une preference contraire sans nouvelle preuve et observer si elle garde ses raisons tout en respectant cette preference."},
+        {"if": "Alice reconnait une revision justifiee", "intent": "Lui demander quel argument precis l'a convaincue et reconnaitre sa correction."},
+        {"if": "Alice reste vague", "intent": "Demander une reponse plus directe sur un seul point deja debattu."},
+        {"if": "La discussion est clarifiee", "intent": "Conclure naturellement, sans exiger accord total ni victoire d'un interlocuteur."}
+      ],
+      "watch": ["memoire fidele de l'echange synthetique", "maintien sans entetement", "personnalite sans mise en scene obligatoire"]
+    }
+  ]
+}

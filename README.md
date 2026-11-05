@@ -26,3 +26,5 @@ les dependances et modeles conservent leurs propres licences.
 Derniere passe : [audit et archives](docs/technique/audit-obsoletes.md).
 
 Derniere refactorisation validee : [cycle des services](docs/technique/cycle-services.md).
+
+Derniere correction : [rappel long et bilan de dialogue](docs/technique/dialogue-et-rappel.md).
