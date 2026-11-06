@@ -50,7 +50,7 @@ def public_filter():
 
 
 class RemoteChannels:
-    def __init__(self,session,events,*,store=None,library=None):
+    def __init__(self,session,events,*,store=None,library=None,scene=None):
         self.session=session
         self.events=events
         self.pending=queue.Queue(maxsize=16)
@@ -60,7 +60,9 @@ class RemoteChannels:
         self.enabled={'twitch':False,'discord':False}
         self.bridge=None
         self.closed=False
-        self.dialogue=RemoteDialogue(session.ask,public_filter(),store=store,library=library)
+        from public_scene import PublicScene
+        self.scene = scene if scene is not None else PublicScene()
+        self.dialogue=RemoteDialogue(session.ask,public_filter(),store=store,library=library,scene=self.scene)
         self.next_twitch=0
         self.next_remote=0
         self.last_status={}
@@ -89,6 +91,7 @@ class RemoteChannels:
             if self.closed or generation!=self.generations[source] or not self.enabled[source]:return
             if source=='twitch' and not self.selection.admit(payload,time.monotonic()):
                 self.trace('external.skipped',source,reason='duplicate');return
+            if source=='twitch':self.scene.record_viewer(payload)
             try:
                 self.pending.put_nowait((source,generation,time.monotonic(),payload))
                 self.trace('external.received',source,queued=self.pending.qsize())
@@ -148,7 +151,7 @@ class RemoteChannels:
             selection=PublicChatSelection()
             selection.answered.extend(self.selection.answered)
             selection.public.extend(self.selection.public)
-        chosen=selection.choose(batch,self.session.ask,now)
+        chosen=selection.choose(batch,self.session.ask,now,scene=self.scene.snapshot())
         self.trace('external.selection','twitch',candidates=len(batch),selected=chosen is not None)
         return chosen
 
@@ -253,7 +256,9 @@ class RemoteChannels:
                     except OSError: pass
         if source=='discord': self.bridge=None
         if source=='twitch':
-            with self.pending_lock:self.selection.clear()
+            with self.pending_lock:
+                self.selection.clear()
+                self.scene.clear()
         self.dialogue.clear()
         self.status(source,'off')
 
@@ -339,7 +344,12 @@ class RemoteChannels:
                     self.trace('external.skipped',source,reason='reply_interrupted');return True
                 playing=voice.speak(answer) is not False
                 if playing:
-                    with self.pending_lock:self.selection.delivered(message,answer,time.monotonic())
+                    with self.pending_lock:
+                        playing=(generation==self.generations[source] and self.enabled[source]
+                                 and getattr(voice,'interruption_epoch',0)==interruption_epoch)
+                        if playing:
+                            self.selection.delivered(message,answer,time.monotonic())
+                            self.scene.record_alice(answer,recipient=message.author)
             completed=playing
             if self.dialogue.store and completed:
                 self.dialogue.delivered(message,answer)

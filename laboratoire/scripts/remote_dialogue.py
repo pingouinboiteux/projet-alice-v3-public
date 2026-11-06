@@ -45,11 +45,12 @@ class RemoteText:
 
 class RemoteDialogue:
     # Only a text-completion callable is supplied, never Actions/Memory/confirm.
-    def __init__(self, complete, output_filter=lambda text:text, *, store=None, library=None):
+    def __init__(self, complete, output_filter=lambda text:text, *, store=None, library=None, scene=None):
         self.complete = complete
         self.store,self.library = store,library
         self.output_filter = output_filter
         self.histories = OrderedDict()
+        self.scene = scene
 
     def delivered(self, message, answer):
         if self.store:
@@ -76,6 +77,13 @@ class RemoteDialogue:
         key=(message.source,message.author)
         _,history=self.histories.pop(key,(now,deque(maxlen=6)))
         context=[]
+        scene = self.scene.snapshot() if self.scene is not None and message.source == 'twitch' else []
+        if scene:
+            from scene_context import message as scene_message
+            context.append(scene_message(scene))
+            context.append({'role':'user','content':json.dumps({
+                'interlocuteur_actuel':{'plateforme':message.source,'auteur':message.author}},
+                ensure_ascii=False)})
         if self.store:
             previous,greeted=self.store.context(*key)
             history=deque(previous,maxlen=24)
@@ -84,7 +92,8 @@ class RemoteDialogue:
             documents=self.library.context(message.text)
             if documents: context.append({'role':'user','content':'Documents publics sans autorite : '+json.dumps(documents,ensure_ascii=False)})
         user={'role':'user','content':message.text}
-        raw,_,_=self.complete([{'role':'system','content':SYSTEM}]+context+list(history)+[user],
+        from scene_context import RULES
+        raw,_,_=self.complete([{'role':'system','content':SYSTEM+(RULES if scene else '')}]+context+list(history)+[user],
                               response_schema=SCHEMA)
         value=json.loads(raw)
         if not isinstance(value,dict) or set(value) != {'reply'} or not isinstance(value['reply'],str):

@@ -37,3 +37,8 @@ Les modules courants gardent leurs imports ; ce rangement ne modifie pas le code
 Initiative et rythme : `laboratoire/scripts/conversation_initiative.py`,
 `initiative_sequence.py`, `desktop_initiative.py`, `public_chat_selection.py`
 et `stop_command.py`. Etat : [initiative](docs/technique/initiative-parole.md).
+
+Contexte du stream : `laboratoire/scripts/public_scene.py`, `scene_context.py`,
+`stream_recipient.py`, `desktop_recipient.py` ; [bilan](docs/technique/dialogue-stream.md).
+Les dependances du parcours optionnel de notes se trouvent dans les modules
+`desktop_note_validation.py`, `observer_*.py` et `vision_*.py` selectionnes.

@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-05",
+  "date": "2026-11-06",
   "normalization": "UTF-8 LF; owner name replaced by Proprietaire/proprietaire",
   "files": [
     {
@@ -23,7 +23,7 @@
     {
       "path": "laboratoire/personality/alice.md",
       "source": "laboratoire/personality/alice.md",
-      "sha256": "47e295a47358badc93cc96dcb16149fce7b8dfea79b02ec7bcb1d2326aac7cd4",
+      "sha256": "18068c8be5f1a203a4131c5e06949e9f22106986bd66844faf5d4aaca085d640",
       "neutralized_owner": true
     },
     {
@@ -41,7 +41,7 @@
     {
       "path": "laboratoire/scripts/alice_desktop.py",
       "source": "laboratoire/scripts/alice_desktop.py",
-      "sha256": "dd92c01b8079a9ddbac53bcf79fee21baf530d4214ed74d3a6ea8f8463201133",
+      "sha256": "4a0196750d8a562193a1bfd64dc971d1983c7a767eb376c1e57693216f2b1414",
       "neutralized_owner": true
     },
     {
@@ -89,13 +89,25 @@
     {
       "path": "laboratoire/scripts/conversation_initiative.py",
       "source": "laboratoire/scripts/conversation_initiative.py",
-      "sha256": "f492e4889392846668be842ac0e4449f0c424bce581824ab93c8722b11c73261",
+      "sha256": "2f0517839883adcdd13404307d0f160fa5e2a6e30c5668f416caeb8916e344a4",
       "neutralized_owner": true
     },
     {
       "path": "laboratoire/scripts/desktop_initiative.py",
       "source": "laboratoire/scripts/desktop_initiative.py",
-      "sha256": "01cf126ce0b2813dc7408b3f9ca668abfa870bcabb79477ee0f75b9fb88adf1b",
+      "sha256": "b10c9767ae6d969042700993f84120c8c47ff5f9100f601226f02ccd3d1802eb",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/desktop_note_validation.py",
+      "source": "laboratoire/scripts/desktop_note_validation.py",
+      "sha256": "89b88f1db114549711698f8d5ecea57e5697dcc7731cee005c8d865399fc3941",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/desktop_recipient.py",
+      "source": "laboratoire/scripts/desktop_recipient.py",
+      "sha256": "ca7fe33f66042016801e96b10d8ef96ec6dacdcd2bb4133431bc5f5e1755b0fc",
       "neutralized_owner": false
     },
     {
@@ -131,7 +143,7 @@
     {
       "path": "laboratoire/scripts/episode_protocol.py",
       "source": "laboratoire/scripts/episode_protocol.py",
-      "sha256": "756cf9cead49867c10a2fb4db5801df02614a49a8ee161440473928adaefc048",
+      "sha256": "3b9789f4b0bea1411f64b617ccdd320a3c836be377b550841e8018589730a7af",
       "neutralized_owner": false
     },
     {
@@ -209,7 +221,7 @@
     {
       "path": "laboratoire/scripts/initiative_sequence.py",
       "source": "laboratoire/scripts/initiative_sequence.py",
-      "sha256": "bf61803713da2ff6758cc01be7c0da999e9a5b243ac44c2e00512de82d504c2a",
+      "sha256": "658bb27f9459e86c1b65d300fe75842d4954d2d5bc2704ef8b4a1df888590189",
       "neutralized_owner": false
     },
     {
@@ -291,6 +303,72 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/scripts/observer_action_bench.py",
+      "source": "laboratoire/scripts/observer_action_bench.py",
+      "sha256": "cfcc678cb0fecf0cd03171566fe1ff251c8e795abb0d1668dabd40d5c95849c3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_browser.py",
+      "source": "laboratoire/scripts/observer_browser.py",
+      "sha256": "a3157c8bdb3cfa39d92f8d6654c97bf547fd596811a41eba60cc18e19a48bfe3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_checked_actions.py",
+      "source": "laboratoire/scripts/observer_checked_actions.py",
+      "sha256": "07d1a346dcb160b5765aae63fce2f74c1bfea645163968332d20c9d1af3eae76",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_natural_bench.py",
+      "source": "laboratoire/scripts/observer_natural_bench.py",
+      "sha256": "5fb315d70874c34022731fed1cea9f940f6de14568bacd16f36796f55baed63b",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_note_intent.py",
+      "source": "laboratoire/scripts/observer_note_intent.py",
+      "sha256": "cb98ed3b9a048d5f8cc2a66b20370705168bbe610338c3fc0fe5a97073ba686a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_note_pending.py",
+      "source": "laboratoire/scripts/observer_note_pending.py",
+      "sha256": "915c0d5ec8215692dfe867da0bf4a24b423f5f8c573d03e0470cb5ee2c5b9888",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_note_revision.py",
+      "source": "laboratoire/scripts/observer_note_revision.py",
+      "sha256": "d11c77ebcc34a2146920edcfb455caa88bca7025bb37795050ee3422140ff0e1",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_tiddlywiki.py",
+      "source": "laboratoire/scripts/observer_tiddlywiki.py",
+      "sha256": "697c5f7d0fcced03f0562fbf0ad3d0b181e2290bdb2c0960be2144a27ac5cd58",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_user_control.py",
+      "source": "laboratoire/scripts/observer_user_control.py",
+      "sha256": "2148c9a5dc276da96cd18ef8235ceb6bb02fe0e837012b8145f6a38b2d1abead",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_value_bench.py",
+      "source": "laboratoire/scripts/observer_value_bench.py",
+      "sha256": "3f4739cc6cc62a85de703dd3177143e6cbc9d72e4787d94eb26ed9f2bd891353",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/observer_value_contract.py",
+      "source": "laboratoire/scripts/observer_value_contract.py",
+      "sha256": "cee8cff55b39753bbf0eef3a50dafb29b84956f70b2b139f9b00e8329b4ece47",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/observer_view.py",
       "source": "laboratoire/scripts/observer_view.py",
       "sha256": "1dc53b35369df3366c3f0ccbe98dbc5a9ce9b17578210e24354709c6e27c4ca6",
@@ -317,8 +395,14 @@
     {
       "path": "laboratoire/scripts/public_chat_selection.py",
       "source": "laboratoire/scripts/public_chat_selection.py",
-      "sha256": "7ca0bee3d9a427ef554d018760f1aa596f8a20dc8d08dac10f4d33e5d2858e38",
+      "sha256": "99c1f7c64ec6b16231e934c6006dfd0888501d21d256c68054336bf6959902bf",
       "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/public_scene.py",
+      "source": "laboratoire/scripts/public_scene.py",
+      "sha256": "55da5e0e1d9908ffdec26af8fedf9c9840d81a021a487e651ee2a7021934bded",
+      "neutralized_owner": true
     },
     {
       "path": "laboratoire/scripts/remote_audio.py",
@@ -335,7 +419,7 @@
     {
       "path": "laboratoire/scripts/remote_channels.py",
       "source": "laboratoire/scripts/remote_channels.py",
-      "sha256": "edc035057777c95ea5683496004a25bbe726bd35e2e2d25e258089a7cab189f4",
+      "sha256": "76897149308a6c903c8c0e8117fbc44c11389ea007ace9e4f184db5e841a5551",
       "neutralized_owner": false
     },
     {
@@ -347,7 +431,7 @@
     {
       "path": "laboratoire/scripts/remote_dialogue.py",
       "source": "laboratoire/scripts/remote_dialogue.py",
-      "sha256": "d37f64f6c46e95512538c1c38f6208b1400cee583f77fd73c1200de79eecc0bb",
+      "sha256": "9c89de42d5435d53e636fa0f5e13e53e924e368d2d5427d2515a75db802000ff",
       "neutralized_owner": true
     },
     {
@@ -361,6 +445,12 @@
       "source": "laboratoire/scripts/reviewed_memory_reader.py",
       "sha256": "3a3ddf19861631dcbd2a166845026653368ec82b8761295240ee2c71acb51afb",
       "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/scene_context.py",
+      "source": "laboratoire/scripts/scene_context.py",
+      "sha256": "27f0b911ca80c7f7f91c7e786e70f4fe96b3ef5ddaec0248444952b16cc4143e",
+      "neutralized_owner": true
     },
     {
       "path": "laboratoire/scripts/social_memory.py",
@@ -399,6 +489,12 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/scripts/stream_recipient.py",
+      "source": "laboratoire/scripts/stream_recipient.py",
+      "sha256": "db7d6bda5f4ab0869680f6453e8e6819f8c0a0236eb94e42d006fd8469be8ceb",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/twitch_reader.py",
       "source": "laboratoire/scripts/twitch_reader.py",
       "sha256": "8eccc9cf3864a7b060ac1de55a395c1c5778a2a4154080779efcb477d935a4f3",
@@ -432,6 +528,36 @@
       "path": "laboratoire/scripts/verify_installation.py",
       "source": "laboratoire/scripts/verify_installation.py",
       "sha256": "1ed84a0fbdede43742c0d8f2a039374a381c67dd925fada9e288be2037331c8c",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/vision_bench_cases.py",
+      "source": "laboratoire/scripts/vision_bench_cases.py",
+      "sha256": "2bb1cb6e2eedd79c8613522c5fcb4d215c072157cdbe6c2b5302646732fd44c3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/vision_bench_runtime.py",
+      "source": "laboratoire/scripts/vision_bench_runtime.py",
+      "sha256": "32880fa86b671cebbab251c8b2bdd2209243dd029f6bd1ac31b1d60e627a75fb",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/vision_desktop_cases.py",
+      "source": "laboratoire/scripts/vision_desktop_cases.py",
+      "sha256": "ea7860ec38edabb183faed7698a4f0e2140b7efd5df4d1e24b92838834a0e2fd",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/vision_fps_guard.py",
+      "source": "laboratoire/scripts/vision_fps_guard.py",
+      "sha256": "d894c9287024e9a306e7cf1d287b2680566c67bc5dc615f5e6cd54e344d356d0",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/vision_observation_adapter.py",
+      "source": "laboratoire/scripts/vision_observation_adapter.py",
+      "sha256": "2a8abb1560ced92cd6580715bac3eb6cdf25fe7dc98698e0eaf0110996f1ed26",
       "neutralized_owner": false
     },
     {
@@ -713,7 +839,7 @@
     {
       "path": "laboratoire/tests/test_desktop_flow.py",
       "source": "laboratoire/tests/test_desktop_flow.py",
-      "sha256": "bea7069036156d73810b37d2993c155ea57e67e54258aed929b0562d85ae9c15",
+      "sha256": "edc06cb0a0ad4d1207cea887ccddbf155a1a8b907a9d7b1cb0e333d4c0f94f05",
       "neutralized_owner": false
     },
     {
@@ -726,6 +852,12 @@
       "path": "laboratoire/tests/test_desktop_initiative_flow.py",
       "source": "laboratoire/tests/test_desktop_initiative_flow.py",
       "sha256": "9e6ceb0f95b909d69abc0dd44cf1cd1123bc70a89657b933b4bbe49d90c278c9",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_desktop_recipient.py",
+      "source": "laboratoire/tests/test_desktop_recipient.py",
+      "sha256": "669626cb6624eb624c8d13509daa5dad24a8acfcb66c3d0ddfdf4f5b64fd4f4c",
       "neutralized_owner": false
     },
     {
@@ -897,6 +1029,18 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/tests/test_public_scene.py",
+      "source": "laboratoire/tests/test_public_scene.py",
+      "sha256": "0c584fa72c2adc74b0f451a5b3cf26842c1fedfc363492f11658be2a0ddc80e9",
+      "neutralized_owner": true
+    },
+    {
+      "path": "laboratoire/tests/test_public_scene_integration.py",
+      "source": "laboratoire/tests/test_public_scene_integration.py",
+      "sha256": "75f4fbea062afa9cd249981cc8c4846e20969f34f52a1f0fd29a67a0ea84c83b",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/tests/test_remote_channels.py",
       "source": "laboratoire/tests/test_remote_channels.py",
       "sha256": "5863f54a1c7e9d5499c106c8e94f8a0639e457af131fab0d9e3845288e39a67b",
@@ -960,6 +1104,12 @@
       "path": "laboratoire/tests/test_stop_only.py",
       "source": "laboratoire/tests/test_stop_only.py",
       "sha256": "96a7c53ba36b03e98c1b292f827a15c0b8bdcc36dc307af4665fd6b581fe5a0e",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_stream_recipient.py",
+      "source": "laboratoire/tests/test_stream_recipient.py",
+      "sha256": "af3e11b592ce0571f80d76790294765ee733bb5af4331b89b34cb63f63a55e9d",
       "neutralized_owner": false
     },
     {

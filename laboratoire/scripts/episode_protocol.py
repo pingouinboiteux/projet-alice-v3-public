@@ -42,24 +42,22 @@ READING_RULES=(
 )
 # READER remains byte-for-byte equivalent to the verified factual instructions.
 FACTUAL_STYLE='Reponds au sens exact de la question, en trois phrases courtes au maximum.'
-DIALOGUE_STYLE=('Reponds au sens exact de la demande dans une replique orale. '
-    'Developpe un seul point a la fois, generalement en trois ou quatre phrases '
-    'naturelles. Une demande d approfondissement permet d aller plus loin. '
-    'Garde de la matiere pour la suite de l echange au lieu d epuiser le sujet '
-    'dans un monologue.')
+DIALOGUE_STYLE=('Reponds au sens exact du dernier propos dans une replique orale. '
+    'La forme et la longueur suivent ce qu il appelle : une reaction simple peut se '
+    'suffire, une idee ou un argument meritent un developpement. N impose pas le meme '
+    'plan a toutes tes reponses. Laisse la suite se construire avec ton interlocuteur.')
 READER=READING_RULES+FACTUAL_STYLE
 DIALOGUE_READER=READING_RULES+DIALOGUE_STYLE
 
 REPLY_SCHEMA = {'type': 'object', 'properties': {'reply': {'type': 'string'}, 'evidence_ids': {'type': 'array', 'items': {'type': 'string'}}}, 'required': ['reply', 'evidence_ids'], 'additionalProperties': False}
 
 def dialogue_subject_contract(schema):
-    """Choose a concrete subject before speaking; no stored fact or extra call."""
+    """Optional new subject before speaking; no stored fact or extra call."""
     contract=deepcopy(schema)
     subject={'type':'string','maxLength':160,'description':
-        'Un phenomene concret du monde qui devient le sujet de cette replique. '
-        'Pour lancer ou changer de sujet, choisis ici le phenomene puis explique-le '
-        'dans reply. Ce champ ne decrit ni la demande ni le fonctionnement de la '
-        'conversation. Vide seulement quand aucun choix de sujet n est attendu.'}
+        'Le sujet concret de cette replique si tu en proposes un nouveau. '
+        'Vide pour une simple reaction ou pour continuer le sujet deja present. '
+        'Ce repere ne demande ni expose ni explication systematique dans reply.'}
     contract['properties']={'phenomenon':subject,**contract['properties']}
     contract['required']=['phenomenon',*contract['required']]
     return contract

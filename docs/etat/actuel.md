@@ -1,4 +1,4 @@
-# Alice actuelle — 5 novembre 2026
+# Alice actuelle — 6 novembre 2026
 
 L'installation originale et le laboratoire sont distincts. Le travail fonctionnel
 sur l'originale est en pause ; les essais actuels concernent le laboratoire.
@@ -13,27 +13,25 @@ Ce dépôt expose son code, sans ses données privées ni ses ressources de mod�
 | Actions | Outils locaux limités, confirmations et atelier encadré | Pas de contrôle général autonome du PC |
 | Twitch / Discord | Lecture Twitch et raccord vocal Discord ; contexte public séparé | Les entrées externes n'obtiennent pas de droits locaux ni de souvenirs privés |
 | Initiative | Modes discussion/animation optionnels, stop vocal et selection du chat | Calme au demarrage ; rythme en stream encore a valider |
-| Vision | Non activee | Prochaine phase, approche a definir |
+| Vision | Essais isoles de perception et notes, pas de perception generale active | Branche vision reprise ; pas de commande de jeu |
 
-## Initiative livree ; essai stream attendu
+## Dialogue du stream ameliore ; reprise de la vision
 
-La memoire reste une base viable avec ses limites. Le modele, la voix et le
-backend sont conserves. Le jugement conversationnel reste reporte.
-Voir le [bilan de rappel](../technique/rappel-memoire.md).
+Destinataire vocal avant generation, expression plus souple et scene publique
+temporaire commune entre Twitch et animation. Les consignes locales publiques
+sont explicites (`/scene` ou « Alice pour le stream »). Modele, voix et souvenirs
+prives conserves. Dernier lot :170 tests logiciels locaux ;10 situations
+comparatives de contexte. Controle regroupe avant publication :219 tests locaux
+passes. Ces mesures ne prouvent pas une fiabilite generale.
+[Fonctionnement, mesures et limites](../technique/dialogue-stream.md).
 
-La parole spontanee est optionnelle : discussion, animation ou calme. Les
-sequences et pauses sont bornees, le contexte public reste separe du prive.
-Le proprietaire confirme stop vocal fonctionnel et autres bruits ignores.
-594 tests logiciels locaux passes ; 68 decisions du modele sur trois scenarios
-de dix minutes simulees, sans rejet. Le rythme sera teste au prochain stream.
-Naturel, diversite et fiabilite factuelle restent limites.
-[Details, mesures et limites](../technique/initiative-parole.md).
+Les essais de vision ont avance sur des parcours isoles de demonstration et de
+notes avec controle des valeurs et confirmation. Aucune vision generale active
+dans le dialogue, ni jeu autonome qualifie. La branche vision est reprise pour
+la suite ; le perimetre suivant reste a preciser avant implementation.
 
-Prochaine phase : vision sur une branche distincte ; perimetre et approche a
-definir avant implementation. Aucune nouvelle perception du PC n'est activee.
-Cette copie reste documentaire, sans ressources, donnees ni rapports prives.
-Les 594 tests locaux ne sont pas integralement reproductibles depuis cette
-selection. [Code et provenance](../../laboratoire/README.md).
+Cette selection publique ne contient ni donnees privees, ni ressources, ni
+rapports bruts. [Code et provenance](../../laboratoire/README.md).
 
 ## Migration technique locale du 5 novembre
 

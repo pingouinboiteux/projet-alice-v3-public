@@ -1,6 +1,6 @@
 # Direction d'Alice
 
-État au 5 novembre 2026. Les objectifs peuvent évoluer ; ils ne constituent pas
+État au 6 novembre 2026. Les objectifs peuvent évoluer ; ils ne constituent pas
 des fonctions déjà livrées.
 
 ## Garder
@@ -10,19 +10,16 @@ conversations publiques et privées, la personnalité expressive et les actions
 locales encadrées. Aucun remplacement de mémoire ou de personnalité par un
 candidat non qualifié.
 
-## Prochaine phase : vision, approche a definir
+## Prochaine phase : reprise de la vision
 
-L'initiative de parole et le rythme sont acceptes comme version testable.
-Le proprietaire effectuera la validation d'usage au prochain stream ; les
-repetitions ou interventions mal placees recurrentes seront corrigees ensuite.
-Le stop vocal et l'ignorance des autres bruits ont ete confirmes par utilisateur.
-Le modele actuel, la voix et la memoire restent conserves.
-Voir [les mesures et limites](../technique/initiative-parole.md).
+Les trois ameliorations du stream sont acceptees pour poursuivre : destinataire,
+expression et contexte public partage. Les limites du jugement, des intentions
+et des longues sessions restent ouvertes. [Bilan](../technique/dialogue-stream.md).
 
-Chaque phase doit avoir sa branche. La prochaine branche sera consacree a la
-vision ; cette publication ne choisit pas son architecture et ne l'implemente
-pas. Le perimetre, les sources de perception et les criteres de validation
-seront definis avec le proprietaire avant de commencer.
+La branche vision est reprise apres publication. Les essais isoles existants
+sur demonstration et notes ne sont pas une autonomie generale du PC ni du jeu.
+Conserver le modele, les protections FPS/RAM et la separation des donnees ;
+definir une prochaine etape verifiable avant de modifier le produit.
 
 ## Possibilités futures à évaluer séparément
 
