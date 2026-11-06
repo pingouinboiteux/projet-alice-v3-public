@@ -10,10 +10,10 @@ Ce dépôt expose son code, sans ses données privées ni ses ressources de mod�
 | Voix | Sopro, référence originale, français, FP32, 2 étapes ; choix conservé | Sibilance encore perceptible ; référence audio exclue |
 | Mémoire | Backend `v5_context`, stockage épisodique et sources | Stocker, retrouver et comprendre sont trois propriétés distinctes ; aucune fiabilité générale revendiquée |
 | Personnalité | Consignes expressives et franches conservées | Un prompt ne garantit pas un avis cohérent |
-| Actions | Outils locaux limités, confirmations et atelier encadré | Pas de contrôle général autonome du PC |
+| Actions | Notes/listes et ouverture Web claires sans bouton ; autres confirmations conservees | Pas de controle general autonome du PC, erreurs d interpretation possibles |
 | Twitch / Discord | Lecture Twitch et raccord vocal Discord ; contexte public séparé | Les entrées externes n'obtiennent pas de droits locaux ni de souvenirs privés |
 | Initiative | Modes discussion/animation optionnels, stop vocal et selection du chat | Calme au demarrage ; rythme en stream encore a valider |
-| Vision | Essais isoles de perception et notes, pas de perception generale active | Branche vision reprise ; pas de commande de jeu |
+| Vision | Lecture HTTPS ciblee et rendu CSS/JavaScript public isole raccordes | Lecture partielle, sans compte/clic/jeu ni perception generale |
 
 ## Dialogue du stream ameliore ; reprise de la vision
 
@@ -25,10 +25,13 @@ comparatives de contexte. Controle regroupe avant publication :219 tests locaux
 passes. Ces mesures ne prouvent pas une fiabilite generale.
 [Fonctionnement, mesures et limites](../technique/dialogue-stream.md).
 
-Les essais de vision ont avance sur des parcours isoles de demonstration et de
-notes avec controle des valeurs et confirmation. Aucune vision generale active
-dans le dialogue, ni jeu autonome qualifie. La branche vision est reprise pour
-la suite ; le perimetre suivant reste a preciser avant implementation.
+Lecture Web ciblee, observation publique rendue et notes/listes persistantes
+raccordees au dialogue local. Ouverture et creation/remplacement de notes sans
+bouton pour les demandes claires ; clarification en cas de manque ou ambiguite.
+30/30 intentions notes,9/9 etapes reelles,580 tests logiciels locaux passes et1
+saute. Pas de nouvel essai micro, de controle PC general, de compte ou de jeu.
+[Fonctions, mesures et limites](../technique/vision-web-notes.md).
+La suite de la vision conserve le modele et les gardes de validation.
 
 Cette selection publique ne contient ni donnees privees, ni ressources, ni
 rapports bruts. [Code et provenance](../../laboratoire/README.md).

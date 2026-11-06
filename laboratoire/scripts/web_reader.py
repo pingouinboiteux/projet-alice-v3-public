@@ -3,6 +3,7 @@ import http.client
 from html.parser import HTMLParser
 import ipaddress
 import json
+import re
 import socket
 import ssl
 import time
@@ -91,33 +92,53 @@ def fetch(url, check=lambda: None):
 class PageText(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.skipped = []
+        self.stack = []
         self.parts = []
 
     def handle_starttag(self, tag, attrs):
-        if tag in {'script', 'style', 'nav', 'footer', 'noscript', 'svg', 'form'}:
-            self.skipped.append(tag)
+        attributes=dict(attrs)
+        hidden=(tag in {'script','style','nav','footer','noscript','svg','form','template'}
+            or 'hidden' in attributes or (attributes.get('aria-hidden') or '').lower()=='true'
+            or bool(re.search(r'(?:^|;)\s*(?:display\s*:\s*none|visibility\s*:\s*hidden)\s*(?:!important\s*)?(?:;|$)',
+                              attributes.get('style') or '',re.I)))
+        ignored=hidden or bool(self.stack and self.stack[-1][1])
+        if tag not in {'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}:
+            self.stack.append((tag,ignored))
+        if not ignored and tag in {'tr','p','div','br','h1','h2','h3','h4','li','section','article'}:
+            self.parts.append('\n')
 
     def handle_endtag(self, tag):
-        if self.skipped and self.skipped[-1] == tag:
-            self.skipped.pop()
+        ignored=bool(self.stack and self.stack[-1][1])
+        for index in range(len(self.stack)-1,-1,-1):
+            if self.stack[index][0]==tag:
+                del self.stack[index:];break
+        if not ignored:
+            if tag in {'td','th'}:self.parts.append(' | ')
+            elif tag in {'tr','p','div','h1','h2','h3','h4','li','section','article'}:self.parts.append('\n')
 
     def handle_data(self, data):
-        if not self.skipped and data.strip():
-            self.parts.append(data.strip())
+        if not (self.stack and self.stack[-1][1]) and data.strip():
+            # HTML source wrapping is whitespace, unlike the structural breaks
+            # inserted for paragraphs/table rows by the parser itself.
+            self.parts.append(' '.join(data.split()))
 
 
-def read_page(url, check=lambda: None):
+def read_page(url, check=lambda: None, *, question=None):
     response = fetch(url, check)
     text = response['text']
     if response['mime'] in {'text/html', 'application/xhtml+xml'}:
         parser = PageText()
         parser.feed(text)
         text = ' '.join(parser.parts)
-    text = ' '.join(text.split())[:10000]
+    text = '\n'.join(' '.join(line.split()) for line in text.splitlines() if line.strip())
     if len(text) < 80:
         raise ValueError('Pas assez de texte lisible sur cette page')
-    return [{'title': 'Page consultee', 'url': response['url'], 'extract': text}]
+    if question is not None:
+        from web_passages import select_passages
+        selection=select_passages(text,question)
+        return [{'title':'Page consultee','url':response['url'],
+                 'extract':'\n'.join(p['text'] for p in selection['passages']),**selection}]
+    return [{'title': 'Page consultee', 'url': response['url'], 'extract': text[:10000]}]
 
 
 def search_wikipedia(query, check=lambda: None):
@@ -140,6 +161,9 @@ def search_wikipedia(query, check=lambda: None):
 
 
 def answer(session, question, sources):
+    if len(sources)==1 and 'passages' in sources[0]:
+        from web_evidence import answer as evidenced_answer
+        return evidenced_answer(session,question,sources[0])
     # Web text never enters the action router, the developer instructions, or Codex.
     text, _, _ = session.ask([
         {'role': 'system', 'content': 'Resume ces sources en francais en trois phrases, au plus 100 mots. '

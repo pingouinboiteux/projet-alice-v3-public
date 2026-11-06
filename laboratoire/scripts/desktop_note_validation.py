@@ -7,10 +7,8 @@ import tkinter as tk
 
 from chat import ROOT
 from observer_action_bench import ObserverSession
-from observer_natural_bench import interpret
 from observer_note_pending import PendingNoteReview
 from observer_tiddlywiki import TiddlyWikiApp
-from observer_value_bench import complete
 from vision_bench_runtime import save
 
 
@@ -53,68 +51,51 @@ def commit_review(app,pending,authorization):
 
 
 def run(app):
+    from pathlib import Path
+    from notes_dialogue import NotesDialogue
+    from notes_storage import NotesStorage
     session=ObserverSession();app.session=session
-    pending=app.note_pending=PendingNoteReview()
-    report={'status':'starting','cases':[], 'cleanup':[], 'scope':'ordinary desktop widgets; isolated notes worker; no memory/audio/channels'}
-    path=ROOT/'data/validation/validation_interface_notes_20261105'/('run_'+time.strftime('%H%M%S')+'.json')
-    turns=[];backend=None
+    backends=[]
+    report={'status':'starting','cases':[],
+            'scope':'ordinary widgets and installed NotesDialogue; synthetic storage; no memory/audio/channels'}
+    path=ROOT/'data/validation/validation_interface_notes_20261106'/('run_'+time.strftime('%H%M%S')+'.json')
+    storage=Path(app.validation_folder.name)/'wiki'
+    def factory(guard):
+        backend=TiddlyWikiApp(guard,storage=NotesStorage.validation(storage))
+        session.browser_demo=backend;backends.append(backend)
+        return backend
+    controller=NotesDialogue(session,factory=factory)
+    app.note_pending=controller.pending
     def show(text):app.events.put(('text',('Alice',text)))
     try:
         session.start();report['games_present']=session.games_present
-        app.events.put(('status','Essai notes prêt. Micro et voix coupés.'))
+        app.events.put(('status','Essai notes pret. Micro et voix coupes.'))
         while not app.stop.is_set():
             session.check()
             try:text=app.inputs.get(timeout=.2)
             except queue.Empty:continue
             app.events.put(('text',('Toi',text)))
-            if text.startswith('/'):
-                turns=[];pending.cancel();show('Ce mode accepte seulement des demandes de notes temporaires.');continue
-            turns=(turns+[text])[-8:]
-            row={'turns':list(turns)}
-            try:
-                intent=interpret(session,turns)['validated'];row['intent']=intent
-                if intent['status']=='cancel':
-                    turns=[];pending.cancel();show('Demande annulée. Aucune note enregistrée.')
-                elif intent['status']!='ready':
-                    show('Précise le titre et le texte exacts de la note, ou la correction souhaitée.')
-                else:
-                    pending.propose(intent['target'],source='local_text');review=pending.review()
-                    target=review['target']
-                    description=('Note temporaire — vérifie chaque valeur.\n\nTitre : '+target['title']+
-                        '\n\nTexte :\n'+target['body']+'\n\nAnnuler permet de revenir au dialogue pour corriger.')
-                    accepted=app.confirm(description);row['confirmed']=accepted
-                    if not accepted:
-                        pending.cancel();show('Rien enregistré. Tu peux corriger ta demande.');row['saved']=False
-                    else:
-                        authorization=pending.confirm(review['ticket'],'oui')
-                        backend=TiddlyWikiApp(guard=session.check);session.browser_demo=backend
-                        backend.start();backend.prepare_new()
-                        outcome=complete(session,backend,target,
-                            before_commit=lambda:commit_review(app,pending,authorization))
-                        row['execution']=outcome
-                        row['saved']=bool(outcome['passed'] and backend.verify_persisted(target))
-                        row['persistence']=backend.persistence_evidence if row['saved'] else None
-                        show(('Note enregistrée et relue : '+target['title']+'\n'+target['body']) if row['saved']
-                             else 'Enregistrement non validé. Aucun succès annoncé.')
-                        turns=[]
-            except Exception as error:
-                row['error']=repr(error);pending.cancel();turns=[]
-                show('Essai interrompu : '+type(error).__name__+'. Aucun succès annoncé.')
-            finally:
-                if backend:
-                    backend.close();report['cleanup'].append(backend.owned_stopped)
-                    backend=None;session.browser_demo=None
-                report['cases'].append(row);save(path,report)
+            if not controller.can_handle(text):
+                controller.cancel();show('Ce mode accepte seulement des demandes de notes temporaires.');continue
+            row={'text':text,'confirmations':[]}
+            def confirm(description):
+                accepted=app.confirm(description)
+                row['confirmations'].append({'preview':description,'accepted':accepted})
+                return accepted
+            result=controller.handle(text,'text',confirm,
+                cancelled=lambda:app.stop.is_set() or not app.inputs.empty())
+            row['result']=result;report['cases'].append(row)
+            show(result['reply']);save(path,report)
         report['status']='complete'
     except Exception as error:
-        report.update(status='failed',error=repr(error));show('Arrêt de protection : '+str(error))
+        report.update(status='failed',error=repr(error));show('Arret de protection : '+str(error))
     finally:
-        pending.cancel()
+        controller.cancel()
         try:session.close()
         except Exception as error:report.update(status='cleanup_failed',cleanup_error=repr(error))
         report['minimum_free_ram']=session.minimum_ram
-        report['owned_processes_stopped']=all(p.poll() is not None for p in session.children.values())
+        report['owned_processes_stopped']=all(p.poll() is not None for p in session.children.values()) and all(b.owned_stopped for b in backends)
         app.finished.set();app.observation.close()
         app.validation_folder.cleanup()
-        report['observation_removed']=not __import__('pathlib').Path(app.validation_folder.name).exists()
+        report['observation_removed']=not Path(app.validation_folder.name).exists()
         save(path,report);app.events.put(('finished',None))

@@ -1,11 +1,13 @@
 """Scoped DOM adapter for an unmodified, local TiddlyWiki application.
 
-All wiki files are temporary validation data. The model cannot choose URLs,
-selectors, paths or JavaScript. Actual note writes use UI events only.
+Wiki files are temporary by default; explicit NotesStorage retains personal or
+validation notes. The model cannot choose URLs, selectors, paths or JavaScript.
+Actual note writes use UI events only.
 """
 from __future__ import annotations
 import copy
 import json
+import os
 from pathlib import Path
 import secrets
 import shutil
@@ -17,6 +19,7 @@ from urllib.parse import quote, urlsplit
 import requests
 
 from observer_browser import BrowserDemo, fingerprint, ROOT
+from notes_storage import NotesStorage
 
 PACKAGE = ROOT / 'runtime/tiddlywiki/node_modules/tiddlywiki'
 NEW = 'button[title="Create a new tiddler"]'
@@ -30,7 +33,7 @@ def parse_tid(text):
     if not separator:
         return None
     fields = dict(line.split(': ', 1) for line in head.splitlines() if ': ' in line)
-    if 'title' not in fields or 'draft.of' in fields:
+    if 'title' not in fields or 'draft.of' in fields or 'draft.title' in fields or fields['title'].startswith('$:/'):
         return None
     return {'title': fields['title'], 'body': body}
 
@@ -52,8 +55,12 @@ def validate_note_action(action, snapshot):
         raise ValueError('target_missing_ambiguous_or_disabled')
 
 class TiddlyWikiApp(BrowserDemo):
-    def __init__(self, guard, **kwargs):
+    def __init__(self, guard, *, storage=None, **kwargs):
         super().__init__(guard, **kwargs)
+        if storage is not None and type(storage) is not NotesStorage:
+            raise TypeError('explicit_notes_storage_required')
+        self.storage = storage
+        self._storage_acquired = False
         self._server = None
         self._init = None
         self._wiki_temp = None
@@ -75,30 +82,35 @@ class TiddlyWikiApp(BrowserDemo):
         base = ROOT / 'data/validation'
         base.mkdir(parents=True, exist_ok=True)
         self._wiki_temp = tempfile.TemporaryDirectory(prefix='validation_tiddlywiki_', dir=base)
-        self.wiki = Path(self._wiki_temp.name)/'wiki'
-        self._server_log = (Path(self._wiki_temp.name)/'server.log').open('w', encoding='utf-8')
-        command = [node, str(PACKAGE/'tiddlywiki.js'), str(self.wiki)]
         flags = subprocess.CREATE_NO_WINDOW
         try:
+            self.wiki = self.storage.acquire() if self.storage is not None else Path(self._wiki_temp.name)/'wiki'
+            self._storage_acquired = self.storage is not None
+            self._server_log = (Path(self._wiki_temp.name)/'server.log').open('w', encoding='utf-8')
+            command = [node, str(PACKAGE/'tiddlywiki.js'), str(self.wiki)]
             self.guard()
-            self._init = subprocess.Popen(command+['--init', 'server'], cwd=ROOT,
-                stdout=self._server_log, stderr=subprocess.STDOUT, creationflags=flags)
-            deadline = time.monotonic()+20
-            while self._init.poll() is None:
-                self.guard()
-                if time.monotonic()>deadline: raise RuntimeError('Wiki initialization timeout')
-                time.sleep(.05)
-            if self._init.returncode:
-                raise RuntimeError('Wiki initialization failed')
+            if not (self.wiki/'tiddlywiki.info').is_file():
+                self._init = subprocess.Popen(command+['--init', 'server'], cwd=ROOT,
+                    stdout=self._server_log, stderr=subprocess.STDOUT, creationflags=flags)
+                deadline = time.monotonic()+20
+                while self._init.poll() is None:
+                    self.guard()
+                    if time.monotonic()>deadline: raise RuntimeError('Wiki initialization timeout')
+                    time.sleep(.05)
+                if self._init.returncode:
+                    raise RuntimeError('Wiki initialization failed')
+            if self.storage is not None:
+                self._configure_persistent_sync()
             password = secrets.token_hex(24)
-            (self.wiki/'credentials.csv').write_text('username,password\nvalidation,'+password+'\n', encoding='utf-8')
+            credentials = Path(self._wiki_temp.name)/'credentials.csv'
+            credentials.write_text('username,password\nvalidation,'+password+'\n', encoding='utf-8')
             self._http.auth = ('validation', password)
             with socket.socket() as sock:
                 sock.bind(('127.0.0.1',0)); port=sock.getsockname()[1]
             self.origin = f'http://127.0.0.1:{port}'
             self.guard()
             self._server = subprocess.Popen(command+['--listen', 'host=127.0.0.1', f'port={port}',
-                'credentials=credentials.csv', 'readers=validation', 'writers=validation'], cwd=ROOT,
+                'credentials='+os.path.relpath(credentials,self.wiki), 'readers=validation', 'writers=validation'], cwd=ROOT,
                 stdout=self._server_log, stderr=subprocess.STDOUT, creationflags=flags)
             deadline=time.monotonic()+30
             while True:
@@ -128,6 +140,8 @@ class TiddlyWikiApp(BrowserDemo):
 
     def _diagnose(self):
         """Bounded fictitious UI evidence only; no credentials, URL or page source."""
+        if self.storage is not None and self.storage.is_personal:
+            return
         if self.page and not self.closed:
             try:
                 self.diagnostics = self.page.evaluate('''() => ({
@@ -136,6 +150,30 @@ class TiddlyWikiApp(BrowserDemo):
                         title:e.title,aria:e.getAttribute('aria-label'),text:e.innerText.slice(0,80)}))})''')
             except Exception:
                 pass
+
+    def _configure_persistent_sync(self):
+        """Only explicitly saved notes cross into persistent storage.
+
+        TiddlyWiki normally syncs editor drafts as well. Excluding them keeps a
+        cancelled or interrupted edit out of the persistent wiki, and prevents
+        verification's temporary editor from reappearing on the next start.
+        """
+        original=(PACKAGE/'core/wiki/config/SyncFilter.tid').read_text(encoding='utf-8')
+        head,separator,body=original.partition('\n\n')
+        if not separator or head.strip()!='title: $:/config/SyncFilter':
+            raise RuntimeError('Unexpected TiddlyWiki sync configuration')
+        content=head+'\n\n'+body.strip()+' -[has[draft.of]] -[has[draft.title]]\n'
+        directory=self.wiki/'tiddlers'
+        if directory.resolve()!=directory.absolute() or directory.is_symlink():
+            raise RuntimeError('Linked notes directory refused')
+        directory.mkdir(exist_ok=True)
+        target=directory/'alice-sync-filter.tid'
+        if target.exists():
+            if target.is_symlink() or target.read_text(encoding='utf-8')!=content:
+                raise RuntimeError('Managed notes sync configuration changed')
+        else:
+            with target.open('x',encoding='utf-8',newline='\n') as stream:
+                stream.write(content)
 
     def prepare_new(self):
         self.guard()
@@ -175,11 +213,106 @@ class TiddlyWikiApp(BrowserDemo):
                 **values,'status':'Application TiddlyWiki locale'}
 
     def _disk_note(self, title):
-        for path in (self.wiki/'tiddlers').rglob('*.tid'):
-            parsed=parse_tid(path.read_text(encoding='utf-8'))
-            if parsed and parsed['title']==title:
-                return parsed
-        return None
+        self._public_title(title)
+        found=None
+        for path,header in self._note_headers():
+            if header['title']!=title:continue
+            if found is not None:raise RuntimeError('Ambiguous note title on disk')
+            with path.open(encoding='utf-8') as stream:
+                if self._read_header(stream)!=header:raise RuntimeError('note_changed')
+                body=stream.read(4097)
+            if len(body)>4096:raise RuntimeError('Note body exceeds supported limit')
+            found={'title':title,'body':body}
+        return found
+
+    @staticmethod
+    def _public_title(title):
+        if (type(title) is not str or not title.strip() or len(title)>80 or
+                any(c in title for c in '\r\n\x00') or title.startswith('$:/')):
+            raise ValueError('invalid_title')
+
+    @staticmethod
+    def _read_header(stream):
+        """Read metadata only; listing never consumes note bodies."""
+        fields={};size=0
+        for _ in range(64):
+            line=stream.readline(4097)
+            size+=len(line)
+            # TiddlyWiki also serializes empty tiddlers as headers ending at EOF.
+            if not line:return fields
+            if size>8192 or len(line)>4096:
+                raise RuntimeError('Invalid or oversized note header')
+            if line in ('\n','\r\n'):return fields
+            key,separator,value=line.rstrip('\r\n').partition(': ')
+            if separator:
+                if key in fields:raise RuntimeError('Duplicate note metadata')
+                fields[key]=value
+        raise RuntimeError('Too many note metadata fields')
+
+    def _note_headers(self):
+        root=self.wiki.resolve()
+        for index,path in enumerate((self.wiki/'tiddlers').rglob('*.tid')):
+            self.guard()
+            if index>=1000:raise RuntimeError('Note scan limit reached')
+            if path.is_symlink() or not path.resolve().is_relative_to(root):
+                raise RuntimeError('Note file outside storage')
+            with path.open(encoding='utf-8') as stream:header=self._read_header(stream)
+            title=header.get('title','')
+            if not title or title.startswith('$:/') or 'draft.of' in header or 'draft.title' in header:
+                continue
+            self._public_title(title)
+            yield path,header
+
+    def list_notes(self, limit=50):
+        self.guard()
+        if type(limit) is not int or not 1<=limit<=50:raise ValueError('invalid_list_limit')
+        titles=set()
+        for _,header in self._note_headers():
+            titles.add(header['title'])
+            if len(titles)>limit:
+                return {'titles':sorted(titles)[:limit],'truncated':True}
+        return {'titles':sorted(titles),'truncated':False}
+
+    def read_note(self, title):
+        self.guard();self._public_title(title)
+        expected=self._disk_note(title)
+        if expected is None:return None
+        if not self.verify_persisted(expected) or self._disk_note(title)!=expected:
+            raise RuntimeError('note_changed')
+        return copy.deepcopy(expected)
+
+    def _open_note_editor(self, title):
+        self.page.goto(self.origin+'/#'+quote(title,safe=''),wait_until='load')
+        self.page.reload(wait_until='load')
+        selector=json.dumps(title,ensure_ascii=False)
+        frame=self.page.locator(f'.tc-tiddler-view-frame[data-tiddler-title={selector}]')
+        frame.get_by_role('button',name='Edit this tiddler',exact=True).click(timeout=5000)
+        self.page.locator(TITLE).wait_for(state='visible')
+        return {'title':self.page.locator(TITLE).input_value(),'body':self._body().input_value()}
+
+    def prepare_edit(self, expected):
+        """Bind editing to the exact note shown before local confirmation."""
+        self.guard()
+        if (type(expected) is not dict or set(expected)!={'title','body'} or
+                type(expected['body']) is not str or len(expected['body'])>4096):
+            raise ValueError('invalid_expected_note')
+        self._public_title(expected['title'])
+        if self._disk_note(expected['title'])!=expected:raise RuntimeError('note_changed')
+        if self.page.locator(TITLE).count():raise RuntimeError('An editor is already open')
+        actual=self._open_note_editor(expected['title'])
+        if actual!=expected or self._disk_note(expected['title'])!=expected:
+            raise RuntimeError('note_changed')
+        self._saved=None
+        self._editing_original=copy.deepcopy(expected)
+        return self.observe()
+
+    def title_exists(self, title):
+        """Reject creation collisions, including built-in tiddlers, before editing."""
+        self.guard()
+        if type(title) is not str or not title.strip() or len(title)>80:
+            raise ValueError('invalid_title')
+        return self._disk_note(title) is not None or bool(self.page.evaluate(
+            'title => $tw.wiki.tiddlerExists(title)', title))
 
     def act(self, action, snapshot):
         self.guard()
@@ -219,6 +352,13 @@ class TiddlyWikiApp(BrowserDemo):
         else:
             fields={e['id']:e['value'] for e in before['elements']}
             target={'title':fields['title'],'body':fields['body']}
+            if (self._editing_original is None or self._editing_original['title'] != target['title']) and self.title_exists(target['title']):
+                return {'ok':False,'verified':False,'reason':'note_title_exists','after':self.observe()}
+            if self._editing_original is not None:
+                if self._editing_original['title']!=target['title']:
+                    return {'ok':False,'verified':False,'reason':'note_title_changed','after':self.observe()}
+                if self._disk_note(target['title'])!=self._editing_original:
+                    return {'ok':False,'verified':False,'reason':'note_changed','after':self.observe()}
             self._last_title=target['title']
             self.page.locator(SAVE).click()
             self.page.locator(TITLE).wait_for(state='detached',timeout=5000)
@@ -239,17 +379,15 @@ class TiddlyWikiApp(BrowserDemo):
     def verify_persisted(self, expected):
         self.guard()
         disk=self._disk_note(expected['title'])
-        self.page.goto(self.origin+'/#'+quote(expected['title'],safe=''),wait_until='load')
-        # Repeated verification of the same URL must really reload persisted data.
-        self.page.reload(wait_until='load')
-        title_selector=json.dumps(expected['title'],ensure_ascii=False)
-        frame=self.page.locator(f'.tc-tiddler-view-frame[data-tiddler-title={title_selector}]')
-        frame.get_by_role('button',name='Edit this tiddler',exact=True).click(timeout=5000)
-        self.page.locator(TITLE).wait_for(state='visible')
-        actual={'title':self.page.locator(TITLE).input_value(),'body':self._body().input_value()}
+        actual=self._open_note_editor(expected['title'])
         self._editing_original=copy.deepcopy(actual)
         self.persistence_evidence={'disk':disk,'reopened':actual}
-        return disk==expected and actual==expected
+        verified=disk==expected and actual==expected
+        if self.storage is not None:
+            cancelled=self.act({'op':'click','target':'cancel'},self.observe())
+            if not cancelled['ok']:
+                raise RuntimeError('Verification editor could not be discarded')
+        return verified
 
     def tamper_field_for_test(self, field, value):
         self.guard()
@@ -275,11 +413,16 @@ class TiddlyWikiApp(BrowserDemo):
         try:
             super().close()
         finally:
-            self._http.close()
-            if self._server_log and not self._server_log.closed: self._server_log.close()
-            if self._wiki_temp:
-                target=Path(self._wiki_temp.name).resolve()
-                base=(ROOT/'data/validation').resolve()
-                if target.parent!=base or not target.name.startswith('validation_tiddlywiki_'):
-                    raise RuntimeError('Refusing cleanup outside validation root')
-                self._wiki_temp.cleanup()
+            try:
+                self._http.close()
+                if self._server_log and not self._server_log.closed: self._server_log.close()
+                if self._wiki_temp:
+                    target=Path(self._wiki_temp.name).resolve()
+                    base=(ROOT/'data/validation').resolve()
+                    if target.parent!=base or not target.name.startswith('validation_tiddlywiki_'):
+                        raise RuntimeError('Refusing cleanup outside validation root')
+                    self._wiki_temp.cleanup()
+            finally:
+                if self._storage_acquired and self.owned_stopped:
+                    self.storage.release()
+                    self._storage_acquired = False

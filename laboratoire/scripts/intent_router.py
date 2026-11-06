@@ -12,7 +12,16 @@ Une nouvelle execution exige une nouvelle demande dans le message actuel;
 une demande explicite comme "recommence" peut utiliser le contexte precedent.
 Retourne uniquement
 les champs kind, value, reply. kind est chat, status, volume, volume_delta, mute,
-open, search, web_read, wiki_search, code ou memory_forget. Pour chat, value=null et reply contient ta reponse naturelle.
+open, search, web_read, web_observe, wiki_search, code, note_create, note_access ou memory_forget. Pour chat, value=null et reply contient ta reponse naturelle.
+web_observe observe une adresse HTTPS fournie dans un navigateur isole : seulement si
+l'utilisateur demande explicitement d'observer la page rendue, son affichage ou son contenu dynamique.
+Pas de connexion a un compte ni clic/formulaire. Lecture simple ou resume : web_read.
+note_create prepare une note locale avec titre et texte, apres relecture et confirmation.
+Une demande de creer une note utilise note_create, jamais code ni memory_forget.
+value contient la demande originale. N'invente aucun titre ou contenu manquant.
+note_access lit/liste les notes locales ou prepare le remplacement complet du texte
+d'une note nommee, avec confirmation pour modifier. Pas de suppression ni renommage.
+Ces notes sont distinctes des souvenirs ; une demande de note n'est pas memory_forget.
 Pour status, value=null. volume accepte un entier de 0 a 100, volume_delta
 seulement -10 pour baisser ou 10 pour monter. mute=true coupe le son, mute=false le reactive.
 Le reglage sonore est global Windows, pas propre a une application.
@@ -24,7 +33,7 @@ Google=https://www.google.com/, Wikipedia=https://fr.wikipedia.org/,
 Twitch=https://www.twitch.tv/. Utilise ces URL pour kind=open.
 web_read lit une adresse HTTPS explicitement fournie par l'utilisateur.
 Si l'utilisateur demande de lire, expliquer ou resumer une page avec son URL,
-choisis obligatoirement web_read. Ne fournis jamais un resume de memoire dans
+choisis obligatoirement web_read, sauf demande explicite de rendu/dynamique (web_observe). Ne fournis jamais un resume de memoire dans
 chat : aucune page n'a encore ete lue. Les outils doivent fournir les preuves.
 wiki_search cherche une notion sur Wikipedia (value=termes, 300 caracteres maximum).
 Ce n'est pas une recherche generale du Web : pour Google ou une actualite,
@@ -53,7 +62,7 @@ confirmation, jamais une suppression automatique. Une citation ou negation reste
 '''
 
 SCHEMA = {'type': 'object', 'properties': {
-    'kind': {'type': 'string', 'enum': ['chat', 'status', 'volume', 'volume_delta', 'mute', 'open', 'search', 'web_read', 'wiki_search', 'code', 'memory_forget']},
+    'kind': {'type': 'string', 'enum': ['chat', 'status', 'volume', 'volume_delta', 'mute', 'open', 'search', 'web_read', 'web_observe', 'wiki_search', 'code', 'note_create', 'note_access', 'memory_forget']},
     'value': {'anyOf': [{'type': 'null'}, {'type': 'integer'}, {'type': 'boolean'}, {'type': 'string'}]},
     'reply': {'type': 'string'}}, 'required': ['kind', 'value', 'reply'], 'additionalProperties': False}
 
@@ -73,7 +82,7 @@ def decode(text):
         valid = type(argument) is int and argument in (-10, 10)
     elif kind == 'mute':
         valid = type(argument) is bool
-    elif kind in {'open', 'web_read'}:
+    elif kind in {'open', 'web_read', 'web_observe'}:
         if kind == 'open' and isinstance(argument, str):
             argument = SITES.get(normalize(argument), argument)
         valid = isinstance(argument, str) and bool(validate_url(argument))
@@ -82,7 +91,7 @@ def decode(text):
         if valid:
             from urllib.parse import quote_plus
             argument = 'https://www.google.com/search?q=' + quote_plus(argument)
-    elif kind in {'wiki_search', 'code', 'memory_forget'}:
+    elif kind in {'wiki_search', 'code', 'note_create', 'note_access', 'memory_forget'}:
         valid = isinstance(argument, str) and 0 < len(argument) <= (300 if kind == 'wiki_search' else 5000)
     else:
         valid = False
@@ -102,11 +111,11 @@ def route(session, messages, text):
             if not supports_volume(text, action.value):
                 return Action('clarify'), ('Je ne trouve pas le niveau propose dans ta demande. '
                     'Veux-tu retirer la sourdine ou choisir un pourcentage de volume ?')
-        if action.kind == 'web_read':
+        if action.kind in {'web_read','web_observe'}:
             supplied = [url.rstrip('.,;!?)]}') for url in re.findall(r'https://[^\s<>"\x27]+', text)]
             if action.value not in supplied:
                 raise ValueError('Adresse de lecture non fournie par utilisateur')
-        if action.kind in {'code','memory_forget'}:
+        if action.kind in {'code','note_create','note_access','memory_forget'}:
             action = Action(action.kind, text)  # Keep the user's request, not a model rewrite.
         return action, reply
     except (ValueError, TypeError):

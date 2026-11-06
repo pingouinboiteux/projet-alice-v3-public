@@ -42,3 +42,8 @@ Contexte du stream : `laboratoire/scripts/public_scene.py`, `scene_context.py`,
 `stream_recipient.py`, `desktop_recipient.py` ; [bilan](docs/technique/dialogue-stream.md).
 Les dependances du parcours optionnel de notes se trouvent dans les modules
 `desktop_note_validation.py`, `observer_*.py` et `vision_*.py` selectionnes.
+
+Lecture Web et notes : [bilan](docs/technique/vision-web-notes.md) ; modules
+`notes_*.py`, `note_operations.py`, `note_request.py`, `open_request.py`,
+`web_*.py`, `public_navigation.py`, `public_resources.py`, `rendered_observation.py`
+dans `laboratoire/scripts/`, tests correspondants dans `laboratoire/tests/`.

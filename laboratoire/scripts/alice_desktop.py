@@ -15,7 +15,7 @@ from chat import Session, ROOT
 from desktop_services import DesktopServices, ServiceFactories
 from voice_link import Voice
 from hearing_link import Hearing
-from action_policy import Actions, parse
+from action_policy import Actions, Action, parse
 from persistent_memory import DIALOGUE_HISTORY_MESSAGES
 from memory_backend import create_memory as Memory, is_memory_control
 from observation import Observation, span
@@ -147,6 +147,8 @@ class Application:
                     "Le micro se ferme pendant mon travail et mes réponses. "
                     "Les boutons Discussion et Animer le stream activent mes initiatives ; Calme les coupe. "
                     "Pour guider le sujet public, dis Alice pour le stream suivi de ta consigne, ou ecris /scene ta consigne. "
+                    "Tu peux creer, lister, lire ou modifier le texte d une note nommee ; toute ecriture exige une confirmation dans la fenetre. "
+                    "Pour observer une page publique rendue : /voir https://adresse ta question. "
                     "L'écoute du mot stop est optionnelle. "
                     "Les connexions Twitch et Discord se commandent à droite. F12 arrête la session.")
         self.window.protocol('WM_DELETE_WINDOW', self.shutdown)
@@ -379,6 +381,9 @@ class Application:
             library, public_memory = services.library, services.public_memory
             thoughts = services.thoughts
             self.initiative = DesktopInitiative(self.session)
+            from notes_dialogue import NotesDialogue, run_local_turn
+            self.notes = NotesDialogue(self.session)
+            self.note_pending = self.notes.pending
             voice = self.session.voice
             voice.stop_listener = lambda: hearing.stop_only(voice,
                 enabled=self.stop_word_enabled.is_set() and not self.paused.is_set(),
@@ -443,11 +448,13 @@ class Application:
                     self.initiative.idle(messages[1:], self.channels)
                     continue
                 if shared is not None:
+                    self.notes.cancel()
                     self.initiative.share_directive(shared, self.channels)
                     self.events.put(('text', ('Consigne partagee avec le stream', shared)))
                     continue
                 selected_mode = mode_command(text)
                 if selected_mode:
+                    self.notes.cancel()
                     self.initiative.set_mode(selected_mode)
                     self.initiative.idle(messages[1:], self.channels)
                     self.events.put(('text', ('Conversation', 'Mode : ' + {'quiet':'calme','discussion':'discussion','animation':'animation du stream'}[selected_mode])))
@@ -461,9 +468,23 @@ class Application:
                 action=None
                 outcome='dialogue'
                 retain_context=True
+                automatic_open=False
+                opening_epoch=self.speech_epoch
+                opening_cancelled=lambda:False
                 try:
                     require_local(source)
+                    if self.notes.can_handle(text):
+                        action=Action('note_create',text)
+                        retain_context=False
+                        outcome=run_local_turn(self,self.notes,text,source)['status']
+                        hearing.command('extend')
+                        continue
+                    self.notes.cancel()
                     action = parse(text)
+                    if action.kind=='chat':
+                        from open_request import direct_open_target
+                        destination=direct_open_target(text)
+                        if destination:action=Action('open',destination)
                     self.observation.emit('action.parsed',{'kind':action.kind})
                     if action.kind == 'reset':
                         thoughts.clear()
@@ -482,6 +503,11 @@ class Application:
                             with self.observation.span('routing'):
                                 action, answer = route(self.session, action_context.messages(ROUTING_SYSTEM), text)
                             self.observation.emit('action.proposed',{'kind':action.kind})
+                        if action.kind in {'note_create','note_access'}:
+                            retain_context=False
+                            outcome=run_local_turn(self,self.notes,text,source)['status']
+                            hearing.command('extend')
+                            continue
                         if action.kind == 'clarify':
                             # A rejected proposal is not free conversation and
                             # must not be rewritten into an apparent success.
@@ -528,7 +554,7 @@ class Application:
                                     '[Reponse interrompue : le texte effectivement entendu est inconnu.]'}
                             hearing.command('extend')
                             continue
-                        if action.kind not in {'status', 'open', 'search', 'code', 'web_read', 'wiki_search'}:
+                        if action.kind not in {'status', 'open', 'search', 'code', 'web_read', 'web_observe', 'wiki_search'}:
                             if not self.confirm('J ai compris cette action. La confirmes-tu ?\n\n' + describe(action)):
                                 outcome='cancelled'
                                 self.say('Action annulee.')
@@ -541,7 +567,33 @@ class Application:
                         self.paused.set()
                         self.say('Le micro est coupe. Utilise le bouton pour reprendre.')
                         continue
-                    if action.kind in {'web_read', 'wiki_search'}:
+                    if action.kind=='open':
+                        from open_request import decide_open
+                        epoch=opening_epoch
+                        opening_cancelled=lambda:self.stop.is_set() or not self.inputs.empty() or self.session.voice.interruption_epoch!=epoch
+                        if opening_cancelled():outcome='cancelled';continue
+                        decision=decide_open(self.session,text,action.value,source)
+                        if opening_cancelled():
+                            outcome='cancelled';continue
+                        if decision!='execute':
+                            outcome='cancelled';retain_context=False
+                            self.say('Je prends cela comme une discussion ou un exemple, sans ouvrir de page.' if decision=='discuss'
+                                else 'Precise la page ou le site a ouvrir et demande-moi de l ouvrir directement.')
+                            continue
+                        automatic_open=True
+                    if action.kind=='web_observe':
+                        if not self.confirm('Observer cette page publique dans un navigateur isole ?\n\n'+action.value+
+                                '\n\nScripts et styles du meme site seulement. Aucun compte, formulaire ou telechargement.'):
+                            outcome='cancelled';self.say('Consultation annulee.');continue
+                        from public_navigation import read_rendered
+                        result=read_rendered(self.session,action.value,text,
+                            cancelled=lambda:self.stop.is_set() or not self.inputs.empty())
+                        outcome='processed' if result['status']=='read' else 'failed'
+                        if result.get('url'):self.events.put(('text',('Source observee',result['url'])))
+                        self.say(result['reply'])
+                        if result.get('partial'):self.events.put(('text',('Lecture limitee',
+                            'Certaines parties de la page peuvent ne pas etre chargees. Images et interactions non prises en charge.')))
+                    elif action.kind in {'web_read', 'wiki_search'}:
                         label = 'Lire cette page' if action.kind == 'web_read' else 'Chercher sur Wikipedia'
                         if not self.confirm(label + ' ?\n\n' + action.value +
                                 '\n\nCette adresse ou ces termes seront transmis au site, sans souvenirs ni cookies.'):
@@ -549,9 +601,9 @@ class Application:
                             self.say('Consultation annulee.')
                             continue
                         from web_reader import read_page, search_wikipedia, answer as web_answer
-                        reader = read_page if action.kind == 'web_read' else search_wikipedia
                         with self.observation.span('web_read'):
-                            sources = reader(action.value, self.session.check)
+                            sources = (read_page(action.value, self.session.check, question=text)
+                                if action.kind=='web_read' else search_wikipedia(action.value,self.session.check))
                         outcome='processed'
                         self.observation.emit('action.result',{'kind':action.kind,'sources':len(sources)})
                         self.events.put(('text', ('Sources consultees', '\n'.join(
@@ -577,7 +629,7 @@ class Application:
                         messages += [{'role': 'user', 'content': text}, {'role': 'assistant', 'content': answer}]
                     elif action.kind != 'chat':
                         with self.observation.span('action_execute'):
-                            answer = actions.execute(action)
+                            answer = actions.execute(action,automatic_open=automatic_open,cancelled=opening_cancelled)
                         outcome='cancelled' if answer in {'Modification annulee.','Ouverture annulee.'} else 'processed'
                         self.observation.emit('action.result',{'kind':action.kind,'status':'returned'}, {'result':answer})
                         self.say(answer)
@@ -600,6 +652,7 @@ class Application:
             self.events.put(('text', ('Arret', str(error))))
         finally:
             try:
+                if getattr(self, 'notes', None): self.notes.cancel()
                 if getattr(self, 'initiative', None): self.initiative.close()
             finally:
                 services.close()
