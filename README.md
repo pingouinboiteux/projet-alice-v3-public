@@ -31,7 +31,7 @@ Bilan de dialogue reporte : [rappel long et variantes](docs/technique/dialogue-e
 
 Memoire conservee : [rappel et limites](docs/technique/rappel-memoire.md).
 
-Derniere etape : [dialogue et contexte du stream](docs/technique/dialogue-stream.md).
-Destinataire vocal, expression naturelle et scene publique temporaire ;219 tests
-logiciels sur le controle regroupe avant publication. Limites du jugement conservees. Suite :
-reprise de la branche vision, sans nouvelle activation de perception ou d'action.
+Derniere etape : [lecture Web et notes naturelles](docs/technique/vision-web-notes.md).
+Notes/listes locales et ouverture Web claires sans bouton, lecture ciblee et
+observation rendue publique isolee ;580 tests logiciels locaux passes,1 saute.
+Pas de controle PC general ni jeu qualifie. Suite : poursuivre la vision.

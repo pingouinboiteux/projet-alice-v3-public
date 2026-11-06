@@ -127,6 +127,23 @@ class PendingNoteReview:
             self._invalidate()
             return target
 
+    def authorize_request(self, ticket, *, source):
+        """Local controller only, after exact-intent checks; not a pretend button click.
+
+        Voice is allowed by the user's hands-free policy. This method does not
+        classify text: the caller must check intent before issuing this capability.
+        """
+        self._source_allowed(source)
+        with self._lock:
+            self._require_pending()
+            if source != self._source:
+                raise ValueError('request_source_changed')
+            if type(ticket) is not str or not ticket.isascii() or self._ticket is None or not secrets.compare_digest(ticket, self._ticket):
+                raise ValueError('unknown_or_stale_review')
+            self._ticket = None
+            self._authorization = Authorization(self._version, secrets.token_urlsafe(24))
+            return self._authorization
+
     def cancel(self):
         with self._lock:
             self._version += 1

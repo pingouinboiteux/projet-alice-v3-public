@@ -113,6 +113,9 @@ class BrowserDemo:
         self._playwright = self.browser = self.context = self.page = None
         self.closed = False
 
+    def _browser_args(self):
+        return ['--disable-gpu', '--disable-background-networking', '--disable-extensions', '--mute-audio']
+
     def start(self):
         if self.closed or self.page:
             raise RuntimeError('Demo cannot be restarted')
@@ -141,7 +144,7 @@ class BrowserDemo:
                 self.stop_owned()
                 raise RuntimeError('Guard stopped browser startup')
             self.guard()
-            self.browser = self._playwright.chromium.launch(headless=True, args=['--disable-gpu', '--disable-background-networking', '--disable-extensions', '--mute-audio'])
+            self.browser = self._playwright.chromium.launch(headless=True, args=self._browser_args())
             self._record_descendants()
             self.guard()
             self.context = self.browser.new_context(viewport={'width': 900, 'height': 600}, service_workers='block', accept_downloads=False)
@@ -304,13 +307,22 @@ class BrowserDemo:
         self._closed_once = True
         self.closed = True
         self._record_descendants()
+        failure = None
         try:
             if self.browser:
                 self.browser.close()
+        except Exception as error:
+            failure = error
         finally:
             try:
                 if self._playwright:
                     self._playwright.stop()
+            except Exception as error:
+                failure = failure or error
             finally:
                 self.stop_owned()
+        # A FPS guard may already have killed the driver. Cleanup succeeds only
+        # when the actual owned-process postcondition holds, not from a closed pipe.
+        if failure and not self.owned_stopped:
+            raise failure
 

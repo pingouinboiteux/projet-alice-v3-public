@@ -42,6 +42,8 @@ class Action:
 
 
 def parse(text):
+    rendered=re.fullmatch(r'/voir\s+(https://\S+)(?:\s+.*)?',text.strip(),re.I|re.S)
+    if rendered:return Action('web_observe',validate_url(rendered[1]))
     clean = normalize(text)
     if clean in {'arrete alice', 'quitte', 'quitter', 'stop alice', '/quitter'}:
         return Action('quit')
@@ -74,7 +76,7 @@ def parse(text):
             return Action('open', SITES[name])
         original = re.sub(r'^(?:ouvre|va sur)\s+', '', text.strip(), flags=re.I)
         if original.startswith('https://'):
-            return Action('open', validate_url(original))
+            return Action('open', validate_url(original.rstrip('.,;!?)]}')))
         return Action('chat', text)
     match = re.match(r'^cherche sur google\s+(.+)$', text.strip(), re.I)
     if match:
@@ -90,7 +92,7 @@ class Actions:
         self.pc, self.browser, self.confirm, self.monitor = pc, browser, confirm, monitor
         self.previous = None
 
-    def execute(self, action):
+    def execute(self, action, *, automatic_open=False, cancelled=lambda:False):
         if action.kind in {'volume', 'volume_delta', 'mute'}:
             old = self.pc.read_volume()
             if action.kind == 'mute':
@@ -112,7 +114,11 @@ class Actions:
             return 'Le precedent reglage du son a ete retabli et verifie.'
         if action.kind in {'open', 'search'}:
             url = validate_url(action.value)
-            if not self.confirm('Ouvrir cette adresse dans ton navigateur ?\n' + url):
+            if action.kind=='open' and automatic_open is True:
+                from web_reader import public_addresses
+                public_addresses(urlsplit(url).hostname)
+                if cancelled():return 'Ouverture annulee.'
+            elif not self.confirm('Ouvrir cette adresse dans ton navigateur ?\n' + url):
                 return 'Ouverture annulee.'
             if not self.browser(url):
                 raise RuntimeError('Le navigateur ne confirme pas la prise en charge')

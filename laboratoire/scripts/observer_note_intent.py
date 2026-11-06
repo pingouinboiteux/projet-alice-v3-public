@@ -12,11 +12,18 @@ from observer_user_control import control_text, ControlPattern
 
 MAX_TURNS = 8
 MAX_CHARS = 16000
-_CREATE = re.compile(
+# Shared, anchored control grammar. Values stay in the unmodified source turns.
+_REQUEST_PREFIX = (
     r"^\s*(?:alice\s*[,!:]?\s*)?"
-    r"(?:(?:peux[- ]tu|tu peux|pourrais[- ]tu|est[- ]ce que tu peux|je veux que tu|je voudrais que tu)\s+(?:(?:me|nous)\s+)?)?"
-    r"(?:cr[ée]e(?:r|s)?|ajoute(?:r)?|[ée]cris|enregistre(?:r)?|fais(?:[- ]moi)?|faire|note(?:r)?)"
-    r"\s+(?:(?:moi|nous)\s+)?(?:(?:une|la|cette|nouvelle|petite|nouvelle petite)\s+){0,3}note\b",
+    r"(?:(?:s['’ ]il te pla[iî]t|stp)\s*[,!:]?\s*)?"
+    r"(?:(?:(?:est[- ]ce que )?(?:(?:peux|peu|pourrais|veux|voudrais)[- ]tu|tu (?:peux|peu|pourrais|veux))"
+    r"\s+(?:bien\s+)?"
+    r"|(?:je (?:veux|voudrais)|j['’ ]aimerais) que tu\s+)"
+    r"(?:(?:me|nous)\s+|m['’ ])?)?")
+_CREATE = re.compile(
+    _REQUEST_PREFIX
+    + r"(?:cr[ée]e(?:r|s)?|ajoute(?:r)?|[ée]cris|[ée]crire|[ée]crives?|enregistre(?:r)?|fais|faire|note(?:r)?)"
+    r"(?:[- ]moi)?\s+(?:(?:moi|nous)\s+)?(?:(?:une|la|cette|nouvelle|petite|nouvelle petite)\s+){0,3}(?:note|liste)\b",
     re.IGNORECASE)
 _CANCEL = re.compile(r"\b(?:annule(?:r)?|stop|laisse tomber|n['’]enregistre pas|ne sauvegarde pas)\b", re.IGNORECASE)
 _CORRECTION = re.compile(r"\b(?:finalement|plut[oô]t|corrige|remplace|change|non|rectifie)\b", re.IGNORECASE)
@@ -53,6 +60,9 @@ def payload_for_intent(turns):
         'messages': [
             {'role': 'system', 'content': (
                 'Interprete uniquement les messages utilisateur pour creer une note locale. '
+                'Une liste demandee est aussi une note locale en texte simple. '
+                'Son nom explicite fournit le titre, ses elements dictes fournissent le texte '
+                'exact sans ajout de puces, reformulation ou elements inventes. '
                 'Une creation exige un titre ET un texte explicitement fournis. '
                 'Ne les invente pas et ne les reformule pas. Cite les sous-chaines exactes '
                 'dans le message utilisateur, sans les guillemets delimitant la citation. '
@@ -154,10 +164,11 @@ def validate_intent(raw, turns):
 
 
 def apply_input_policy(validated, source):
-    """Voice transcripts are not the audio truth: never auto-authorize their save.
+    """Extraction alone never authorizes a save or proves audio transcription.
 
-    This function does not implement a confirmation bypass. A separate trusted
-    review flow would need to bind the reviewed values before execution.
+    Legacy review callers retain needs_confirmation. The installed hands-free
+    controller applies a separate exact-intent gate and binds a one-use request
+    authorization before execution, under the user's local request policy.
     """
     if source not in ('local_text', 'voice'):
         return _clarify('unsupported_input_source')

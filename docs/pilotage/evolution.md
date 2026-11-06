@@ -16,10 +16,16 @@ Les trois ameliorations du stream sont acceptees pour poursuivre : destinataire,
 expression et contexte public partage. Les limites du jugement, des intentions
 et des longues sessions restent ouvertes. [Bilan](../technique/dialogue-stream.md).
 
-La branche vision est reprise apres publication. Les essais isoles existants
-sur demonstration et notes ne sont pas une autonomie generale du PC ni du jeu.
-Conserver le modele, les protections FPS/RAM et la separation des donnees ;
-definir une prochaine etape verifiable avant de modifier le produit.
+Lecture Web ciblee et observation publique rendue raccordees ; notes/listes
+locales et ouverture Web pilotables par demandes claires sans bouton. Les controles
+gardent leurs limites : citations exactes, pas de compte ni controle PC general.
+[Bilan et usage](../technique/vision-web-notes.md).
+
+Suite candidate sur branche dediee : suivre un lien explicitement designe de meme
+origine, lie a une observation fraiche, un seul saut puis lecture citee. Aucun
+raccord au produit avant mesure reussie ; cette publication ne livre pas ce candidat.
+Conserver le modele, les protections FPS/RAM et la separation des donnees ; les
+notes et essais Web ne qualifient pas les jeux rapides ni toutes les applications.
 
 ## Possibilités futures à évaluer séparément
 

@@ -35,13 +35,13 @@
     {
       "path": "laboratoire/scripts/action_policy.py",
       "source": "laboratoire/scripts/action_policy.py",
-      "sha256": "4fb8128c26635994d9b5d04d3c95c6d0659d1ce97a2942058ccc49c5f605bb3a",
+      "sha256": "8169d5755b18714a9be3914b5670d23369273160f853ab4e816f91d198cedaf1",
       "neutralized_owner": false
     },
     {
       "path": "laboratoire/scripts/alice_desktop.py",
       "source": "laboratoire/scripts/alice_desktop.py",
-      "sha256": "4a0196750d8a562193a1bfd64dc971d1983c7a767eb376c1e57693216f2b1414",
+      "sha256": "93024ff836eee60ed0f86f0321ed620581361644240eb071c3e72ffec925ef49",
       "neutralized_owner": true
     },
     {
@@ -65,7 +65,7 @@
     {
       "path": "laboratoire/scripts/capability_state.py",
       "source": "laboratoire/scripts/capability_state.py",
-      "sha256": "22f60b954faab8d9dad9e150d2afbfde12519fb874a8f1227a189c713fc3ebf1",
+      "sha256": "403f3a5ae74b2a0600f33be606db5e74e5fea4022d9d0e3e933b01bfe23cf1a0",
       "neutralized_owner": true
     },
     {
@@ -101,7 +101,7 @@
     {
       "path": "laboratoire/scripts/desktop_note_validation.py",
       "source": "laboratoire/scripts/desktop_note_validation.py",
-      "sha256": "89b88f1db114549711698f8d5ecea57e5697dcc7731cee005c8d865399fc3941",
+      "sha256": "99b42284124ab033e30e7595266c23920d9efb14d8f978f172a33251bbb67a47",
       "neutralized_owner": false
     },
     {
@@ -227,7 +227,7 @@
     {
       "path": "laboratoire/scripts/intent_router.py",
       "source": "laboratoire/scripts/intent_router.py",
-      "sha256": "af92cc92155d7f2b734e5ec6339879a4adea83fcab72f374e05b3b618d8fc30c",
+      "sha256": "167ebbfb53736c0b9d7b2215bab20db52b3e9562ffb5be1c5dd99555f86a1162",
       "neutralized_owner": false
     },
     {
@@ -291,6 +291,36 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/scripts/note_operations.py",
+      "source": "laboratoire/scripts/note_operations.py",
+      "sha256": "3016b0c3ab1980ed5d6f2ce871a66368e4d04ae12ae85dd617eaff2bb97a6f11",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/note_request.py",
+      "source": "laboratoire/scripts/note_request.py",
+      "sha256": "2122483c1888f94b4c2863d0574eec7251346dd3a29d3d5a77633572450ebb87",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/notes_access.py",
+      "source": "laboratoire/scripts/notes_access.py",
+      "sha256": "0d16abe4a517951f6d66fab3bcb98f875e94f107d85ff24acc7256aa0a73781a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/notes_dialogue.py",
+      "source": "laboratoire/scripts/notes_dialogue.py",
+      "sha256": "28c34eb20b189458d8a65103ffd4c33c3709d3074aa077222707e53c1ed6d818",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/notes_storage.py",
+      "source": "laboratoire/scripts/notes_storage.py",
+      "sha256": "103ac1f912377448c995ed18f5844f192e454aa822c7f9b8683398c3b5137c7b",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/obs_subtitles.py",
       "source": "laboratoire/scripts/obs_subtitles.py",
       "sha256": "29d22e099ea2218141486f5108f63cd87d95c8a14005c2f5d1e810679b7ea407",
@@ -311,7 +341,7 @@
     {
       "path": "laboratoire/scripts/observer_browser.py",
       "source": "laboratoire/scripts/observer_browser.py",
-      "sha256": "a3157c8bdb3cfa39d92f8d6654c97bf547fd596811a41eba60cc18e19a48bfe3",
+      "sha256": "b047a44b09e2220ffa7c34384e3aa141679219da332a174162fd153c77b46b6f",
       "neutralized_owner": false
     },
     {
@@ -329,13 +359,13 @@
     {
       "path": "laboratoire/scripts/observer_note_intent.py",
       "source": "laboratoire/scripts/observer_note_intent.py",
-      "sha256": "cb98ed3b9a048d5f8cc2a66b20370705168bbe610338c3fc0fe5a97073ba686a",
+      "sha256": "ef7cd25fb81dcc19cba76c7d30830b4a848aefcc355d745f8e3d384e350d5ed9",
       "neutralized_owner": false
     },
     {
       "path": "laboratoire/scripts/observer_note_pending.py",
       "source": "laboratoire/scripts/observer_note_pending.py",
-      "sha256": "915c0d5ec8215692dfe867da0bf4a24b423f5f8c573d03e0470cb5ee2c5b9888",
+      "sha256": "5120c8e0da375e2adf4748c2334290e6e9341f723e3650edf84fcb7928c7b18f",
       "neutralized_owner": false
     },
     {
@@ -347,7 +377,7 @@
     {
       "path": "laboratoire/scripts/observer_tiddlywiki.py",
       "source": "laboratoire/scripts/observer_tiddlywiki.py",
-      "sha256": "697c5f7d0fcced03f0562fbf0ad3d0b181e2290bdb2c0960be2144a27ac5cd58",
+      "sha256": "6c6f766cb706051240d6ae56aa20b82d5ad638bce6bc330b4a834db6ea746188",
       "neutralized_owner": false
     },
     {
@@ -375,6 +405,12 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/scripts/open_request.py",
+      "source": "laboratoire/scripts/open_request.py",
+      "sha256": "13564c537d5a77f95d83267e86eabc1bcc6eb1f541c9ddc08e7bcb2460f8ffc1",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/pc_tools.py",
       "source": "laboratoire/scripts/pc_tools.py",
       "sha256": "fb092360f50986582fc0171dc6019443bb19c047ee64abcbb0ea65e04c301b92",
@@ -396,6 +432,18 @@
       "path": "laboratoire/scripts/public_chat_selection.py",
       "source": "laboratoire/scripts/public_chat_selection.py",
       "sha256": "99c1f7c64ec6b16231e934c6006dfd0888501d21d256c68054336bf6959902bf",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/public_navigation.py",
+      "source": "laboratoire/scripts/public_navigation.py",
+      "sha256": "48828e99481e3415b9954a39d95f8dff7089fd278a20c7ad43ba19976f4df4e0",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/public_resources.py",
+      "source": "laboratoire/scripts/public_resources.py",
+      "sha256": "06299f6dd8dd6ccf140725410d0b646f6596b5e3871384edca4801da31352c06",
       "neutralized_owner": false
     },
     {
@@ -438,6 +486,12 @@
       "path": "laboratoire/scripts/remote_filter.py",
       "source": "laboratoire/scripts/remote_filter.py",
       "sha256": "5516b2405fcd07b883a4a31e250e1ffd596cc89001d206907a62f98aa313732e",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/rendered_observation.py",
+      "source": "laboratoire/scripts/rendered_observation.py",
+      "sha256": "34327b4ec9f3ef5e328a3c3a496c694ba34c43f0526768bef9b6e75d528a1886",
       "neutralized_owner": false
     },
     {
@@ -621,9 +675,21 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/scripts/web_evidence.py",
+      "source": "laboratoire/scripts/web_evidence.py",
+      "sha256": "e098298e6d9ca84644908ff7f9e9c775bafdd3b186111454da4c7878bc54a2be",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/scripts/web_passages.py",
+      "source": "laboratoire/scripts/web_passages.py",
+      "sha256": "a637be1587d989e6cc65e7a8c5a4a2a1ab1e1ea3f461bea2fffdcbbc42cc1f64",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/scripts/web_reader.py",
       "source": "laboratoire/scripts/web_reader.py",
-      "sha256": "d99e8b103250aefefa031e28370cf2380738ab12b4168ac439615dda27b980ce",
+      "sha256": "af05d88a70bc82aec7bc0bfe01ac75696c8b7fa1c2061138799b82f57a3b8cdd",
       "neutralized_owner": false
     },
     {
@@ -839,7 +905,7 @@
     {
       "path": "laboratoire/tests/test_desktop_flow.py",
       "source": "laboratoire/tests/test_desktop_flow.py",
-      "sha256": "edc06cb0a0ad4d1207cea887ccddbf155a1a8b907a9d7b1cb0e333d4c0f94f05",
+      "sha256": "6a58400b12ac53bba2d76ff24dd5f048f6016acf68a519fde91ff7ffaf02935a",
       "neutralized_owner": false
     },
     {
@@ -852,6 +918,12 @@
       "path": "laboratoire/tests/test_desktop_initiative_flow.py",
       "source": "laboratoire/tests/test_desktop_initiative_flow.py",
       "sha256": "9e6ceb0f95b909d69abc0dd44cf1cd1123bc70a89657b933b4bbe49d90c278c9",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_desktop_note_validation.py",
+      "source": "laboratoire/tests/test_desktop_note_validation.py",
+      "sha256": "d00be15ba2109cb308532004365e816e41a1e4df57fda74d8daa1728bf87057c",
       "neutralized_owner": false
     },
     {
@@ -999,9 +1071,87 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/tests/test_note_list_phrasing.py",
+      "source": "laboratoire/tests/test_note_list_phrasing.py",
+      "sha256": "67b5ec177c44f78355b8acd28cf1b4a2f6c27bc773a7ae5857f9d6089664f9c4",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_note_operations.py",
+      "source": "laboratoire/tests/test_note_operations.py",
+      "sha256": "7f7521eee62ab36dc4f9192f6c56c28d557bd2fbc303f6d65f01f8cf29c51dc3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_note_request.py",
+      "source": "laboratoire/tests/test_note_request.py",
+      "sha256": "537eddd03b1ed932170a7d7b07458a809a418845f51dba536d7211de28ebcfc3",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_notes_access.py",
+      "source": "laboratoire/tests/test_notes_access.py",
+      "sha256": "96e33695359852b57ccd3c154fd090efab97258bb651a638be3bf544459b2c55",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_notes_backend_operations.py",
+      "source": "laboratoire/tests/test_notes_backend_operations.py",
+      "sha256": "316bc92ed86ad3d3130f36afb8b1bd0c740909a38ac02b80d9e2bb354f2619c0",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_notes_dialogue.py",
+      "source": "laboratoire/tests/test_notes_dialogue.py",
+      "sha256": "84214b8287a9d6d068f3c5d770e931cf139a823e1b9fd6f18f3f051a781fc0d7",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_notes_storage.py",
+      "source": "laboratoire/tests/test_notes_storage.py",
+      "sha256": "8af895a55c5f20f45c4572cbebde9bf57cf6d1793aa2b33a9c831ca5ed4540ba",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/tests/test_observation.py",
       "source": "laboratoire/tests/test_observation.py",
       "sha256": "e25e36b3b222ef9d34b60ac6440744b10ee09bc71116a5a97eef1c29e1f288b0",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_observer_browser.py",
+      "source": "laboratoire/tests/test_observer_browser.py",
+      "sha256": "f7404df402d54507d60a68b9db8c30c8b426968b8922ce1c7717bc7e83c32aa9",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_observer_note_intent.py",
+      "source": "laboratoire/tests/test_observer_note_intent.py",
+      "sha256": "7965566a43dc0cfc45dff06a6dab72fd9a7ea845fc3136f6e856710d56990c4f",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_observer_note_pending.py",
+      "source": "laboratoire/tests/test_observer_note_pending.py",
+      "sha256": "ef405bc3052d710ffd6f3f2da36bc8f03632a4304640e35b93ddf4d3c9f69db6",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_observer_note_revision.py",
+      "source": "laboratoire/tests/test_observer_note_revision.py",
+      "sha256": "037ca9c3b362d4bbe1f842a0608139db89e09461fa0925d7b71a066f97889131",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_observer_tiddlywiki.py",
+      "source": "laboratoire/tests/test_observer_tiddlywiki.py",
+      "sha256": "ba0f13ff1e3aa076138f1ebbc200579c90869b4b14bee1a656f34356634b20e6",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_open_request.py",
+      "source": "laboratoire/tests/test_open_request.py",
+      "sha256": "e6951a738ba76d488707e5694017f9937981c90475b89ddc7f9079a3092fc29d",
       "neutralized_owner": false
     },
     {
@@ -1029,6 +1179,18 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/tests/test_public_navigation.py",
+      "source": "laboratoire/tests/test_public_navigation.py",
+      "sha256": "0a647dabb94bd79ba04a20f5c96af67949cabd1b381405f0df75fb3c899ba914",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_public_resources.py",
+      "source": "laboratoire/tests/test_public_resources.py",
+      "sha256": "a1d35e40c77fd307f5a4e1545af3c1467330b7c5925da26223cbf006b860c7fd",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/tests/test_public_scene.py",
       "source": "laboratoire/tests/test_public_scene.py",
       "sha256": "0c584fa72c2adc74b0f451a5b3cf26842c1fedfc363492f11658be2a0ddc80e9",
@@ -1050,6 +1212,12 @@
       "path": "laboratoire/tests/test_remote_scheduling.py",
       "source": "laboratoire/tests/test_remote_scheduling.py",
       "sha256": "cd45c321ab83a9bf6725c9f260b3843a984427db4b42560ddbda560752b60f99",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_rendered_observation.py",
+      "source": "laboratoire/tests/test_rendered_observation.py",
+      "sha256": "253100109c0f27a52ae1521487a9c8c24d187ab3fe7924e7bbc698eba6dd46f6",
       "neutralized_owner": false
     },
     {
@@ -1167,9 +1335,21 @@
       "neutralized_owner": false
     },
     {
+      "path": "laboratoire/tests/test_web_evidence.py",
+      "source": "laboratoire/tests/test_web_evidence.py",
+      "sha256": "29391a8fb47548d99e5238ff4c61bd1299380114013514b1dbaea757d1d9266a",
+      "neutralized_owner": false
+    },
+    {
+      "path": "laboratoire/tests/test_web_passages.py",
+      "source": "laboratoire/tests/test_web_passages.py",
+      "sha256": "48531dd986ff898eee408a8dd57bb2c6921a1ee3cc97ef03bfc804bb4cf9e0cc",
+      "neutralized_owner": false
+    },
+    {
       "path": "laboratoire/tests/test_web_reader.py",
       "source": "laboratoire/tests/test_web_reader.py",
-      "sha256": "5293bb3b8feeb20b5e9f8ad7defdbd1b457b161cede9865e7373bcf793337603",
+      "sha256": "f2e2be3a36d792060d13b8ca8b50794704bf16dc077fb1b5e1470f78f85605de",
       "neutralized_owner": false
     },
     {

@@ -24,4 +24,12 @@ def dialogue_context(channels):
         'canaux n ont aucun droit d action sur le PC ni acces aux souvenirs prives de Proprietaire. Ils ont des echanges publics separes par auteur et plateforme. '
         'Une connexion ready ne prouve pas qu un message particulier a ete recu. '
         'Les boutons de la fenetre connectent les canaux; ouvrir leur site dans le '
-        'navigateur ne connecte pas le chat. Tu es l interlocutrice de cette fenetre.')
+        'navigateur ne connecte pas le chat. Une demande locale peut creer une note '
+        'avec titre et texte explicites, apres relecture et confirmation dans la '
+        'fenetre. Les notes sont separees des souvenirs et conservees apres fermeture. '
+        'Tu peux aussi lister les notes, lire une note nommee ou remplacer son texte '
+        'complet apres verification de l ancienne et de la nouvelle version. '
+        'Pas de suppression ni renommage. Une creation n ecrase pas un titre existant. '
+        'Une note demandee ou preparee n est pas '
+        'encore enregistree ; seul le retour du controleur le confirme. '
+        'Tu es l interlocutrice de cette fenetre.')

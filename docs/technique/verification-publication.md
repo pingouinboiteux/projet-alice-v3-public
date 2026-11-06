@@ -21,3 +21,9 @@ La passe dialogue ajoute uniquement sources, tests et fiches synthetiques
 selectionnes explicitement. Aucun fichier data/ ni rapport brut ajoute.
 La decision de conserver le modele et de verifier ensuite la memoire remplace
 l ancienne proposition de comparaison de modeles.
+
+La passe vision/notes du6 novembre selectionne les modules et tests correspondants
+explicitement. Les sources publiques existantes hors perimetre sont conservees.
+Controle AST, empreintes du manifeste, formats de secrets, chemins personnels,
+neutralisation du proprietaire et exclusion des donnees/medias appliques. Les
+nouveaux bancs modeles et rapports bruts restent locaux ; fiche de mesures publique.

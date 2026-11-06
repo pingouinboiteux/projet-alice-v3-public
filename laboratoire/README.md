@@ -57,3 +57,11 @@ Twitch et animation. La personnalite et `episode_protocol.py` assouplissent la
 forme des reponses. [Etat, utilisation et limites](../docs/technique/dialogue-stream.md).
 Les modules de validation vision importes par le parcours de notes optionnel
 sont du code de demonstration, sans ressources ni donnees privees publiees.
+
+## Lecture Web et notes naturelles
+
+`notes_dialogue.py`, `notes_access.py`, `notes_storage.py` et `note_request.py`
+portent les notes/listes locales. `open_request.py` controle les ouvertures.
+`web_reader.py`, `web_passages.py`, `web_evidence.py` traitent la lecture ciblee ;
+`public_navigation.py`, `public_resources.py`, `rendered_observation.py` bornent
+le rendu public isole. [Fonctions et limites](../docs/technique/vision-web-notes.md).
