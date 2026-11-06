@@ -48,3 +48,12 @@ banc synthetique sans microphone ni diffusion, necessitant l'installation locale
 
 La suite locale mesuree compte maintenant 594 tests. Les preuves brutes et les
 campagnes modeles ne sont pas copiees. Voir [fonctionnement et limites](../docs/technique/initiative-parole.md).
+
+## Dialogue du stream - novembre 2026
+
+`stream_recipient.py` et `desktop_recipient.py` controlent l'attribution vocale.
+`public_scene.py` et `scene_context.py` portent le contexte partage borne entre
+Twitch et animation. La personnalite et `episode_protocol.py` assouplissent la
+forme des reponses. [Etat, utilisation et limites](../docs/technique/dialogue-stream.md).
+Les modules de validation vision importes par le parcours de notes optionnel
+sont du code de demonstration, sans ressources ni donnees privees publiees.

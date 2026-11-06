@@ -31,7 +31,7 @@ Bilan de dialogue reporte : [rappel long et variantes](docs/technique/dialogue-e
 
 Memoire conservee : [rappel et limites](docs/technique/rappel-memoire.md).
 
-Derniere etape : [initiative de parole, stop et rythme](docs/technique/initiative-parole.md).
-594 tests logiciels locaux passes ; validation du rythme au prochain stream
-encore attendue. Prochaine phase : vision sur une branche dediee, approche a
-definir avant implementation. Aucun changement de modele, voix ou backend.
+Derniere etape : [dialogue et contexte du stream](docs/technique/dialogue-stream.md).
+Destinataire vocal, expression naturelle et scene publique temporaire ;219 tests
+logiciels sur le controle regroupe avant publication. Limites du jugement conservees. Suite :
+reprise de la branche vision, sans nouvelle activation de perception ou d'action.

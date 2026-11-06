@@ -131,6 +131,8 @@ class Initiative:
         self.sequence_turn = 0
         self.topics = []
         self.fresh_context = False
+        self.public_scene = None
+        self.public_context = False
 
     def start(self):
         with self.lock:
@@ -150,6 +152,7 @@ class Initiative:
             # Never carry private discussion into a public animation session.
             self.history = []
             self.input_history = None
+            self.public_context = False
             self.sequence_turn = 0
             self.topics = []
 
@@ -179,6 +182,7 @@ class Initiative:
             self.ready = None
             self.delivering = None
             self.history = recent
+            self.public_context = public is True
             self.input_history = recent
             self.unanswered = 0
             self.busy = False
@@ -233,7 +237,8 @@ class Initiative:
             epoch, mode, history = self.epoch, self.mode, list(self.history)
             from initiative_sequence import prepare
             messages, schema = prepare(PROMPT, SCHEMA, history, mode,
-                self.sequence_turn, list(self.topics), self.fresh_context)
+                self.sequence_turn, list(self.topics), self.fresh_context,
+                scene=self.public_scene() if self.public_context and self.public_scene else None)
             self.inflight = True
             self.last_outcome = 'pending'
             self.last_error = None

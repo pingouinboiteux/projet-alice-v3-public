@@ -35,7 +35,7 @@ class PublicChatSelection:
         self.answered.clear()
         self.public.clear()
 
-    def choose(self, items, complete, now):
+    def choose(self, items, complete, now, scene=None):
         # One opportunity per author: repeating messages cannot multiply chances.
         candidates = OrderedDict()
         for item in items:
@@ -61,6 +61,10 @@ class PublicChatSelection:
             'candidates': [{'numero': index, 'auteur': item[3].author,
                             'texte': item[3].text}
                            for index, item in enumerate(shortlist)]}, ensure_ascii=False)})
+        if scene:
+            from scene_context import RULES, message as scene_message
+            messages[0]['content'] += RULES
+            messages.insert(1, scene_message(scene))
         raw, _, _ = complete(messages, response_schema=schema)
         result = json.loads(raw)
         if not isinstance(result, dict) or set(result) != {'choice'}:

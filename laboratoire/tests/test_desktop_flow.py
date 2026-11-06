@@ -35,6 +35,64 @@ class DesktopFlow(unittest.TestCase):
         self.memory.answer.return_value = ('Reponse de conversation', False)
         self.addCleanup(self.memory_patch.stop)
 
+    def test_stream_recipient_precedes_memory_and_router_in_real_loop(self):
+        from action_policy import Action
+        window=tk.Toplevel(self.root);window.withdraw()
+        session=Mock(model_spec={'name':'Modele validation'})
+        session.ask.side_effect=[('{"address":"other"}',.1,{}),('{"address":"alice"}',.1,{})]
+        voice=Mock(interruption_epoch=0);voice.speak.return_value=True
+        hearing=Mock()
+        heard=iter([
+            {'status':'transcribed','accepted':True,'text':'Alice, ne réponds pas, je parle au chat.',
+             'cleaned':'ne réponds pas, je parle au chat.'},
+            {'status':'transcribed','accepted':True,'text':'Alice, explique les nuages.',
+             'cleaned':'explique les nuages.'}])
+        def command(operation,**kwargs):
+            if operation=='listen':
+                value=next(heard,None)
+                if value is None:
+                    app.stop.set();return {'status':'idle'}
+                return value
+            return {}
+        hearing.command.side_effect=command
+        try:
+            with patch('alice_desktop.threading.Thread'), \
+                 patch('alice_desktop.Session',return_value=session), \
+                 patch('alice_desktop.Voice',return_value=voice), \
+                 patch('alice_desktop.Hearing',return_value=hearing), \
+                 patch('alice_desktop.pc_tools'), \
+                 patch('intent_router.route',return_value=(Action('chat'),'Bonjour')) as router:
+                app=alice_desktop.Application(window)
+                app.inputs.put('/initiative animation')
+                app.run()
+            self.memory.answer.assert_called_once()
+            self.assertEqual(self.memory.answer.call_args.args[0],'explique les nuages.')
+            router.assert_called_once();voice.speak.assert_called_once()
+            self.assertNotIn('parle au chat',repr(self.memory.answer.call_args))
+            self.assertEqual(app.initiative.mode,'animation')
+        finally:window.destroy()
+
+    def test_explicit_scene_command_never_enters_memory_or_action_router(self):
+        window=tk.Toplevel(self.root);window.withdraw()
+        session=Mock(model_spec={'name':'Modele validation'})
+        voice=Mock(interruption_epoch=0);hearing=Mock()
+        try:
+            with patch('alice_desktop.threading.Thread'), \
+                 patch('alice_desktop.Session',return_value=session), \
+                 patch('alice_desktop.Voice',return_value=voice), \
+                 patch('alice_desktop.Hearing',return_value=hearing), \
+                 patch('alice_desktop.pc_tools'), \
+                 patch('desktop_initiative.DesktopInitiative.share_directive',autospec=True) as shared, \
+                 patch('intent_router.route') as router:
+                app=alice_desktop.Application(window)
+                app.inputs.put('/initiative animation')
+                app.inputs.put('/scene Parlons de cuisine plutot que de monuments.')
+                app.inputs.put('quitte');app.run()
+            shared.assert_called_once()
+            self.assertEqual(shared.call_args.args[1],'Parlons de cuisine plutot que de monuments.')
+            self.memory.answer.assert_not_called();router.assert_not_called()
+        finally:window.destroy()
+
     def test_web_summary_never_enters_action_history(self):
         from action_policy import Action
         window = tk.Toplevel(self.root)

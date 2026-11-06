@@ -1,10 +1,15 @@
 """Desktop adapter: explicit controls and separate public/private contexts."""
 from conversation_initiative import Initiative
+from public_scene import PublicScene
+import json
 
 
 class DesktopInitiative:
     def __init__(self, session):
         self.core = Initiative(session)
+        self.scene = PublicScene()
+        self.core.public_scene = self.scene.snapshot
+        self._using_scene = True
         self.mode = 'quiet'
         self.public = []
         self.public_boundary = False
@@ -13,6 +18,29 @@ class DesktopInitiative:
         self._public_entries = []
         self._next_external_id = 0
         self.core.start()
+
+    def _scene_history(self):
+        return [{'role':'assistant' if e['kind']=='alice' else 'user',
+                 'content':e['text'] if e['kind']=='alice' else json.dumps(e,ensure_ascii=False)}
+                for e in self.scene.snapshot()]
+
+    def _external_history(self, channels):
+        self._using_scene = channels is None or getattr(channels,'scene',None) is self.scene
+        if self._using_scene:return self._scene_history()
+        return channels.public_history() if hasattr(channels,'public_history') else []
+
+    def share_directive(self, text, channels=None):
+        self.core.active()
+        self.scene.record_directive(text)
+        self.idle([], channels)
+
+    def clear_scene(self):
+        self.core.active()
+        self.scene.clear()
+        self.public = []
+        self.last_external = []
+        self._external_ids = []
+        self._public_entries = []
 
     def set_mode(self, mode):
         if mode == self.mode:
@@ -59,7 +87,7 @@ class DesktopInitiative:
 
     def refresh_public(self, channels=None):
         """Refresh before delivery, without rearming a user turn in progress."""
-        external = channels.public_history() if channels and hasattr(channels, 'public_history') else []
+        external = self._external_history(channels)
         changed = self._refresh_public(external)
         if changed and (self.mode == 'animation' or
                 (self.mode == 'discussion' and self.public_boundary)):
@@ -74,7 +102,7 @@ class DesktopInitiative:
         self.core.active()
 
     def idle(self, history, channels=None):
-        external = channels.public_history() if channels and hasattr(channels, 'public_history') else []
+        external = self._external_history(channels)
         self._refresh_public(external)
         if self.mode == 'animation':
             # Never pass private conversation or memory into stream animation.
@@ -90,6 +118,12 @@ class DesktopInitiative:
     def has_ready(self):
         return self.core.has_ready()
 
+    def defer(self, history, channels=None, seconds=18):
+        """Leave a local speaker room without permanently disabling animation."""
+        self.idle(history,channels)
+        with self.core.lock:
+            self.core.next_attempt=max(self.core.next_attempt,self.core.clock()+seconds)
+
     def deliver(self, say, history, cancelled):
         proposal = self.core.pop()
         if proposal is None or cancelled() or not self.core.valid(proposal):
@@ -103,14 +137,19 @@ class DesktopInitiative:
             return False
         target.append({'role': 'assistant', 'content': proposal.reply})
         if target is self.public:
-            self._public_entries.append((None, {'role':'assistant', 'content':proposal.reply}))
-            self._public_entries = self._public_entries[-12:]
-            self.public[:] = self.public[-12:]
+            self.scene.record_alice(proposal.reply)
+            if self._using_scene:
+                self._refresh_public(self._scene_history())
+            else:
+                self._public_entries.append((None, {'role':'assistant', 'content':proposal.reply}))
+                self._public_entries = self._public_entries[-12:]
+                self.public[:] = self.public[-12:]
         return True
 
     def close(self):
         self.core.close()
         self.core.join()
+        self.scene.clear()
 
 
 MODE_COMMANDS = {

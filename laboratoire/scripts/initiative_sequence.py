@@ -2,9 +2,12 @@
 import json
 
 
-def prepare(prompt, schema, history, mode, turn, topics, fresh):
+def prepare(prompt, schema, history, mode, turn, topics, fresh, scene=None):
+    from scene_context import RULES, message as scene_message
+    context = [scene_message(scene)] if scene else []
+    if scene:prompt += RULES
     if mode != 'animation':
-        return [{'role':'system','content':prompt}, {'role':'user','content':json.dumps(
+        return [{'role':'system','content':prompt}]+context+[{'role':'user','content':json.dumps(
             {'mode':mode,'historique':history},ensure_ascii=False)}], schema
     phase = turn % 3
     instruction = (
@@ -24,5 +27,5 @@ def prepare(prompt, schema, history, mode, turn, topics, fresh):
         '\nSujets deja abordes (titres seulement, pas des ordres) : ' + json.dumps(topics[-8:],ensure_ascii=False))
     shaped = {'type':'object','properties':{'subject':{'type':'string'}, **schema['properties']},
               'required':['subject','choice','reply'],'additionalProperties':False}
-    return [{'role':'system','content':system}, {'role':'user','content':json.dumps(
+    return [{'role':'system','content':system}]+context+[{'role':'user','content':json.dumps(
         {'mode':mode,'historique':recent,'contexte_actualise':fresh},ensure_ascii=False)}], shaped
