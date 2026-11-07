@@ -73,8 +73,7 @@ patchs historiques conserves pour `vision_bench_runtime.py` et `vision_ocr_bench
 Les appelants continuent de fournir leurs chemins sous `laboratoire/data/validation`.
 Tests de compatibilite, sans modele ni OCR reel, depuis la racine du depot :
 `laboratoire/.venv-vision/Scripts/python.exe -m pytest vision/laboratoire/tests/test_vision_desktop_cases.py -q`
-Retour arriere : revert du lot ; dans la copie privee, restaurer aussi la source
-historique depuis la sauvegarde indiquee dans SUIVI.md (non suivie avant ce lot).
+Retour arriere : revert du lot ; la source historique etait suivie.
 
 Les autres bancs vision ne sont pas encore migres.
 L'installation originale, les donnees et les environnements restent inchanges.
