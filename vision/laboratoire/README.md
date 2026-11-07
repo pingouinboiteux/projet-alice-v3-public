@@ -64,6 +64,18 @@ Depuis la racine du depot :
 L'ancien chemin de test est retire. Retour arriere : revert du lot puis restaurer
 le test ancien depuis la sauvegarde locale indiquee dans SUIVI.md (non suivi avant lot).
 
+## Cas de bureau fictifs
+
+Implementation : `vision_desktop_cases.py`, deplacee sans changement.
+Import canonique : `vision.laboratoire.vision_desktop_cases`.
+Facade : `laboratoire/scripts/vision_desktop_cases.py`, meme objet module et
+patchs historiques conserves pour `vision_bench_runtime.py` et `vision_ocr_bench.py`.
+Les appelants continuent de fournir leurs chemins sous `laboratoire/data/validation`.
+Tests de compatibilite, sans modele ni OCR reel, depuis la racine du depot :
+`laboratoire/.venv-vision/Scripts/python.exe -m pytest vision/laboratoire/tests/test_vision_desktop_cases.py -q`
+Retour arriere : revert du lot ; dans la copie privee, restaurer aussi la source
+historique depuis la sauvegarde indiquee dans SUIVI.md (non suivie avant ce lot).
+
 Les autres bancs vision ne sont pas encore migres.
 L'installation originale, les donnees et les environnements restent inchanges.
 Retour arriere observation : revert du commit de migration.
