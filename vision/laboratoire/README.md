@@ -18,6 +18,27 @@ validation_rendered_observation.py. La retirer seulement apres migration de ces
 consommateurs et verification de l'absence d'autres imports historiques.
 Les tests ont ete deplaces ; leur ancien chemin n'est plus le point d'entree.
 
-Les liens rendus, lecteurs UIA et bancs vision ne sont pas encore migres.
+## Lecteurs UIA
+
+Implementations : `native_uia_observer.py`, `native_uia_worker.py` et
+`native_uia_snapshot.ps1`. Tests fictifs : `tests/test_native_uia_observer.py`
+et `tests/test_native_uia_worker.py`. Aucun lecteur Windows reel dans ces tests.
+Les commandes utilisent `vision/laboratoire/native_uia_snapshot.ps1` depuis
+la racine Alice ; le protocole et le script PowerShell restent inchanges.
+Imports canoniques : `vision.laboratoire.native_uia_observer` et
+`vision.laboratoire.native_uia_worker`. Les deux facades dans
+`laboratoire/scripts/` preservent le meme objet module et ses modifications.
+Les conserver jusqu'a migration de `native_backend_factory.py`,
+`validation_native_desktop.py` et `validation_native_notepad.py`.
+Aucun autre appel du chemin PS1 n'a ete trouve dans les scripts et tests du
+laboratoire : pas de relais PowerShell a l'ancien emplacement.
+
+Depuis la racine du depot :
+`laboratoire/.venv-vision/Scripts/python.exe -m pytest vision/laboratoire/tests/test_native_uia_observer.py vision/laboratoire/tests/test_native_uia_worker.py -q`
+
+Les liens rendus et bancs vision ne sont pas encore migres.
 L'installation originale, les donnees et les environnements restent inchanges.
-Retour arriere : revert du commit de migration, sans toucher aux donnees.
+Retour arriere observation : revert du commit de migration.
+Pour UIA, les sources locales n'etaient pas suivies avant le deplacement :
+restaurer aussi leur copie avant migration aux anciens emplacements, suivant
+le SUIVI local. Un revert seul ne suffit pas. Ne pas toucher aux donnees.
