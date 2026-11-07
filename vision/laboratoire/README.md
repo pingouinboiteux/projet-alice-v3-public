@@ -36,7 +36,22 @@ laboratoire : pas de relais PowerShell a l'ancien emplacement.
 Depuis la racine du depot :
 `laboratoire/.venv-vision/Scripts/python.exe -m pytest vision/laboratoire/tests/test_native_uia_observer.py vision/laboratoire/tests/test_native_uia_worker.py -q`
 
-Les liens rendus et bancs vision ne sont pas encore migres.
+## Liens rendus
+
+Implementation : `rendered_links.py`. Tests fictifs : `tests/test_rendered_links.py`.
+Import canonique : `vision.laboratoire.rendered_links`. Dependances conservees :
+`public_navigation.canonical_url` et `public_resources.origin`, accessibles dans
+`laboratoire/scripts/` par un chemin relatif a la racine.
+Facade temporaire : `laboratoire/scripts/rendered_links.py`, meme objet module
+et memes helpers. La conserver jusqu'a migration de `brave_desktop_browser.py`,
+`public_goal_navigation.py` et `public_link_navigation.py`.
+Depuis la racine du depot :
+`laboratoire/.venv-vision/Scripts/python.exe -m pytest vision/laboratoire/tests/test_rendered_links.py -q`
+Les tests ont ete deplaces ; leur ancien chemin n'est plus le point d'entree.
+Les sources locales des liens rendus n'etaient pas suivies avant migration :
+le retour arriere demande aussi leur sauvegarde locale, indiquee dans SUIVI.md.
+
+Les bancs vision ne sont pas encore migres.
 L'installation originale, les donnees et les environnements restent inchanges.
 Retour arriere observation : revert du commit de migration.
 Pour UIA, les sources locales n'etaient pas suivies avant le deplacement :
