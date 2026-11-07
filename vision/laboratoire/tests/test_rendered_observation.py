@@ -4,8 +4,9 @@ import sys
 from pathlib import Path
 from unittest.mock import Mock
 import pytest
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from rendered_observation import observe_page,check_snapshot,MAX_TEXT,MAX_BLOCKS,OBSERVE_RENDERED
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+from vision.laboratoire.rendered_observation import observe_page,check_snapshot,MAX_TEXT,MAX_BLOCKS,OBSERVE_RENDERED
 
 def payload():
     return {'url':'about:blank','text':'Tarif : 17 euros.',
@@ -152,3 +153,31 @@ def test_https_snapshot_recheck_does_not_follow_navigation():
     with pytest.raises(ValueError,match='scope'):
         check_snapshot(target,Mock(),snapshot,clock=lambda:11,expected_url=expected)
     target.evaluate.assert_not_called()
+
+
+@pytest.mark.parametrize('legacy_first', [True, False])
+def test_legacy_and_component_imports_share_one_module(tmp_path, legacy_first):
+    """Fresh interpreters also cover launches outside the repository root."""
+    import subprocess
+    script = """
+import sys
+sys.path.insert(0, sys.argv[1])
+if sys.argv[2] == 'True':
+    import rendered_observation as legacy
+    from vision.laboratoire import rendered_observation as current
+else:
+    from vision.laboratoire import rendered_observation as current
+    sys.path.insert(0, sys.argv[3])
+    import rendered_observation as legacy
+assert legacy is current
+assert legacy._validate is current._validate
+assert legacy.observe_page is current.observe_page
+from action_policy import validate_url
+assert current.validate_url is validate_url
+assert current._expected_url('https://example.org/') == 'https://example.org/'
+"""
+    scripts = ROOT / 'laboratoire/scripts'
+    result = subprocess.run(
+        [sys.executable, '-I', '-c', script, str(scripts if legacy_first else ROOT),
+         str(legacy_first), str(scripts)], cwd=tmp_path, capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
