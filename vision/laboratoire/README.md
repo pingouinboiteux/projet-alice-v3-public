@@ -75,6 +75,18 @@ Tests de compatibilite, sans modele ni OCR reel, depuis la racine du depot :
 `laboratoire/.venv-vision/Scripts/python.exe -m pytest vision/laboratoire/tests/test_vision_desktop_cases.py -q`
 Retour arriere : revert du lot ; la source historique etait suivie.
 
+## Adaptateur d'observation
+
+Implementation : `vision_observation_adapter.py`. Seul l'import de `SIZE` est
+redirige vers `vision.laboratoire.vision_bench_cases` ; logique conservee.
+Import canonique : `vision.laboratoire.vision_observation_adapter`.
+Facade : `laboratoire/scripts/vision_observation_adapter.py`, meme objet module,
+helpers prives et patchs conserves pour `vision_bench_runtime.py`.
+Tests de migration fictifs depuis la racine, sans modele ni donnees sur disque :
+`laboratoire/.venv-vision/Scripts/python.exe -m pytest vision/laboratoire/tests/test_vision_observation_adapter_migration.py -q`
+Les anciens tests locaux restent a leur emplacement et ne sont pas publies.
+Retour arriere : revert du lot ; la source historique etait suivie.
+
 Les autres bancs vision ne sont pas encore migres.
 L'installation originale, les donnees et les environnements restent inchanges.
 Retour arriere observation : revert du commit de migration.
