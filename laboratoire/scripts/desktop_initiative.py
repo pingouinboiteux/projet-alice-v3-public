@@ -5,7 +5,8 @@ import json
 
 
 class DesktopInitiative:
-    def __init__(self, session):
+    def __init__(self, session, *, confirm=None):
+        self.confirm_public = confirm
         self.core = Initiative(session)
         self.scene = PublicScene()
         self.core.public_scene = self.scene.snapshot
@@ -129,6 +130,12 @@ class DesktopInitiative:
         if proposal is None or cancelled() or not self.core.valid(proposal):
             return False
         target = self.public if self.mode == 'animation' or self.public_boundary else history
+        if target is self.public:
+            if self.confirm_public is None or not self.confirm_public(
+                    'Diffuser cette intervention dans le contexte public ?\n\n'+proposal.reply):
+                return False
+            if cancelled() or not self.core.valid(proposal):
+                return False
         completed = say(proposal.reply)
         if completed is False:
             self.set_mode('quiet')

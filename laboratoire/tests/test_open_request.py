@@ -44,28 +44,12 @@ def test_bad_classification_never_executes(raw):
     model=session();model.ask.return_value=(raw,0,{})
     assert decide_open(model,'ouvre youtube',SITES['youtube'])=='clarify'
 
-def test_only_approved_open_skips_confirmation_and_requires_public_dns():
-    browser=Mock(return_value=True);confirm=Mock(return_value=False)
+@pytest.mark.parametrize('kind', ['open', 'search'])
+@pytest.mark.parametrize('automatic', [False, True])
+def test_personal_browser_refused_even_if_previously_approved(kind, automatic):
+    browser=Mock();confirm=Mock(return_value=True)
     actions=Actions(Mock(),browser,confirm,Mock())
-    with patch('web_reader.public_addresses',return_value=['8.8.8.8']) as dns:
-        actions.execute(Action('open',SITES['youtube']),automatic_open=True)
-    dns.assert_called_once_with('www.youtube.com');confirm.assert_not_called();browser.assert_called_once()
-    browser.reset_mock()
-    actions.execute(Action('search',SITES['google']),automatic_open=True)
-    confirm.assert_called_once();browser.assert_not_called()
-
-def test_private_dns_blocks_automatic_open():
-    browser=Mock();actions=Actions(Mock(),browser,Mock(),Mock())
-    with patch('web_reader.public_addresses',side_effect=ValueError('private')):
-        with pytest.raises(ValueError):actions.execute(Action('open','https://example.org/'),automatic_open=True)
-    browser.assert_not_called()
-
-def test_new_input_during_dns_prevents_browser_dispatch():
-    browser=Mock();confirm=Mock();events=[]
-    actions=Actions(Mock(),browser,confirm,Mock())
-    def resolve(host):events.append('dns');return ['8.8.8.8']
-    def cancelled():events.append('cancel_check');return True
-    with patch('web_reader.public_addresses',side_effect=resolve):
-        assert actions.execute(Action('open',SITES['youtube']),automatic_open=True,
-            cancelled=cancelled)=='Ouverture annulee.'
-    assert events==['dns','cancel_check'];browser.assert_not_called();confirm.assert_not_called()
+    with patch('web_reader.public_addresses') as dns:
+        reply=actions.execute(Action(kind,SITES['youtube']),automatic_open=automatic)
+    assert 'navigateur personnel desactivee' in reply
+    dns.assert_not_called();confirm.assert_not_called();browser.assert_not_called()

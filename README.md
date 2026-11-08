@@ -1,37 +1,31 @@
-# Alice — code et etat du projet
+# Alice — code et état du projet
 
-Compagnon vocal local en francais, sur Windows. Instantane technique du
-5 novembre 2026, presentation reorganisee a la demande du proprietaire.
+Compagnon vocal local en français sur Windows. **Mise à jour du 9 novembre 2026.**
 
-- [Structure des dossiers](structure.md)
-- [Etat actuel et limites](docs/etat/actuel.md)
-- [Direction et criteres de progression](docs/pilotage/evolution.md)
-- [Regles de contribution, Git et GitHub](REGLES.md)
-- [Code courant du laboratoire](laboratoire/README.md)
-- [Memoire de la lignee V5 originale](historique/memoire_v5/README.md)
-- [Verification de la publication precedente](docs/technique/verification-publication.md)
-- [Difficultes techniques historiques](docs/technique/pieges.md)
+Le laboratoire dispose de documents protégés avec historique et restauration,
+d'une recherche Web isolée et d'une lecture d'écran à la demande ou passive.
+Les réponses publiques nécessitent un accord. Le code libre et le navigateur
+personnel sont désactivés dans le mode protégé.
 
-Copie pour consultation, pas une distribution prete a installer. Les modeles,
-environnements, configurations privees et dependances natives sont exclus.
-Les tests publies ne sont pas une suite autonome. L'historique V3 et les anciens
-extraits sont separes du code courant ; ils ne constituent pas des fonctions
-nouvellement activees.
+Lecture et voix ont été vérifiées sur une fenêtre fictive affichée sur un vrai
+écran : progression, fin de tâche et remarque après trois morts distinctes.
+**La fluidité en partie reste non qualifiée** : une chute des FPS pendant un
+chargement a interrompu un essai. Le mode protégé n'est pas une machine virtuelle.
 
-Aucun souvenir, conversation privee, secret, enregistrement vocal ou historique
-Git prive n'est inclus. La copie publique n'est pas synchronisee automatiquement.
-La consultation publique n'ajoute pas de licence generale de reutilisation ;
-les dependances et modeles conservent leurs propres licences.
+- [État actuel et limites](docs/etat/actuel.md)
+- [Modifications et vérifications](docs/technique/mise-a-jour-20261109.md)
+- [Structure des composants](structure.md)
+- [Code du laboratoire](laboratoire/README.md)
+- [Direction du projet](docs/pilotage/evolution.md)
+- [Provenance de cette mise à jour](docs/provenance/mise-a-jour-20261109.json)
+- [Règles de contribution](REGLES.md)
 
-Derniere passe : [audit et archives](docs/technique/audit-obsoletes.md).
+Cette copie sert à consulter le code ; **ce n'est pas une installation complète**.
+Modèles, environnements, configurations privées, souvenirs, secrets, voix
+personnelles, captures et rapports bruts ne sont pas publiés. Les outils FPS,
+l'OCR local et certains bancs restent locaux ; des imports et tests exigent donc
+des ressources absentes ici. Les archives sous `historique/` restent datées.
 
-Derniere refactorisation validee : [cycle des services](docs/technique/cycle-services.md).
-
-Bilan de dialogue reporte : [rappel long et variantes](docs/technique/dialogue-et-rappel.md).
-
-Memoire conservee : [rappel et limites](docs/technique/rappel-memoire.md).
-
-Derniere etape : [lecture Web et notes naturelles](docs/technique/vision-web-notes.md).
-Notes/listes locales et ouverture Web claires sans bouton, lecture ciblee et
-observation rendue publique isolee ;580 tests logiciels locaux passes,1 saute.
-Pas de controle PC general ni jeu qualifie. Suite : poursuivre la vision.
+L'originale et le laboratoire sont distincts. Aucun historique Git privé transféré.
+La publication n'ajoute pas de licence générale de réutilisation ; les dépendances
+et modèles conservent leurs propres licences.

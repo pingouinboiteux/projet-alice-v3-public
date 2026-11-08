@@ -50,7 +50,9 @@ def public_filter():
 
 
 class RemoteChannels:
-    def __init__(self,session,events,*,store=None,library=None,scene=None):
+    def __init__(self,session,events,*,store=None,library=None,scene=None,confirm=None,cancelled=lambda:False):
+        self.confirm_external = confirm
+        self.local_cancelled = cancelled
         self.session=session
         self.events=events
         self.pending=queue.Queue(maxsize=16)
@@ -308,6 +310,15 @@ class RemoteChannels:
             if generation!=self.generations[source] or not self.enabled[source] or time.monotonic()-received>PENDING_SECONDS[source]:
                 self.trace('external.skipped',source,reason='reply_expired');return True
             self.events.put(('text',('Alice vers '+source,answer)))
+            # Connecting authorizes reception, not unlimited outgoing speech.
+            if self.local_cancelled() or self.confirm_external is None or not self.confirm_external(
+                    'Diffuser cette reponse sur '+source+' pour '+str(message.author)+' ?\n\n'+answer):
+                self.trace('external.skipped',source,reason='local_approval_missing');return True
+            self.session.check()
+            if (self.local_cancelled() or generation!=self.generations[source] or not self.enabled[source]
+                    or time.monotonic()-received>PENDING_SECONDS[source]
+                    or getattr(voice,'interruption_epoch',0)!=interruption_epoch):
+                self.trace('external.skipped',source,reason='approval_expired');return True
             if bridge:
                 parts=voice.audio_parts(answer)
                 reply_id=secrets.token_hex(16)
@@ -315,6 +326,7 @@ class RemoteChannels:
                 duration=0
                 try:
                     for index,(path,info) in enumerate(parts):
+                        if self.local_cancelled():playing=False;bridge.stop()
                         if not playing: continue  # Drain the request without sending more speech.
                         with wave.open(str(path),'rb') as wav:
                             if (wav.getnchannels(),wav.getsampwidth(),wav.getframerate())!=(1,2,24000):
@@ -340,6 +352,7 @@ class RemoteChannels:
                     raise
                 finally: parts.close()
             else:
+                if self.local_cancelled():return True
                 if getattr(voice,'interruption_epoch',0)!=interruption_epoch:
                     self.trace('external.skipped',source,reason='reply_interrupted');return True
                 playing=voice.speak(answer) is not False

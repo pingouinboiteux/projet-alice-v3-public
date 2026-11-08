@@ -20,7 +20,7 @@ def test_connection_requires_live_process_and_ready_status():
 
 def test_confirmation_expires_without_ui_and_stale_approval_cannot_run():
     app=Application.__new__(Application)
-    app.events=queue.Queue();app.stop=threading.Event();app.observation=MagicMock()
+    app.events=queue.Queue();app.inputs=queue.Queue();app.stop=threading.Event();app.observation=MagicMock()
     with patch('alice_desktop.ACTION_CONFIRM_SECONDS',0.01):
         assert app.confirm('Ouvrir le site ?') is False
     kind,(_,event,result,deadline)=app.events.get_nowait()
@@ -28,34 +28,21 @@ def test_confirmation_expires_without_ui_and_stale_approval_cannot_run():
     app.observation.emit.assert_any_call('confirmation.result',{'accepted':False,'expired':True})
 
 
-def test_waiting_for_local_confirmation_can_serve_external_dialogue_without_approval():
+def test_waiting_for_local_confirmation_never_serves_external_dialogue():
     app=Application.__new__(Application)
-    app.events=queue.Queue();app.stop=threading.Event();app.observation=MagicMock()
+    app.events=queue.Queue();app.inputs=queue.Queue();app.stop=threading.Event();app.observation=MagicMock()
     app.channels=Mock();app.hearing=Mock();app.session=NS(voice=Mock())
-    def external_turn(*args):
-        _,(_,event,result,_)=app.events.get_nowait()
-        assert not result and not event.is_set()
-        # UI cancellation after one external turn. Never approve in this path.
-        result.append(False);event.set()
-        return True
-    app.channels.handle_one.side_effect=external_turn
-    with patch('alice_desktop.ACTION_CONFIRM_SECONDS',2):
+    with patch('alice_desktop.ACTION_CONFIRM_SECONDS',0.01):
         assert not app.confirm('Demande locale fictive')
-    app.channels.handle_one.assert_called_once_with(app.hearing,app.session.voice)
+    app.channels.handle_one.assert_not_called()
 
 
-def test_confirmation_that_expires_during_external_turn_is_not_accepted():
+def test_new_input_cancels_confirmation_without_external_turn():
     app=Application.__new__(Application)
-    app.events=queue.Queue();app.stop=threading.Event();app.observation=MagicMock()
-    app.channels=Mock();app.hearing=Mock();app.session=NS(voice=Mock())
-    clock=[100.0]
-    def external_turn(*args):
-        _,(_,event,result,_)=app.events.get_nowait()
-        clock[0]=103.0
-        result.append(True);event.set()
-    app.channels.handle_one.side_effect=external_turn
-    with patch('alice_desktop.time.monotonic',side_effect=lambda:clock[0]),patch('alice_desktop.ACTION_CONFIRM_SECONDS',2):
-        assert not app.confirm('Demande locale fictive')
+    app.events=queue.Queue();app.inputs=queue.Queue();app.stop=threading.Event();app.observation=MagicMock()
+    app.channels=Mock();app.inputs.put('validation_nouvelle_demande')
+    assert not app.confirm('Demande locale fictive')
+    app.channels.handle_one.assert_not_called()
 
 def test_remote_drop_reasons_do_not_store_viewer_text():
     from remote_channels import RemoteChannels

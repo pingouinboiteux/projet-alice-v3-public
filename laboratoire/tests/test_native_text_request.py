@@ -8,14 +8,14 @@ from native_text_request import interpret
 
 
 @pytest.mark.parametrize('utterance',[
-    'Alice, peux-tu ecrire «Bonjour  Pingouin» dans la fenetre «Notes - Bloc-notes» ?',
-    'Ecris dans la fenetre «Notes - Bloc-notes» le texte «Bonjour  Pingouin».',
-    'Tape dans la fenetre "Notes - Bloc-notes" texte : Bonjour  Pingouin',
+    'Alice, peux-tu ecrire «Bonjour  Proprietaire» dans la fenetre «Notes - Bloc-notes» ?',
+    'Ecris dans la fenetre «Notes - Bloc-notes» le texte «Bonjour  Proprietaire».',
+    'Tape dans la fenetre "Notes - Bloc-notes" texte : Bonjour  Proprietaire',
 ])
 def test_exact_text_and_named_window(utterance):
     result=interpret(utterance,'voice')
     assert result['status']=='ready'
-    assert result['target']=={'window_hint':'Notes - Bloc-notes','text':'Bonjour  Pingouin'}
+    assert result['target']=={'window_hint':'Notes - Bloc-notes','text':'Bonjour  Proprietaire'}
     a,b=result['text_span']
     assert utterance[a:b]==result['target']['text']
 

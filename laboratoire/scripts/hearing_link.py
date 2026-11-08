@@ -12,7 +12,7 @@ from observation import emit, span
 class Hearing(Voice):
     @contextmanager
     def stop_only(self, voice, *, enabled=False, cancel_if=None, on_status=None):
-        """Own the idle hearing worker while speaking; no parallel command allowed.
+        """Own the idle hearing worker; yield a failure probe for action guards.
 
         Opt-in: acoustic echo cancellation is not implemented. Headphones and a
         real microphone trial are required before claiming reliable recognition.
@@ -21,6 +21,7 @@ class Hearing(Voice):
             yield
             return
         finished = threading.Event()
+        failed = threading.Event()
         errors = []
         def status(value):
             emit(self.session, 'hearing.stop_state', {'status':value})
@@ -35,19 +36,20 @@ class Hearing(Voice):
                 while not stopped():
                     result = self.command('stop_only', cancel_if=stopped)
                     if stopped(): break
+                    if result.get('status') not in {'idle', 'ignored', 'stop'}:
+                        raise RuntimeError('Reponse ecoute stop invalide')
                     status(result.get('status', 'error'))
                     if result.get('status') == 'stop' and not stopped():
                         voice.interrupt()
                         return
-                    if result.get('status') not in {'idle', 'ignored', 'stop'}:
-                        raise RuntimeError('Reponse ecoute stop invalide')
             except Exception as error:
                 errors.append(error)
+                failed.set()  # Visible to action guards before error notification.
                 status('error')
         thread = threading.Thread(target=watch, daemon=True)
         thread.start()
         try:
-            yield
+            yield failed.is_set
         finally:
             finished.set()
             self.cancel()

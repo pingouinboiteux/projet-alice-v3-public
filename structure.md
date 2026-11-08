@@ -1,3 +1,5 @@
+Mise à jour du 9 novembre 2026 : [état courant](docs/etat/actuel.md).
+
 # Structure de la copie publique d'Alice
 
 ```text
@@ -47,3 +49,13 @@ Lecture Web et notes : [bilan](docs/technique/vision-web-notes.md) ; modules
 `notes_*.py`, `note_operations.py`, `note_request.py`, `open_request.py`,
 `web_*.py`, `public_navigation.py`, `public_resources.py`, `rendered_observation.py`
 dans `laboratoire/scripts/`, tests correspondants dans `laboratoire/tests/`.
+
+## Composants courants
+
+- `controle/laboratoire/` : actions natives.
+- `memoire/laboratoire/` : mémoire et sources.
+- `interface/laboratoire/` : affichage, services, confirmations.
+- `integrations/laboratoire/` : canaux et sous-titres.
+- `vision/laboratoire/` : observation structurée déjà publiable.
+
+Les synthèses plus anciennes restent des références datées. Les essais FPS/OCR et les données locales ne sont pas synchronisés.

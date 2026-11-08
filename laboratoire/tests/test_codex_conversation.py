@@ -9,7 +9,7 @@ from codex_link import action_reply
 
 
 class ConversationIntegration(unittest.TestCase):
-    def test_explicit_action_uses_tools_and_voice_without_dialogue_inference(self):
+    def test_code_request_is_refused_without_task_or_dialogue_inference(self):
         session = MagicMock()
         session.temp = None
         result = {'status': 'completed', 'answer': 'Fichier cree.', 'changed_files': ['bonjour.txt']}
@@ -20,8 +20,8 @@ class ConversationIntegration(unittest.TestCase):
              patch('codex_link.run_task', return_value=result) as task:
             chat.main()
         factory.assert_called_once_with(allow_game=False, context_window=16384)
-        task.assert_called_once_with(session, 'Cree bonjour.txt')
-        voice.return_value.speak.assert_called_once_with(action_reply(result))
+        task.assert_not_called()
+        voice.return_value.speak.assert_not_called()
         session.ask.assert_not_called()
         session.close.assert_called_once()
 

@@ -21,7 +21,7 @@ def adapter(monkeypatch):
     monkeypatch.setattr(Initiative, 'start', lambda self: None)
     session = SimpleNamespace(ask_background=Mock(return_value=(json.dumps({
         'choice': 'continue', 'reply': 'Un sacrifice peut etre plus fort qu une defense passive.'}), 0, {})))
-    value = DesktopInitiative(session)
+    value = DesktopInitiative(session, confirm=Mock(return_value=True))
     clock = [0.]
     value.core.clock = lambda: clock[0]
     return value, session, clock
@@ -44,6 +44,14 @@ def test_animation_never_gets_private_local_history(adapter):
     prompt = session.ask_background.call_args.args[0]
     assert 'validation_private_secret' not in repr(prompt)
     assert 'validation_public_chess' in repr(prompt)
+
+
+def test_public_delivery_requires_exact_local_approval(adapter):
+    value,session,clock=adapter
+    value.set_mode('animation');value.idle(PRIVATE,channels());ready(value,clock)
+    value.confirm_public=None;say=Mock()
+    assert not value.deliver(say,PRIVATE,lambda:False)
+    say.assert_not_called()
 
 
 def test_discussion_connected_public_has_public_context_only(adapter):

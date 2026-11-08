@@ -12,8 +12,8 @@ from chat import ROOT
 REPORTS = ROOT / 'data/validation/validation_observer_20261105'
 
 class ObserverSession(VisualSession):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *, fps_protection=True):
+        super().__init__(fps_protection=fps_protection)
         self.browser_demo = None
 
     def stop_owned(self):
