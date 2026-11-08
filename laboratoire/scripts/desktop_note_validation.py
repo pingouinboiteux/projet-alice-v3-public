@@ -12,8 +12,8 @@ from observer_tiddlywiki import TiddlyWikiApp
 from vision_bench_runtime import save
 
 
-def configure_window(app):
-    app.window.title('Alice | Validation notes temporaires')
+def configure_window(app, kind='notes'):
+    app.window.title('Alice | Validation native fictive' if kind=='native' else 'Alice | Validation notes temporaires')
     # Place this app's own window on a secondary monitor when one is present.
     class Info(ctypes.Structure):
         _fields_=[('cbSize',wintypes.DWORD),('monitor',wintypes.RECT),
@@ -34,13 +34,17 @@ def configure_window(app):
     def disable(widget):
         for child in widget.winfo_children():
             if isinstance(child,(tk.Button,tk.Checkbutton)):
-                if child.cget('text') not in ('Envoyer','Arrêter Alice · F12'):
+                allowed=('Envoyer','Arrêter Alice · F12','Stop parole') if kind=='native' else ('Envoyer','Arrêter Alice · F12')
+                if child.cget('text') not in allowed:
                     child.configure(state='disabled')
             disable(child)
     disable(app.window)
     app.paused.set()
-    app.append('Validation','Notes temporaires uniquement. Micro, voix, souvenirs et connexions coupés. '
-               'Décris une note avec son titre et son texte. Annule l’aperçu pour corriger ta demande.')
+    app.append('Validation',
+        'Document fictif uniquement : validation_texte. Micro, voix, souvenirs et connexions coupes. Stop parole interrompt aussi la saisie.'
+        if kind=='native' else
+        'Notes temporaires uniquement. Micro, voix, souvenirs et connexions coupés. '
+        'Décris une note avec son titre et son texte. Annule l’aperçu pour corriger ta demande.')
 
 
 def commit_review(app,pending,authorization):

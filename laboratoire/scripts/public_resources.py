@@ -12,6 +12,7 @@ from web_reader import public_addresses, PinnedHTTPS
 
 LIMIT=1024*1024
 MIMES={
+    'feed':frozenset({'text/xml','application/xml','application/rss+xml'}),
     'document':frozenset({'text/html','application/xhtml+xml','text/plain'}),
     'script':frozenset({'text/javascript','application/javascript','application/ecmascript','text/ecmascript'}),
     'stylesheet':frozenset({'text/css'}),

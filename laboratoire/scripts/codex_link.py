@@ -1,4 +1,4 @@
-"""Isolated Codex CLI using the already-loaded local model server."""
+"""Historical configuration helpers; execution is disabled in protected mode."""
 import hashlib
 import json
 import os
@@ -100,84 +100,8 @@ def inventory(folder):
 
 
 def run_task(session, prompt, workspace=None, timeout=180):
-    workspace = Path(workspace or ROOT / 'atelier').absolute()
-    for parent in (workspace, *workspace.parents):
-        if parent == ROOT:
-            break
-        if parent.lstat().st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT:
-            raise ValueError('Linked workspace refused')
-    workspace = workspace.resolve()
-    if not workspace.is_relative_to(ROOT / 'atelier'):
-        raise ValueError('Workspace outside atelier')
-    if workspace.is_symlink():
-        raise ValueError('Linked workspace refused')
-    session.check()
-    home = Path(session.temp.name) / 'codex_home'
-    env = configure(home, session.url, session.key, session.model_spec['alias'],session.context_window)
-    before = inventory(workspace)
-    events = []
-    messages = queue.Queue()
-    log = (Path(session.temp.name) / 'codex.log').open('w', encoding='utf-8')
-    process = None
-    started = time.monotonic()
-    try:
-        command = [str(BINARY), 'exec', '--ephemeral', '--ignore-rules',
-                   '--skip-git-repo-check', '--json', '--color', 'never',
-                   '--sandbox', 'workspace-write', '--cd', str(workspace), '-']
-        process = subprocess.Popen(command, env=env, cwd=workspace,
-                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=log,
-                    text=True, encoding='utf-8', creationflags=subprocess.CREATE_NO_WINDOW)
-        session.children['codex'] = process
-        session.job.assign(process)
-        process.stdin.write(prompt)
-        process.stdin.close()
-        def read():
-            try:
-                for line in process.stdout:
-                    messages.put(json.loads(line))
-            except Exception as error:
-                messages.put({'type': 'local_parse_error', 'message': str(error)})
-        reader = threading.Thread(target=read, daemon=True)
-        reader.start()
-        deadline = time.monotonic() + timeout
-        while process.poll() is None or reader.is_alive() or not messages.empty():
-            session.check()
-            if time.monotonic() > deadline:
-                raise TimeoutError('La tache Codex a depasse son delai')
-            try:
-                event = messages.get(timeout=.2)
-                events.append(event)
-            except queue.Empty:
-                continue
-            if event.get('type') == 'item.started':
-                item = event.get('item', {})
-                if item.get('type') in ('command_execution', 'file_change'):
-                    print('Codex travaille dans l atelier...', flush=True)
-        process.wait()
-        after = inventory(workspace)
-        changed = sorted(p for p in before.keys() | after.keys() if before.get(p) != after.get(p))
-        answers = [e['item']['text'] for e in events if e.get('type') == 'item.completed'
-                   and e.get('item', {}).get('type') == 'agent_message']
-        success = process.returncode == 0 and any(e.get('type') == 'turn.completed' for e in events)
-        result = {'status': 'completed' if success else 'failed', 'seconds': round(time.monotonic()-started, 3),
-                  'answer': answers[-1] if answers else '', 'changed_files': changed,
-                  'events': events, 'exit_code': process.returncode}
-        if not success:
-            log.flush()
-            result['diagnostic_tail'] = Path(log.name).read_text(encoding='utf-8', errors='replace')[-5000:]
-        return result
-    finally:
-        if process:
-            if process.poll() is None:
-                process.terminate()
-            try:
-                process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                process.kill(); process.wait(timeout=5)
-            process.stdout.close()
-        log.close()
-        session.children.pop('codex', None)
-
+    from autonomy_policy import CODE_REFUSAL
+    raise PermissionError(CODE_REFUSAL)
 
 def action_reply(result):
     """Speak observed execution status, never treat the model's claims as proof."""

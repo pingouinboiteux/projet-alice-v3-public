@@ -41,6 +41,7 @@ class NotesDialogue:
 
     def can_handle(self,text):
         if type(text) is not str:return False
+        if text.startswith(('/versions-note ', '/restaurer-note ')):return True
         from note_operations import operation_kind
         if operation_kind(text) or (self.access is not None and self.access.can_handle(text)):
             return True
@@ -53,6 +54,11 @@ class NotesDialogue:
     def handle(self,text,source,confirm,cancelled=lambda:False, *, automatic=False):
         if source not in ('text','voice'):
             raise ValueError('Local note requests only')
+        from note_versions import handle as handle_versions
+        version_result=handle_versions(text,source,self.session,self.factory,self.executor,confirm,cancelled)
+        if version_result is not None:
+            self.cancel()
+            return version_result
         from note_operations import operation_kind
         if operation_kind(text) or (not _CREATE.search(text) and self.access is not None and self.access.can_handle(text)):
             if self.access is None:

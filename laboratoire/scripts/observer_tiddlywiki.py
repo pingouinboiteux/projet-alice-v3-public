@@ -360,6 +360,12 @@ class TiddlyWikiApp(BrowserDemo):
                 if self._disk_note(target['title'])!=self._editing_original:
                     return {'ok':False,'verified':False,'reason':'note_changed','after':self.observe()}
             self._last_title=target['title']
+            if self._editing_original is not None:
+                from note_versions import remember
+                remember(self.storage, self._editing_original)
+                self.guard()
+                if self._disk_note(target['title']) != self._editing_original:
+                    raise ValueError('note_changed')
             self.page.locator(SAVE).click()
             self.page.locator(TITLE).wait_for(state='detached',timeout=5000)
             deadline=time.monotonic()+10
@@ -372,6 +378,8 @@ class TiddlyWikiApp(BrowserDemo):
                 if time.monotonic()>deadline: raise RuntimeError('Note was not persisted')
                 time.sleep(.1)
             self._saved=persisted
+            from note_versions import remember
+            remember(self.storage, persisted)
             after=self.observe()
             verified=persisted==target
         return {'ok':verified,'verified':verified,'reason':'verified' if verified else 'postcondition_failed','after':after}

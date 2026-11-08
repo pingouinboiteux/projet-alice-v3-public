@@ -136,7 +136,8 @@ class Job:
 
 
 class Session:
-    def __init__(self, allow_game=False, context_window=8192, fps_protection=True, model_profile=None, ram_protection=True):
+    def __init__(self, allow_game=False, context_window=8192, fps_protection=True, model_profile=None, ram_protection=True, vision=False):
+        self.vision_enabled = bool(vision)
         self.model_spec = load_profile() if model_profile is None else dict(model_profile)
         self.context_window = context_window
         self.allow_game = allow_game
@@ -233,8 +234,11 @@ class Session:
                    '--jinja', '--reasoning-format', 'deepseek', '--no-webui',
                    '--no-webui-mcp-proxy']
         # Direct clients such as Codex inherit the same native Gemma mode.
+        if self.vision_enabled:
+            from screen_model import projector_arguments
+            command += projector_arguments(ROOT, device)
         command+=['--chat-template-kwargs',json.dumps(template_settings(spec))]
-        env = {k: v for k, v in os.environ.items() if not k.startswith('LLAMA_ARG_')}
+        env = {k: v for k, v in os.environ.items() if not k.startswith(('LLAMA_ARG_', 'MTMD_'))}
         self.job = Job()
         self.process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=self.log,
                         stderr=subprocess.STDOUT, creationflags=subprocess.CREATE_NO_WINDOW)
@@ -430,6 +434,8 @@ def safety_test():
 
 
 def main():
+    from autonomy_policy import require_standard_user
+    require_standard_user()
     os.chdir(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument('--smoke', action='store_true')
@@ -449,11 +455,8 @@ def main():
         session.start()
         messages = [{'role': 'system', 'content': SYSTEM}]
         if args.codex:
-            messages[0]['content'] += (' Une fonction separee est disponible : si l utilisateur tape '
-                '/faire suivi de sa demande, Codex utilise ce meme modele pour travailler dans '
-                'laboratoire/atelier. Dans le dialogue ordinaire, tu n executes pas d action. '
-                'Explique cette commande si on te demande de creer ou modifier un fichier. '
-                'Tu ne vois pas les resultats des taches precedentes et ne dois pas les inventer.')
+            from autonomy_policy import CODE_REFUSAL
+            messages[0]['content'] += ' '+CODE_REFUSAL
         if args.voice:
             from voice_link import Voice
             messages[0]['content'] += (' Tes reponses seront lues par une voix synthetique. '
@@ -486,7 +489,7 @@ def main():
         else:
             print('Pret. /nouveau : effacer la conversation ; /quitter : arreter.\n')
             if args.codex:
-                print('/faire suivi de ta demande : travail technique dans laboratoire/atelier.\n')
+                print('Execution de code desactivee dans le mode protege.\n')
             while True:
                 session.check()
                 prompt = input('Toi > ').strip()
@@ -499,18 +502,8 @@ def main():
                 if not prompt:
                     continue
                 if args.codex and (prompt == '/faire' or prompt.startswith('/faire ')):
-                    from codex_link import run_task, action_reply
-                    task = prompt[len('/faire'):].strip()
-                    if not task:
-                        print('Exemple : /faire Cree une page HTML qui affiche Bonjour Proprietaire.')
-                        continue
-                    result = run_task(session, task)
-                    print('\nCompte rendu du modele local (a verifier) :\n' + result['answer'])
-                    print('Fichiers modifies dans l atelier :', ', '.join(result['changed_files']) or 'aucun')
-                    text = action_reply(result)
-                    print(text)
-                    if session.voice:
-                        session.voice.speak(text)
+                    from autonomy_policy import CODE_REFUSAL
+                    print(CODE_REFUSAL)
                     continue
                 trial = messages + [{'role': 'user', 'content': prompt}]
                 try:

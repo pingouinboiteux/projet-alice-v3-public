@@ -116,6 +116,15 @@ def test_disk_change_after_preview_prevents_save_click(app):
     assert result['reason']=='note_changed' and not result['ok']
     app.page.locator.assert_not_called()
 
+
+def test_backup_failure_prevents_note_replacement(app,monkeypatch):
+    write(app,'note.tid','Validation','Before')
+    snapshot=prepare_save(app)
+    def fail(*args):raise OSError('validation_disk_full')
+    monkeypatch.setattr('note_versions.remember',fail)
+    with pytest.raises(OSError):app.act({'op':'click','target':'save'},snapshot)
+    app.page.locator.assert_not_called()
+
 def test_edit_cannot_rename_note(app):
     snapshot=prepare_save(app,'Other')
     app.title_exists=Mock(return_value=False)

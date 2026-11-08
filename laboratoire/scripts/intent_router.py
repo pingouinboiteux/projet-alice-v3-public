@@ -12,7 +12,18 @@ Une nouvelle execution exige une nouvelle demande dans le message actuel;
 une demande explicite comme "recommence" peut utiliser le contexte precedent.
 Retourne uniquement
 les champs kind, value, reply. kind est chat, status, volume, volume_delta, mute,
-open, search, web_read, web_observe, wiki_search, code, note_create, note_access ou memory_forget. Pour chat, value=null et reply contient ta reponse naturelle.
+open, search, web_read, web_observe, web_follow, web_goal, web_search, wiki_search, code, note_create, note_access ou memory_forget. Pour chat, value=null et reply contient ta reponse naturelle.
+web_search recherche une information publique sans URL de depart, par exemple les horaires du Louvre.
+value contient la demande originale, jamais une reformulation. Precisions demandees si ambigu.
+Les recherches de notes, fichiers ou souvenirs restent locales.
+web_goal cherche une information precise depuis une page HTTPS fournie, avec navigation
+bornee sur les liens pertinents de meme origine. value contient la demande originale.
+Exemple : Trouve les horaires sur https://example.org => web_goal.
+Une lecture ou un resume simple reste web_read ; un lien explicitement nomme reste web_follow.
+web_follow suit un lien explicitement nomme depuis une page HTTPS fournie puis
+cherche la reponse sur la destination. value contient la demande originale.
+Toute demande de suivre un lien utilise web_follow, pas web_read/web_observe/open.
+Le controleur demandera les champs manquants ; pas de destination inventee.
 web_observe observe une adresse HTTPS fournie dans un navigateur isole : seulement si
 l'utilisateur demande explicitement d'observer la page rendue, son affichage ou son contenu dynamique.
 Pas de connexion a un compte ni clic/formulaire. Lecture simple ou resume : web_read.
@@ -36,8 +47,8 @@ Si l'utilisateur demande de lire, expliquer ou resumer une page avec son URL,
 choisis obligatoirement web_read, sauf demande explicite de rendu/dynamique (web_observe). Ne fournis jamais un resume de memoire dans
 chat : aucune page n'a encore ete lue. Les outils doivent fournir les preuves.
 wiki_search cherche une notion sur Wikipedia (value=termes, 300 caracteres maximum).
-Ce n'est pas une recherche generale du Web : pour Google ou une actualite,
-choisir search pour ouvrir les resultats dans le navigateur.
+Pour une recherche generale ou une actualite, choisir web_search.
+search sert seulement a ouvrir explicitement les resultats Google dans le navigateur.
 code prepare une creation/modification de fichiers ou de code dans l'atelier
 isole, apres confirmation. value contient la demande. Une demande naturelle
 comme creer une petite page ou un fichier peut choisir code sans mot special.
@@ -62,7 +73,7 @@ confirmation, jamais une suppression automatique. Une citation ou negation reste
 '''
 
 SCHEMA = {'type': 'object', 'properties': {
-    'kind': {'type': 'string', 'enum': ['chat', 'status', 'volume', 'volume_delta', 'mute', 'open', 'search', 'web_read', 'web_observe', 'wiki_search', 'code', 'note_create', 'note_access', 'memory_forget']},
+    'kind': {'type': 'string', 'enum': ['chat', 'status', 'volume', 'volume_delta', 'mute', 'open', 'search', 'web_read', 'web_observe', 'web_follow', 'web_goal', 'web_search', 'wiki_search', 'code', 'note_create', 'note_access', 'memory_forget']},
     'value': {'anyOf': [{'type': 'null'}, {'type': 'integer'}, {'type': 'boolean'}, {'type': 'string'}]},
     'reply': {'type': 'string'}}, 'required': ['kind', 'value', 'reply'], 'additionalProperties': False}
 
@@ -91,7 +102,7 @@ def decode(text):
         if valid:
             from urllib.parse import quote_plus
             argument = 'https://www.google.com/search?q=' + quote_plus(argument)
-    elif kind in {'wiki_search', 'code', 'note_create', 'note_access', 'memory_forget'}:
+    elif kind in {'web_follow', 'web_goal', 'web_search', 'wiki_search', 'code', 'note_create', 'note_access', 'memory_forget'}:
         valid = isinstance(argument, str) and 0 < len(argument) <= (300 if kind == 'wiki_search' else 5000)
     else:
         valid = False
@@ -115,7 +126,7 @@ def route(session, messages, text):
             supplied = [url.rstrip('.,;!?)]}') for url in re.findall(r'https://[^\s<>"\x27]+', text)]
             if action.value not in supplied:
                 raise ValueError('Adresse de lecture non fournie par utilisateur')
-        if action.kind in {'code','note_create','note_access','memory_forget'}:
+        if action.kind in {'web_follow','web_goal', 'web_search','code','note_create','note_access','memory_forget'}:
             action = Action(action.kind, text)  # Keep the user's request, not a model rewrite.
         return action, reply
     except (ValueError, TypeError):

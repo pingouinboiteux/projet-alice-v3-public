@@ -15,7 +15,14 @@ VETO = 'Lis tout cet echange utilisateur dans son ordre. La question porte sur u
 
 VETO_SCHEMA = {'type': 'object', 'properties': {'restricted_to_one_occasion': {'type': 'boolean'}}, 'required': ['restricted_to_one_occasion'], 'additionalProperties': False}
 
-ROUTE = 'Classe la demande actuelle, sans y repondre. personal si elle porte sur les informations propres a cet utilisateur, ses preferences, ses proches, ses projets ou un echange passe. general si elle demande une explication generale, une reflexion ou de lancer une discussion. Classe le sujet de la question demandee, pas une indication introductive sur la fin d une conversation.'
+ROUTE = ('Classe la demande actuelle, sans y repondre. personal seulement '
+    'si elle demande de retrouver une information propre a cet utilisateur, un fait '
+    'passe, ses gouts ou habitudes en memoire. general pour la conversation presente, '
+    'un avis d Alice, un debat, une explication ou une directive de conversation. '
+    'Exprimer maintenant une preference, parler de son projet ou demander de reviser '
+    'un avis dans le debat ne demande pas en soi un rappel personnel. Une demande '
+    'de retrouver ce que la personne avait dit ou prefere reste personal, meme sans '
+    'source connue. Classe la tache demandee, pas la seule presence de je ou mon.')
 
 ROUTE_SCHEMA = {'type': 'object', 'properties': {'kind': {'type': 'string', 'enum': ['personal', 'general']}}, 'required': ['kind'], 'additionalProperties': False}
 

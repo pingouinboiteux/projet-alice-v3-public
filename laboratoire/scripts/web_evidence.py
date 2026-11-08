@@ -22,7 +22,18 @@ def payload(question,source):
         'Dans un tableau conserve les lignes, colonnes et conditions necessaires, sans '
         'reconstruire une phrase absente du texte. '
         'Si la reponse manque ou est seulement supposee, status missing '
-        'et evidence vide. Pour un resume demande, selectionne les passages principaux.'},
+        'et evidence vide. Pour un resume demande, selectionne les passages principaux.'
+        ' Chaque citation doit etre un extrait CONTIGU du passage, recopie caractere '
+        'par caractere. Ne joins jamais deux morceaux avec [...] ou des points de '
+        'suspension ajoutes : aucune coupure interne, jonction ou reformulation. '
+        'Si plusieurs extraits sont necessaires, retourne des objets evidence separes. '
+        'Choisis le minimum suffisant en conservant les negations et conditions utiles. '
+        'N ajoute pas le titre quand une phrase repond deja a la question.'
+        ' Une valeur ne constitue une preuve que si le passage la rattache explicitement '
+        'a l objet ET a l attribut demandes. Une valeur associee a un evenement voisin, '
+        'un autre objet ou une autre propriete ne prouve pas la reponse, meme si elle '
+        'semble plausible. Dans ce cas, status missing sans citation. Conserve toute '
+        'negation et condition : une valeur niee ne devient pas une valeur affirmee.'},
         {'role':'user','content':json.dumps({'question':question[:2000],
             'passages':source['passages'],'lecture_partielle':source.get('truncated',False)},ensure_ascii=False)}]
 
@@ -43,7 +54,8 @@ def validate(raw,source):
         if quote not in quotes:quotes.append(quote)
     return quotes
 
-def answer(session,question,source):
+def assess(session,question,source):
+    """Return a validated decision, without inferring it from a rendered sentence."""
     raw,_,_=session.ask(payload(question,source),response_schema=SCHEMA)
     try:
         def unique(pairs):
@@ -55,11 +67,36 @@ def answer(session,question,source):
         proposal=json.loads(raw,object_pairs_hook=unique)
         quotes=validate(proposal,source)
     except (ValueError,TypeError,KeyError):
+        return {'status':'invalid','quotes':[]}
+    return {'status':proposal['status'],'quotes':quotes}
+
+def confirm_relevance(session, question, decision):
+    """Reassess selected quotes alone; never infer relevance from surrounding text.
+
+    This remains a model judgement, not a semantic proof. Exact-substring
+    validation runs again, so a second pass cannot invent a replacement quote.
+    Existing ambiguity is preserved, never resolved by dropping an excerpt.
+    """
+    if decision['status'] != 'found':
+        return decision
+    excerpts = {'passages': [{'id': 'q'+str(index), 'text': quote}
+                             for index, quote in enumerate(decision['quotes'], 1)],
+                'truncated': True}
+    return assess(session, question, excerpts)
+
+
+def render(decision,source):
+    quotes=decision['quotes']
+    if decision['status']=='invalid':
         return 'Je ne peux pas verifier cet extrait de la page. Aucune reponse fiable confirmee.'
     if not quotes:
         return ('Je ne trouve pas cette information dans les passages consultes. '
                 +('La page n a ete lue que partiellement.' if source.get('truncated') else
                   'Je ne peux pas la deduire de ce texte.'))
     prefix=('La page contient des informations contradictoires ; je ne peux pas trancher.\n'
-            if proposal['status']=='ambiguous' else '')
+            if decision['status']=='ambiguous' else '')
     return prefix+'Extrait'+('s' if len(quotes)>1 else '')+' trouve'+('s' if len(quotes)>1 else '')+' :\n'+ '\n'.join('« '+q+' »' for q in quotes)
+
+
+def answer(session,question,source):
+    return render(assess(session,question,source),source)

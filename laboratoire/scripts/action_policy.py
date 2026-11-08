@@ -113,16 +113,8 @@ class Actions:
             self.previous = None
             return 'Le precedent reglage du son a ete retabli et verifie.'
         if action.kind in {'open', 'search'}:
-            url = validate_url(action.value)
-            if action.kind=='open' and automatic_open is True:
-                from web_reader import public_addresses
-                public_addresses(urlsplit(url).hostname)
-                if cancelled():return 'Ouverture annulee.'
-            elif not self.confirm('Ouvrir cette adresse dans ton navigateur ?\n' + url):
-                return 'Ouverture annulee.'
-            if not self.browser(url):
-                raise RuntimeError('Le navigateur ne confirme pas la prise en charge')
-            return 'La demande d ouverture a ete transmise au navigateur. Je ne lis pas automatiquement cette page.'
+            from autonomy_policy import BROWSER_REFUSAL
+            return BROWSER_REFUSAL
         if action.kind == 'status':
             data = self.monitor.sample()
             cpu = 'en cours de mesure' if data['cpu_percent'] is None else str(round(data['cpu_percent'])) + ' pour cent'
