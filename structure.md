@@ -1,49 +1,51 @@
-Mise à jour du 9 novembre 2026 : [état courant](docs/etat/actuel.md).
-
 # Structure de la copie publique d'Alice
 
+Mise à jour du 9 novembre 2026 : [état courant](docs/etat/actuel.md).
+
 ```text
-README.md                 presentation et liens utiles
-REGLES.md                 limites de contribution et workflow Git/GitHub
+README.md                 présentation et liens utiles
+REGLES.md                 limites de contribution et travail Git/GitHub
 structure.md              carte des dossiers
-scripts/                  migration technique (installation privee complete requise)
+scripts/                  migration technique (installation privée complète requise)
 docs/
+  INDEX.md                index des documents
   etat/actuel.md          fonctions actives, mesures et limites
-  pilotage/evolution.md   direction, priorites et criteres de passage
-  technique/             pieges historiques et controles de publication
+  etat/securite.md        périmètre des protections
+  pilotage/evolution.md   direction, priorités et critères de passage
+  technique/             pièges historiques et contrôles de publication
   provenance/            empreintes du code courant
 laboratoire/
   README.md              carte des composants courants
-  scripts/               dialogue, memoire, outils, voix et connexions
-  src/alice/             ecoute, voix, materiel et services communs
+  scripts/               dialogue, mémoire, outils, voix et connexions
+  src/alice/             écoute, voix, matériel et services communs
   tests/                 tests logiciels et bancs de jugement
-  personality/           consigne active neutralisee
-  config/                selecteur memoire uniquement
+  personality/           consigne active neutralisée
+  config/                sélecteur mémoire uniquement
 historique/
-  v3/                    anciens extraits : controle, ecoute, outils, vision, voix
-  memoire_v5/             explication de la memoire originale, provenance, extraits
+  v3/                    anciens extraits : contrôle, écoute, outils, vision, voix
+  memoire_v5/             explication de la mémoire originale, provenance, extraits
   laboratoire-20261103/   anciens extraits et leur provenance
 ```
 
-Les README restent pres du code qu'ils expliquent. L'etat, l'evolution, les
-pieges et les controles sont regroupes sous `docs/`, par fonction. Les fichiers
+Les README restent près du code qu'ils expliquent. L'état, l'évolution, les
+pièges et les contrôles sont regroupés sous `docs/`, par fonction. Les fichiers
 de provenance accompagnent les sources actuelles ou historiques correspondantes.
 
-Les donnees et sauvegardes appartiennent a `data/` dans l'installation privee,
-pas a cette copie publique. Ce dossier est volontairement absent : les souvenirs,
-logs, rapports prives et sauvegardes ne doivent pas etre envoyes sur GitHub.
+Les données et sauvegardes appartiennent à `data/` dans l'installation privée,
+pas à cette copie publique. Ce dossier est volontairement absent : les souvenirs,
+journaux, rapports privés et sauvegardes ne doivent pas être envoyés sur GitHub.
 Les modules courants gardent leurs imports ; ce rangement ne modifie pas le code.
 
-`historique/voix-abandonnees/` conserve la recette vocale D retiree du code courant.
+`historique/voix-abandonnees/` conserve la recette vocale D retirée du code courant.
 
 Initiative et rythme : `laboratoire/scripts/conversation_initiative.py`,
 `initiative_sequence.py`, `desktop_initiative.py`, `public_chat_selection.py`
-et `stop_command.py`. Etat : [initiative](docs/technique/initiative-parole.md).
+et `stop_command.py`. État : [initiative](docs/technique/initiative-parole.md).
 
 Contexte du stream : `laboratoire/scripts/public_scene.py`, `scene_context.py`,
 `stream_recipient.py`, `desktop_recipient.py` ; [bilan](docs/technique/dialogue-stream.md).
-Les dependances du parcours optionnel de notes se trouvent dans les modules
-`desktop_note_validation.py`, `observer_*.py` et `vision_*.py` selectionnes.
+Les dépendances du parcours optionnel de notes se trouvent dans les modules
+`desktop_note_validation.py`, `observer_*.py` et `vision_*.py` sélectionnés.
 
 Lecture Web et notes : [bilan](docs/technique/vision-web-notes.md) ; modules
 `notes_*.py`, `note_operations.py`, `note_request.py`, `open_request.py`,

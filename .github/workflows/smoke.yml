@@ -1,0 +1,23 @@
+name: Tests autonomes
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Installer pytest
+        run: python -m pip install pytest
+      - name: Tester les parcours sans ressources privées
+        env:
+          PYTHONPATH: laboratoire/scripts
+        run: python -B -m pytest -q laboratoire/tests/test_note_versions.py laboratoire/tests/test_screen_delivery.py laboratoire/tests/test_web_grounded_answer.py

@@ -1,31 +1,48 @@
-# Alice — code et état du projet
+# Alice — compagnon vocal local
 
-Compagnon vocal local en français sur Windows. **Mise à jour du 9 novembre 2026.**
+Alice est un prototype personnel de compagnon vocal en français pour Windows.
+Son laboratoire sait dialoguer, mémoriser des échanges, lire certaines pages Web
+et observer un écran à la demande ou à intervalles espacés. Son propriétaire
+garde la main sur les actions qui modifient des documents ou diffusent une réponse.
 
-Le laboratoire dispose de documents protégés avec historique et restauration,
-d'une recherche Web isolée et d'une lecture d'écran à la demande ou passive.
-Les réponses publiques nécessitent un accord. Le code libre et le navigateur
-personnel sont désactivés dans le mode protégé.
+Ce dépôt s'adresse aux personnes qui veulent **étudier le code et les choix du
+projet**. Il contient une sélection publique datée du **9 novembre 2026** : ce
+n'est pas une installation prête à lancer. Les modèles, les voix personnelles,
+les paramètres privés et certaines dépendances natives n'y figurent pas.
 
-Lecture et voix ont été vérifiées sur une fenêtre fictive affichée sur un vrai
-écran : progression, fin de tâche et remarque après trois morts distinctes.
-**La fluidité en partie reste non qualifiée** : une chute des FPS pendant un
-chargement a interrompu un essai. Le mode protégé n'est pas une machine virtuelle.
+## Pour commencer
 
-- [État actuel et limites](docs/etat/actuel.md)
-- [Modifications et vérifications](docs/technique/mise-a-jour-20261109.md)
-- [Structure des composants](structure.md)
-- [Code du laboratoire](laboratoire/README.md)
-- [Direction du projet](docs/pilotage/evolution.md)
-- [Provenance de cette mise à jour](docs/provenance/mise-a-jour-20261109.json)
-- [Règles de contribution](REGLES.md)
+- [État des fonctions et limites](docs/etat/actuel.md) : ce qui a été mesuré sur
+  l'installation d'origine et ce qui reste incertain.
+- [Périmètre des protections](docs/etat/securite.md) : droits accordés à Alice,
+  données lues et limites du mode protégé.
+- [Carte du code](structure.md) et [index des documents](docs/INDEX.md).
+- [Code courant du laboratoire](laboratoire/README.md) et
+  [modifications de cette sélection](docs/technique/mise-a-jour-20261109.md).
+- [Direction du projet](docs/pilotage/evolution.md) et
+  [provenance des fichiers](docs/provenance/mise-a-jour-20261109.json).
 
-Cette copie sert à consulter le code ; **ce n'est pas une installation complète**.
-Modèles, environnements, configurations privées, souvenirs, secrets, voix
-personnelles, captures et rapports bruts ne sont pas publiés. Les outils FPS,
-l'OCR local et certains bancs restent locaux ; des imports et tests exigent donc
-des ressources absentes ici. Les archives sous `historique/` restent datées.
+Les documents protégés ont un historique et une restauration. La recherche Web
+utilise une fenêtre Brave isolée ; la lecture d'écran peut être demandée ou
+surveiller un écran sélectionné. Les réponses publiques exigent un accord. Le
+mode protégé refuse l'exécution libre de code, le navigateur personnel et les
+lancements administrateur. Il ne confine pas Windows comme une machine virtuelle.
 
-L'originale et le laboratoire sont distincts. Aucun historique Git privé transféré.
-La publication n'ajoute pas de licence générale de réutilisation ; les dépendances
-et modèles conservent leurs propres licences.
+Une fenêtre fictive sur un vrai écran a servi à vérifier lecture et voix. Dans
+**cette version publiée**, la fluidité pendant une partie reste non qualifiée :
+un ancien essai s'est interrompu après une chute des FPS pendant un chargement.
+Les mesures et leurs réserves figurent dans [l'état actuel](docs/etat/actuel.md).
+
+## Vérification de cette sélection
+
+Une [petite suite autonome](.github/workflows/smoke.yml) vérifie les versions de
+notes, la livraison visuelle et des garde-fous de réponse Web avec des données
+fictives. Elle ne lance ni Alice, ni modèle, ni microphone, ni navigateur. La
+majorité des tests du projet exige encore des ressources absentes de ce dépôt.
+
+La copie ne contient ni souvenirs, conversations privées, secrets, captures,
+rapports bruts, ni historique Git privé. Les archives sous `historique/` sont
+datées ; l'originale et le laboratoire restent distincts.
+
+Aucune licence générale de réutilisation n'est jointe à cette publication.
+Les modèles et dépendances conservent leurs propres licences.
