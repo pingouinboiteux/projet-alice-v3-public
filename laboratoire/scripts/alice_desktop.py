@@ -530,7 +530,9 @@ class Application:
                                 continue
                             messages = messages[:1] + messages[1:][-DIALOGUE_HISTORY_MESSAGES:] + [
                                 {'role': 'user', 'content': text}, {'role': 'assistant', 'content': answer}]
-                            if self.say(answer) is False:
+                            delivered=self.say(answer)
+                            memory.mark_reply_delivered(delivered is True)
+                            if delivered is not True:
                                 messages[-1] = {'role':'assistant', 'content':
                                     '[Reponse interrompue : le texte effectivement entendu est inconnu.]'}
                             hearing.command('extend')

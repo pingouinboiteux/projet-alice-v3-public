@@ -193,6 +193,37 @@ class Session:
         self.check()
         return result
 
+    def request_stream_cancelable(self, path, body, *, cancelled, timeout=45):
+        """Read a local completion stream; closing it releases cancelled work."""
+        self.check()
+        if cancelled():return None
+        payload=json.dumps({**body,'stream':True}).encode('utf-8')
+        req=urllib.request.Request(self.url+path,data=payload,
+            headers={'Authorization':'Bearer '+self.key,'Content-Type':'application/json'})
+        parts=[];finish=None;size=0
+        with self.opener.open(req,timeout=timeout) as response:
+            for line in response:
+                if cancelled():return None
+                if not line.startswith(b'data:'):continue
+                data=line[5:].strip()
+                if data==b'[DONE]':break
+                event=json.loads(data)
+                if 'error' in event:raise RuntimeError('Local model stream failed')
+                for choice in event.get('choices',[]):
+                    delta=choice.get('delta') or {}
+                    content=delta.get('content')
+                    if content is not None:
+                        if not isinstance(content,str):raise ValueError('Invalid model stream content')
+                        size+=len(content)
+                        if size>32768:raise ValueError('Model stream too large')
+                        parts.append(content)
+                    if choice.get('finish_reason') is not None:
+                        finish=choice['finish_reason']
+            if cancelled():return None
+        self.check()
+        if finish is None:raise ValueError('Incomplete model stream')
+        return {'choices':[{'finish_reason':finish,'message':{'content':''.join(parts)}}]}
+
     def start(self):
         if self.ram_protection and self.minimum_ram < 6 * 1024**3:
             raise RuntimeError('Au moins 6 Gio de RAM libre sont necessaires')

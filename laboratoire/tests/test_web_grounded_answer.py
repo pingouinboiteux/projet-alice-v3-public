@@ -92,10 +92,28 @@ def test_guard_failure_after_inference_propagates():
         synthesize(session, 'Question ?', evidence(), 'single')
 
 
-def test_reference_validity_is_not_a_semantic_guarantee():
+def test_mismatched_number_is_rejected():
     session = session_for([{'text': 'La salle dispose de 99 places.', 'refs': ['S1Q1']}])
-    # Document the boundary: semantic quality requires separate model evaluation.
-    assert '99 places' in synthesize(session, 'Question ?', evidence(), 'single')
+    with pytest.raises(ValueError, match='grounded_answer_unsupported_number'):
+        synthesize(session, 'Question ?', evidence(), 'single')
+
+
+def test_numeric_guard_requires_each_number_in_the_cited_quotes():
+    data = evidence()
+    data.append({'url': 'https://example.net/other', 'status': 'found', 'quotes': ['99 seats.']})
+    session = session_for([{'text': 'La salle dispose de 99 places.', 'refs': ['S1Q1']}])
+    with pytest.raises(ValueError, match='grounded_answer_unsupported_number'):
+        synthesize(session, 'Question ?', data, 'consistent')
+    session = session_for([{'text': 'La salle dispose de 99 places.', 'refs': ['S2Q1']}])
+    assert '99 places' in synthesize(session, 'Question ?', data, 'consistent')
+
+
+def test_reference_validity_still_does_not_prove_semantics():
+    data = evidence()
+    data[0]['quotes'].append('The room is closed on Mondays.')
+    session = session_for([{'text': 'La salle ouvre le lundi.', 'refs': ['S1Q2']}])
+    # The numerical guard is exact; semantic entailment still needs evaluation.
+    assert 'ouvre le lundi' in synthesize(session, 'Question ?', data, 'single')
 
 
 def test_attribution_uses_source_numbers_not_quote_numbers():

@@ -6,13 +6,13 @@ publique expose le code publiable, sans les ressources privées de l'installatio
 | Partie | Disponible ou mesuré | Limites |
 | --- | --- | --- |
 | Dialogue | Modèle Gemma actuel, contexte et mémoire séparés | Compréhension et cohérence imparfaites |
-| Voix | Sopro, profil conservé, phrases complètes vérifiées hors jeu | Pas d'endurance complète |
-| Web | Recherche Brave isolée, sources et synthèse, navigation bornée | Précision imparfaite, aucun compte personnel |
+| Voix | Sopro, profil conservé, phrases complètes hors jeu et une phrase en jeu | Pas d'endurance complète |
+| Web | Recherche Brave isolée, extraits de sources sans reformulation générée, navigation bornée | Précision imparfaite des sources, aucun compte personnel |
 | Natif | Saisie bornée dans le Bloc-notes avec relecture | Pas de contrôle universel du PC |
 | Documents | Espace dédié, versions, journal, copies texte importées/exportées | Même disque, aucune sauvegarde externe |
 | Notes | Versions avant remplacement, restauration contrôlée | Pas de versions rétroactives |
 | Public | Accord sur le contenu avant diffusion, annulation contrôlée | Capture par logiciels externes non contrôlée |
-| Écran | Lecture locale, surveillance espacée, remarques limitées | Erreurs possibles et événements brefs manqués |
+| Écran | Lecture locale, surveillance espacée et flux passif annulable | Erreurs possibles et événements brefs manqués |
 | Sécurité | Code libre, navigateur personnel et entrée administrateur refusés | Contrôles applicatifs, pas de VM ni confinement OS complet |
 
 ## Lecture d'écran
@@ -39,8 +39,16 @@ comptées et trois phrases terminées. Le modèle a néanmoins inventé une barr
 progression dans sa description interne alors que seul le pourcentage était
 montré. Sa réponse prononcée était correcte ; sa perception reste faillible.
 
-En partie, TFT et un combat ont été reconnus. La qualification a été interrompue :
+Lors d'un premier essai en partie, TFT et un combat ont été reconnus. La qualification a été interrompue :
 mesures FPS périmées lors d'un essai, puis chute d'environ 60 à 28 FPS sur trois
 secondes pendant un chargement. Sa cause exacte reste à isoler. Les contrôles
-hors jeu ne prouvent pas que cette difficulté est résolue. Une partie avec Alice
-déjà chargée reste à mesurer, ainsi que l'endurance avec les services habituels.
+hors jeu ne prouvaient pas que cette difficulté était résolue.
+
+Après les réparations, deux essais de lecture passive ont été menés en partie
+pendant 180 secondes chacun, sans son ni micro : neuf observations par essai,
+garde FPS passée, minimum glissant de 59,59 puis 59,73 FPS, contre environ 60 FPS
+sur les références respectives. Un essai supplémentaire de 60 secondes avec une
+seule phrase audible a aussi passé le garde FPS : minimum glissant 59,90 FPS,
+phrase entendue en entier, aucune gêne ressentie selon le propriétaire.
+Les rapports bruts restent privés. Ces essais courts ne qualifient ni une session
+longue avec tous les services, ni toutes les scènes de jeu.

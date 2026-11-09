@@ -4,6 +4,9 @@ Le point d'entrée local est `scripts/alice_desktop.py`. Les lanceurs `Alice.bat
 et `Alice-vision.bat` supposent une installation privée complète ; les ressources
 nécessaires ne sont pas distribuées dans ce dépôt.
 
+Les réparations de mémoire, d'humeur, de vision passive et de réponses Web sont
+décrites dans le [bilan de fiabilisation](../docs/technique/fiabilisation-20261109.md).
+
 - `scripts/protected_workspace.py` et `protected_dialogue.py` : documents versionnés.
 - `scripts/note_versions.py` : historique et restauration des notes.
 - `scripts/autonomy_policy.py` : refus de l'administration et du code libre.

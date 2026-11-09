@@ -30,16 +30,6 @@ class MoodEngine:
         r"je suis perdu(?:e)?|je suis inquiet(?:e)?|ça ne va pas|ca ne va pas)\b",
         re.IGNORECASE,
     )
-    HOSTILE = re.compile(
-        r"\b(?:tais-toi|ferme-la|tu es stupide|tu es inutile|tu n['’]es qu['’]une?"
-        r"|ob[eé]is|je t['’]ordonne)\b",
-        re.IGNORECASE,
-    )
-    DISRESPECT = re.compile(
-        r"\b(?:tu racontes n['’]importe quoi|tu es ridicule|pauvre idiote|"
-        r"quelle idiote|la ferme)\b",
-        re.IGNORECASE,
-    )
     AMUSED = re.compile(
         r"\b(?:dr[oô]le|marrant(?:e)?|amusant(?:e)?|je plaisante|blague|rire)\b",
         re.IGNORECASE,
@@ -103,8 +93,11 @@ class MoodEngine:
         return "calme"
 
     def react(
-        self, store: MemoryStore, text: str, *, now: datetime | None = None
+        self, store: MemoryStore, text: str, *, now: datetime | None = None,
+        directed_hostility: str = "none",
     ) -> Mood:
+        if directed_hostility not in ("none", "disrespect", "hostile"):
+            raise ValueError("Invalid directed hostility")
         valence, arousal, _label, updated = store.mood()
         current = now or datetime.now(UTC)
         try:
@@ -118,10 +111,13 @@ class MoodEngine:
         valence *= decay
         arousal = 0.25 + (arousal - 0.25) * decay
         contextual_label = ""
-        if self.HOSTILE.search(text):
+        # Raw text cannot establish whether an insult is quoted or directed.
+        hostile = directed_hostility == "hostile"
+        disrespect = directed_hostility == "disrespect"
+        if hostile:
             valence -= 0.55
             arousal += 0.45
-        elif self.DISRESPECT.search(text):
+        elif disrespect:
             valence -= 0.32
             arousal += 0.22
         elif self.VULNERABLE.search(text):

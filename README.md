@@ -19,6 +19,8 @@ les paramètres privés et certaines dépendances natives n'y figurent pas.
 - [Carte du code](structure.md) et [index des documents](docs/INDEX.md).
 - [Code courant du laboratoire](laboratoire/README.md) et
   [modifications de cette sélection](docs/technique/mise-a-jour-20261109.md).
+- [Réparations fonctionnelles](docs/technique/fiabilisation-20261109.md) et
+  [provenance des fichiers corrigés](docs/provenance/fiabilisation-20261109.json).
 - [Direction du projet](docs/pilotage/evolution.md) et
   [provenance des fichiers](docs/provenance/mise-a-jour-20261109.json).
 
@@ -28,16 +30,19 @@ surveiller un écran sélectionné. Les réponses publiques exigent un accord. L
 mode protégé refuse l'exécution libre de code, le navigateur personnel et les
 lancements administrateur. Il ne confine pas Windows comme une machine virtuelle.
 
-Une fenêtre fictive sur un vrai écran a servi à vérifier lecture et voix. Dans
-**cette version publiée**, la fluidité pendant une partie reste non qualifiée :
-un ancien essai s'est interrompu après une chute des FPS pendant un chargement.
-Les mesures et leurs réserves figurent dans [l'état actuel](docs/etat/actuel.md).
+Une fenêtre fictive sur un vrai écran a servi à vérifier lecture et voix. Un
+ancien essai en jeu s'était interrompu après une chute des FPS pendant un
+chargement. Depuis, deux essais silencieux de lecture passive et un essai avec
+une phrase audible ont passé le garde FPS pendant des parties de TFT, sans gêne
+ressentie par le propriétaire. Ces essais courts ne qualifient pas toutes les
+parties ni tous les services simultanés : voir [les mesures](docs/etat/actuel.md).
 
 ## Vérification de cette sélection
 
 Une [petite suite autonome](.github/workflows/smoke.yml) vérifie les versions de
-notes, la livraison visuelle et des garde-fous de réponse Web avec des données
-fictives. Elle ne lance ni Alice, ni modèle, ni microphone, ni navigateur. La
+notes, la livraison visuelle, l'humeur, la mémoire, la priorité visuelle et les
+réponses Web avec des données fictives. Elle ne lance ni Alice, ni modèle, ni
+microphone, ni navigateur. La
 majorité des tests du projet exige encore des ressources absentes de ce dépôt.
 
 La copie ne contient ni souvenirs, conversations privées, secrets, captures,

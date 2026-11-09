@@ -14,8 +14,10 @@ sur le même disque : il aide à revenir sur une édition, sans remplacer une
 sauvegarde externe.
 
 La recherche Web lit des pages publiques dans une fenêtre dédiée. Le contenu
-d'une page est traité comme une donnée, mais une source pertinente ou citée ne
-garantit pas que toute réponse reformulée soit exacte. La lecture d'écran peut
+d'une page est traité comme une donnée. La recherche interactive restitue les
+extraits relevés et leurs sources : le code ne présente plus une reformulation
+générée comme vérifiée. Une citation reste une parole de la source, pas une
+preuve générale de vérité. La lecture d'écran peut
 voir les informations affichées sur l'écran sélectionné ; il faut l'arrêter
 avant d'afficher des données privées. Les images ne sont pas archivées par cette
 fonction dans la version décrite ici.

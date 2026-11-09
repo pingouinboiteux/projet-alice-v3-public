@@ -10,6 +10,11 @@ import re
 from note_operations import _strict_json
 
 
+def _numbers(text):
+    """Conservative literal check: a new number must appear in cited evidence."""
+    return {int(value) for value in re.findall(r'(?<!\d)\d+(?!\d)', text)}
+
+
 def synthesize(session, question, evidence, relation):
     """Return <=1000 characters; refuse uncertain evidence before inference."""
     session.check()
@@ -19,7 +24,7 @@ def synthesize(session, question, evidence, relation):
         raise ValueError('grounded_answer_invalid_question')
     if type(evidence) is not list or not 1 <= len(evidence) <= 3:
         raise ValueError('grounded_answer_no_evidence')
-    citations, sources = [], {}
+    citations, sources, quote_by_id = [], {}, {}
     for index, source in enumerate(evidence, 1):
         if type(source) is not dict or source.get('status') != 'found':
             raise ValueError('grounded_answer_uncertain_evidence')
@@ -32,6 +37,7 @@ def synthesize(session, question, evidence, relation):
             identifier = f'S{index}Q{number}'
             citations.append({'id': identifier, 'text': quote})
             sources[identifier] = index
+            quote_by_id[identifier] = quote
     schema = {'type': 'object', 'properties': {
         'claims': {'type': 'array', 'minItems': 0, 'maxItems': 4, 'items': {
             'type': 'object', 'properties': {
@@ -99,6 +105,9 @@ def synthesize(session, question, evidence, relation):
             raise ValueError('grounded_answer_reference_in_text')
         if not text.strip():
             raise ValueError('grounded_answer_invalid_text')
+        cited_numbers = set().union(*(_numbers(quote_by_id[ref]) for ref in refs))
+        if not _numbers(text).issubset(cited_numbers):
+            raise ValueError('grounded_answer_unsupported_number')
         numbers = sorted({sources[ref] for ref in refs})
         attribution = ('Selon la source ' if len(numbers) == 1 else 'Selon les sources ')
         attribution += ' et '.join(map(str, numbers)) + ' : '

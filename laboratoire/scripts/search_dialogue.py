@@ -2,7 +2,6 @@
 import time
 from search_request import can_handle_search, is_search_followup, interpret_search
 from brave_web_search import read_brave_search as read_search
-from web_grounded_answer import synthesize
 
 
 def _recoverable_search_error(error):
@@ -62,20 +61,10 @@ class SearchDialogue:
             target=intent['target']
             result=self.reader(self.session,target['question'],source=source,cancelled=cancelled)
             check()
-            if (result.get('status')=='found' and result.get('evidence')
-                    and result.get('relation') in ('single','consistent')):
-                # The browser is closed already. Preserve exact evidence for
-                # inspection; a fluent paraphrase is not an exact quotation.
-                try:
-                    summary=synthesize(self.session,target['question'],result['evidence'],result['relation'])
-                    check()
-                except Exception as error:
-                    if not (_recoverable_search_error(error) or isinstance(error,(TypeError,KeyError))):raise
-                    check()
-                    result={**result,'answer_style':'verified_quotes'}
-                else:
-                    result={**result,'reply':summary,'verified_excerpts':result['reply'],
-                            'answer_style':'grounded_summary'}
+            if result.get('status') in ('found','ambiguous') and result.get('evidence'):
+                # A reference and matching numbers cannot prove a paraphrase.
+                # Keep the browser's exact excerpts as the spoken answer.
+                result={**result,'answer_style':'verified_quotes'}
             if result['status'] not in ('clarify','ambiguous','missing'):self.cancel()
             return result
         except Exception as error:

@@ -1,7 +1,5 @@
 from copy import deepcopy
-from unittest.mock import Mock, patch
-
-import pytest
+from unittest.mock import Mock
 
 from search_dialogue import SearchDialogue, run_search_turn
 
@@ -18,30 +16,31 @@ def controller(data):
         'status':'ready','target':{'question':'Quel jour ?'}}),reader=Mock(return_value=data))
 
 
-def test_summary_preserves_original_evidence_and_does_not_mutate_reader_result():
+def test_found_result_speaks_original_excerpts_without_extra_model_call():
     data=result();before=deepcopy(data)
-    with patch('search_dialogue.synthesize',return_value='Le site indique mardi. [S1]') as summarize:
-        actual=controller(data).handle('/rechercher Quel jour ?', 'text')
-    assert actual['reply']=='Le site indique mardi. [S1]'
-    assert actual['verified_excerpts']==before['reply']
+    dialogue=controller(data)
+    actual=dialogue.handle('/rechercher Quel jour ?', 'text')
+    assert actual['reply']==before['reply']
+    assert actual['answer_style']=='verified_quotes'
     assert actual['evidence']==before['evidence'] and data==before
-    assert summarize.call_args.args[1:]==('Quel jour ?',data['evidence'],'single')
+    dialogue.session.ask.assert_not_called()
 
 
-@pytest.mark.parametrize('error',[ValueError('unknown_reference'),RuntimeError('model_unavailable')])
-def test_invalid_or_unavailable_summary_keeps_verified_quotes(error):
+def test_semantic_inversion_cannot_be_spoken_as_verified_answer():
     data=result()
-    with patch('search_dialogue.synthesize',side_effect=error):
-        actual=controller(data).handle('/rechercher Quel jour ?', 'text')
+    data['reply']='Source 1 : « The museum is closed on Monday. »'
+    data['evidence'][0]['quotes']=['The museum is closed on Monday.']
+    actual=controller(data).handle('/rechercher Quel jour ?', 'text')
     assert actual['reply']==data['reply'] and actual['status']=='found'
     assert actual['answer_style']=='verified_quotes'
+    assert 'open on Monday' not in actual['reply']
 
 
 def test_ambiguous_evidence_is_not_rewritten_as_a_single_conclusion():
     data={**result(),'status':'ambiguous','relation':'conflicting'}
-    with patch('search_dialogue.synthesize') as summarize:
-        assert controller(data).handle('/rechercher Quel jour ?', 'text')==data
-    summarize.assert_not_called()
+    actual=controller(data).handle('/rechercher Quel jour ?', 'text')
+    assert actual['reply']==data['reply']
+    assert actual['answer_style']=='verified_quotes'
 
 
 def test_interface_emits_original_quotes_but_speaks_summary_only():

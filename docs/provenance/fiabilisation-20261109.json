@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-09",
+  "base_commit": "8c0a53018a41362d92a0fb7637ea2291f64bee04",
+  "scope": "Published functional fixes for mood, passive vision, Web answers and episodic memory.",
+  "normalization": "UTF-8 LF; owner name neutralized in marked files; no private data or Git history.",
+  "files": [
+    {
+      "path": "laboratoire/scripts/alice_desktop.py",
+      "sha256": "9611944cf4b1a8664242dce8a2143b24011c64ee0912f3aa84124c1eec667dc1",
+      "owner_neutralized": true
+    },
+    {
+      "path": "laboratoire/scripts/chat.py",
+      "sha256": "f9e88686805dec3e77baa5850c3fc299be455bf8a026092f1c93860833c113fc",
+      "owner_neutralized": false
+    },
+    {
+      "path": "laboratoire/scripts/local_mood.py",
+      "sha256": "738ef6006b4d6e3606a797f22b7cb404447c32cef8060c8b72cd56bc7c7fcdb1",
+      "owner_neutralized": false
+    },
+    {
+      "path": "laboratoire/scripts/screen_model.py",
+      "sha256": "95496ad08cda5bee15412d8f2b428ccce29b7d1e08e14e3afedad7096212f8b9",
+      "owner_neutralized": true
+    },
+    {
+      "path": "laboratoire/scripts/search_dialogue.py",
+      "sha256": "f3aa6350df2680d6c79451682087f27c201a8fef386a1ea703204826418b1e99",
+      "owner_neutralized": false
+    },
+    {
+      "path": "laboratoire/scripts/web_grounded_answer.py",
+      "sha256": "cb7b3d35012c3e6d86c357ba8dee271e149353ca1c4a8f48e33cbb73dc0b4a7b",
+      "owner_neutralized": false
+    },
+    {
+      "path": "laboratoire/tests/test_chat_stream.py",
+      "sha256": "fcb8a97be36360ea9bcbd3b6b5afe94ad3471118a0c160e029f3a8f1660cbccc",
+      "owner_neutralized": false
+    },
+    {
+      "path": "laboratoire/tests/test_search_grounded_reply.py",
+      "sha256": "4baa29f75386a0a6b64d39d843b0eab8786ade1fa96995a6239c32a18e3bbd83",
+      "owner_neutralized": false
+    },
+    {
+      "path": "laboratoire/tests/test_web_grounded_answer.py",
+      "sha256": "829b799412eee72828b2beddee236a8381c5e069659c10784a913273ff4baf41",
+      "owner_neutralized": false
+    },
+    {
+      "path": "memoire/laboratoire/episode_conversation.py",
+      "sha256": "ddcd8d0e72fd58f74ba940b43b24eb13473aa7296af1aca0df03e50233ad0083",
+      "owner_neutralized": true
+    },
+    {
+      "path": "memoire/laboratoire/episodic_memory.py",
+      "sha256": "b7ce0c9554f1e4c5af3c44dc7a8aa5ff7d01c80fd99bafcd086225fe0817cb4c",
+      "owner_neutralized": true
+    },
+    {
+      "path": "memoire/laboratoire/persistent_memory.py",
+      "sha256": "4215823b3e6bb68c161105b9e6004ed2071a7961f977f6934f1b0e6bbc8a2d82",
+      "owner_neutralized": true
+    },
+    {
+      "path": "memoire/tests/test_private_core.py",
+      "sha256": "807415948d704db043f35868135fdaa0965771436c72b743370ae690c0d59ffa",
+      "owner_neutralized": false
+    }
+  ]
+}

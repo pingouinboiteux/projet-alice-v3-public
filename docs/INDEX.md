@@ -10,6 +10,7 @@ anciens restent utiles pour comprendre les décisions, sans remplacer
 | [Protections](etat/securite.md) | Ce que le mode protégé encadre et ses limites Windows. |
 | [Évolution](pilotage/evolution.md) | Direction du projet et critères de progression. |
 | [Mise à jour du 9 novembre](technique/mise-a-jour-20261109.md) | Changements et vérifications de la sélection publiée. |
+| [Fiabilisation du 9 novembre](technique/fiabilisation-20261109.md) | Réparations de mémoire, humeur, vision et Web après les relectures. |
 | [Vérification de publication](technique/verification-publication.md) | Contrôles historiques avant publication. |
 | [Pièges techniques](technique/pieges.md) | Difficultés rencontrées et décisions techniques. |
 | [Audit des éléments obsolètes](technique/audit-obsoletes.md) | Classement des anciens éléments. |
@@ -21,3 +22,4 @@ anciens restent utiles pour comprendre les décisions, sans remplacer
 | [Vision, Web et notes](technique/vision-web-notes.md) | Parcours de lecture et d'édition bornés. |
 | [Provenance du laboratoire](provenance/laboratoire.json) | Empreintes de la sélection de code précédente. |
 | [Provenance du 9 novembre](provenance/mise-a-jour-20261109.json) | Empreintes de la mise à jour actuelle. |
+| [Provenance des réparations](provenance/fiabilisation-20261109.json) | Empreintes des fichiers fonctionnels corrigés. |
