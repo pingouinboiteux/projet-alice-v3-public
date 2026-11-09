@@ -1,6 +1,8 @@
 """Persistent local code missions. Only the isolated atelier runner can execute."""
 import json
+import os
 from pathlib import Path
+import psutil
 import secrets
 import sqlite3
 from datetime import datetime, timezone
@@ -9,7 +11,8 @@ from codex_link import ATELIER, ROOT, run_task
 
 DATA = ROOT / 'data/runtime/code_missions.sqlite3'
 WORKSPACES = ATELIER / 'missions'
-STATES = {'ready', 'running', 'executed', 'failed', 'cancelled', 'interrupted', 'applied', 'restored'}
+STATES = {'ready', 'running', 'executed', 'failed', 'cancelled', 'interrupted',
+          'applying', 'applied', 'restoring', 'restored', 'review'}
 
 
 def _now():
@@ -20,6 +23,8 @@ class MissionStore:
     def __init__(self, database=DATA, workspaces=WORKSPACES):
         self.database = Path(database)
         self.workspaces = Path(workspaces)
+        self.owner_pid = os.getpid()
+        self.owner_started = psutil.Process(self.owner_pid).create_time()
         self.database.parent.mkdir(parents=True, exist_ok=True)
         self.workspaces.mkdir(parents=True, exist_ok=True)
         with self._connect() as db:
@@ -27,13 +32,51 @@ class MissionStore:
                 id TEXT PRIMARY KEY, prompt TEXT NOT NULL, workspace TEXT NOT NULL,
                 state TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0,
                 created TEXT NOT NULL, updated TEXT NOT NULL, result TEXT NOT NULL DEFAULT '{}',
-                source TEXT, source_sha TEXT)''')
+                source TEXT, source_sha TEXT, candidate_sha TEXT,
+                owner_pid INTEGER, owner_started REAL)''')
             columns = {row['name'] for row in db.execute('PRAGMA table_info(missions)')}
             if 'source' not in columns:
                 db.execute('ALTER TABLE missions ADD COLUMN source TEXT')
             if 'source_sha' not in columns:
                 db.execute('ALTER TABLE missions ADD COLUMN source_sha TEXT')
-            db.execute("UPDATE missions SET state='interrupted', updated=? WHERE state='running'", (_now(),))
+            for name, kind in (('candidate_sha', 'TEXT'), ('owner_pid', 'INTEGER'),
+                               ('owner_started', 'REAL')):
+                if name not in columns:
+                    db.execute(f'ALTER TABLE missions ADD COLUMN {name} {kind}')
+        self.recover()
+
+    @staticmethod
+    def _owner_alive(mission):
+        pid, started = mission['owner_pid'], mission['owner_started']
+        if pid is None or started is None:return False
+        try:return abs(psutil.Process(pid).create_time() - started) < 0.01
+        except psutil.NoSuchProcess:return False
+        except (psutil.Error, OSError):return True
+
+    def recover(self):
+        with self._connect() as db:
+            rows = db.execute("SELECT id FROM missions WHERE state IN ('running','applying','restoring')").fetchall()
+        for row in rows:
+            self.reconcile(row['id'])
+
+    def reconcile(self, identity, *, force=False):
+        mission = self.get(identity)
+        phase = mission['state']
+        if phase not in {'running', 'applying', 'restoring'}:
+            return mission
+        if not force and self._owner_alive(mission):
+            return mission
+        if phase == 'running':
+            state = 'interrupted'
+        else:
+            from code_promotion import transition_state
+            state = transition_state(identity, mission['source'], mission['source_sha'],
+                                     mission['candidate_sha'], phase)
+        with self._connect() as db:
+            db.execute('''UPDATE missions SET state=?, owner_pid=NULL, owner_started=NULL,
+                updated=? WHERE id=? AND state=? AND owner_pid IS ? AND owner_started IS ?''',
+                (state, _now(), identity, phase, mission['owner_pid'], mission['owner_started']))
+        return self.get(identity)
 
     def _connect(self):
         db = sqlite3.connect(self.database, timeout=10)
@@ -80,7 +123,8 @@ class MissionStore:
             raise ValueError('Cette mission ne peut pas etre relancee.')
         with self._connect() as db:
             changed = db.execute('''UPDATE missions SET state='running', attempts=attempts+1,
-                updated=? WHERE id=? AND state=?''', (_now(), identity, mission['state']))
+                owner_pid=?, owner_started=?, updated=? WHERE id=? AND state=?''',
+                (self.owner_pid, self.owner_started, _now(), identity, mission['state']))
             if changed.rowcount != 1:
                 raise ValueError('Etat de mission modifie entretemps.')
         return self.get(identity)
@@ -92,24 +136,50 @@ class MissionStore:
                 'seconds':result.get('seconds', 0),
                 'runner_status':result['status']}
         with self._connect() as db:
-            changed = db.execute('UPDATE missions SET state=?, result=?, updated=? WHERE id=? AND state=?',
-                                 (state, json.dumps(safe, ensure_ascii=False), _now(), identity, 'running'))
+            changed = db.execute('''UPDATE missions SET state=?, result=?, owner_pid=NULL,
+                owner_started=NULL, updated=? WHERE id=? AND state='running'
+                AND owner_pid=? AND owner_started=?''',
+                (state, json.dumps(safe, ensure_ascii=False), _now(), identity,
+                 self.owner_pid, self.owner_started))
             if changed.rowcount != 1:
                 raise ValueError('Etat de mission modifie entretemps.')
         return self.get(identity)
 
+    def begin_apply(self, identity, candidate_sha):
+        if (type(candidate_sha) is not str or len(candidate_sha) != 64
+                or any(c not in '0123456789abcdef' for c in candidate_sha)):
+            raise ValueError('Empreinte de proposition invalide.')
+        with self._connect() as db:
+            changed = db.execute('''UPDATE missions SET state='applying', candidate_sha=?,
+                owner_pid=?, owner_started=?, updated=? WHERE id=? AND state='executed' ''',
+                (candidate_sha, self.owner_pid, self.owner_started, _now(), identity))
+            if changed.rowcount != 1:
+                raise ValueError('Mission non prete a appliquer.')
+
     def mark_applied(self, identity):
         with self._connect() as db:
-            changed = db.execute("UPDATE missions SET state='applied',updated=? WHERE id=? AND state='executed'",
-                                 (_now(), identity))
+            changed = db.execute('''UPDATE missions SET state='applied', owner_pid=NULL,
+                owner_started=NULL, updated=? WHERE id=? AND state='applying'
+                AND owner_pid=? AND owner_started=?''',
+                (_now(), identity, self.owner_pid, self.owner_started))
             if changed.rowcount != 1:
                 raise ValueError('Mission non prete a appliquer.')
         return self.get(identity)
 
+    def begin_restore(self, identity):
+        with self._connect() as db:
+            changed = db.execute('''UPDATE missions SET state='restoring', owner_pid=?,
+                owner_started=?, updated=? WHERE id=? AND state='applied' ''',
+                (self.owner_pid, self.owner_started, _now(), identity))
+            if changed.rowcount != 1:
+                raise ValueError('Mission non prete a restaurer.')
+
     def mark_restored(self, identity):
         with self._connect() as db:
-            changed = db.execute("UPDATE missions SET state='restored',updated=? WHERE id=? AND state='applied'",
-                                 (_now(), identity))
+            changed = db.execute('''UPDATE missions SET state='restored', owner_pid=NULL,
+                owner_started=NULL, updated=? WHERE id=? AND state='restoring'
+                AND owner_pid=? AND owner_started=?''',
+                (_now(), identity, self.owner_pid, self.owner_started))
             if changed.rowcount != 1:
                 raise ValueError('Mission non prete a restaurer.')
         return self.get(identity)
@@ -161,7 +231,11 @@ class CodeMissions:
         if kind == 'show':
             mission = self.store.get(value)
             files = ', '.join(mission['result'].get('changed_files', [])) or 'aucun'
-            return f"Mission {value} : {mission['state']}. Fichiers changes : {files}."
+            reply = f"Mission {value} : {mission['state']}. Fichiers changes : {files}."
+            if mission['state'] == 'review':
+                reply += (' Operation bloquee : examine manuellement le fichier du '
+                          'laboratoire et la copie de retour, puis cree une nouvelle mission.')
+            return reply
         if kind == 'apply':
             from code_promotion import apply
             from codex_link import _workspace
@@ -169,10 +243,19 @@ class CodeMissions:
             if mission['state'] != 'executed' or not mission['source'] or self.confirm is None:
                 raise ValueError('Cette mission ne peut pas etre appliquee.')
             folder = _workspace(mission['workspace'])
-            if not apply(value, mission['source'], mission['source_sha'],
-                         folder, self.confirm):
+            try:
+                applied = apply(value, mission['source'], mission['source_sha'],
+                                folder, self.confirm,
+                                before_write=lambda digest:self.store.begin_apply(value, digest))
+            except Exception:
+                self.store.reconcile(value, force=True)
+                raise
+            if not applied:
                 return 'Application annulee ; le fichier original est conserve.'
-            self.store.mark_applied(value)
+            try:self.store.mark_applied(value)
+            except Exception:
+                self.store.reconcile(value, force=True)
+                raise
             return f"Mission {value} appliquee au laboratoire avec copie de retour. Redemarre Alice pour charger ce module."
         if kind == 'restore':
             from code_promotion import restore
@@ -181,9 +264,19 @@ class CodeMissions:
             if mission['state'] != 'applied' or not mission['source'] or self.confirm is None:
                 raise ValueError('Cette mission ne peut pas etre restauree.')
             folder = _workspace(mission['workspace'])
-            if not restore(value, mission['source'], mission['source_sha'], folder, self.confirm):
+            try:
+                restored = restore(value, mission['source'], mission['source_sha'],
+                                   folder, self.confirm, applied_sha=mission['candidate_sha'],
+                                   before_write=lambda:self.store.begin_restore(value))
+            except Exception:
+                self.store.reconcile(value, force=True)
+                raise
+            if not restored:
                 return 'Restauration annulee ; le fichier actuel est conserve.'
-            self.store.mark_restored(value)
+            try:self.store.mark_restored(value)
+            except Exception:
+                self.store.reconcile(value, force=True)
+                raise
             return f"Mission {value} restauree. Redemarre Alice pour recharger l ancienne version."
         if kind == 'new_file':
             from code_promotion import stage

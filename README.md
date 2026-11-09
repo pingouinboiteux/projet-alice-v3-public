@@ -7,7 +7,7 @@ préparer une mission de code dans un atelier isolé. Son propriétaire
 garde la main sur les actions qui modifient des documents ou diffusent une réponse.
 
 Ce dépôt s'adresse aux personnes qui veulent **étudier le code et les choix du
-projet**. Il contient une sélection publique datée du **9 novembre 2026** : ce
+projet**. Il contient une sélection publique mise à jour le **10 novembre 2026** : ce
 n'est pas une installation prête à lancer. Les modèles, les voix personnelles,
 les paramètres privés et certaines dépendances natives n'y figurent pas.
 
@@ -21,7 +21,7 @@ les paramètres privés et certaines dépendances natives n'y figurent pas.
 - [Code courant du laboratoire](laboratoire/README.md) et
   [modifications de cette sélection](docs/technique/mise-a-jour-20261109.md).
 - [Missions de code](docs/technique/missions-code.md) : commandes, protections
-  et limites de l'atelier local.
+  et limites de l'atelier local, ainsi que le résultat de l'essai final.
 - [Réparations fonctionnelles](docs/technique/fiabilisation-20261109.md) et
   [provenance des fichiers corrigés](docs/provenance/fiabilisation-20261109.json).
 - [Direction du projet](docs/pilotage/evolution.md) et

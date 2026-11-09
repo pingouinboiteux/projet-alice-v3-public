@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-10",
+  "base_commit": "d7fee5e673cbe070ccdfd9e432ab87ef323fae3b",
+  "scope": "Finalisation publique des missions de code, de la reprise et du constat en jeu.",
+  "normalization": "UTF-8 LF; donnees privees et rapports bruts exclus.",
+  "files": [
+    {
+      "path": "laboratoire/scripts/action_context.py",
+      "sha256": "035fd00e2d7354bc3847bd433e27268d6ec90a2d7400976cc23b3a1cf635432f"
+    },
+    {
+      "path": "laboratoire/scripts/alice_desktop.py",
+      "sha256": "b38e04114fdc0f07c3a4709068dc8b1f265ea17e35654f9868d622e6888b4eba"
+    },
+    {
+      "path": "laboratoire/scripts/code_missions.py",
+      "sha256": "7a71d7baa6be47291494b55e3b4f9e48e2defba70123802d2efeada9aa602297"
+    },
+    {
+      "path": "laboratoire/scripts/code_promotion.py",
+      "sha256": "27f3d0b728ea984dc99baafc470454752bf3b9354d5725e11c4dd89691fef887"
+    },
+    {
+      "path": "laboratoire/scripts/codex_link.py",
+      "sha256": "c4cdabc5c6557adbf02d5bddb6c615a03a9784b463382a738446fec2687aee9e"
+    },
+    {
+      "path": "laboratoire/scripts/fps_guard.py",
+      "sha256": "37f5c978563c03a8347d76f85cd2eff40810c49a8436f5bee8c0919eea5bfee4"
+    },
+    {
+      "path": "laboratoire/tests/test_code_missions.py",
+      "sha256": "20b781f29afed419b4e41c9a0c346cf1ea7559bffa9a27ee8c5c8f3351787168"
+    },
+    {
+      "path": "laboratoire/tests/test_desktop_flow.py",
+      "sha256": "b1bb6cd6057a36b3b5d4ff6257af2432a6cb95cb0fb41419b0dc293e684c6739"
+    },
+    {
+      "path": "laboratoire/tests/test_native_guard_brief_dips.py",
+      "sha256": "0112f15c9d1ba7e73c7f86fdfe26371cd3443ed1bc1e17c7e0544aa189163059"
+    }
+  ]
+}

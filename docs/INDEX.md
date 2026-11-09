@@ -6,7 +6,7 @@ anciens restent utiles pour comprendre les décisions, sans remplacer
 
 | Document | Contenu |
 | --- | --- |
-| [État actuel](etat/actuel.md) | Fonctions, mesures et limites de la sélection du 9 novembre. |
+| [État actuel](etat/actuel.md) | Fonctions, mesures et limites de la sélection au 10 novembre. |
 | [Protections](etat/securite.md) | Ce que le mode protégé encadre et ses limites Windows. |
 | [Évolution](pilotage/evolution.md) | Direction du projet et critères de progression. |
 | [Mise à jour du 9 novembre](technique/mise-a-jour-20261109.md) | Changements et vérifications de la sélection publiée. |
@@ -24,3 +24,4 @@ anciens restent utiles pour comprendre les décisions, sans remplacer
 | [Provenance du laboratoire](provenance/laboratoire.json) | Empreintes de la sélection de code précédente. |
 | [Provenance du 9 novembre](provenance/mise-a-jour-20261109.json) | Empreintes de la mise à jour actuelle. |
 | [Provenance des réparations](provenance/fiabilisation-20261109.json) | Empreintes des fichiers fonctionnels corrigés. |
+| [Provenance de l'atelier finalisé](provenance/autonomie-finalisation-20261110.json) | Empreintes des fichiers de missions, de protection et de tests publiés le 10 novembre. |

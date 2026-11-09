@@ -11,7 +11,7 @@ class ActionContext:
         self.turns.clear()
 
     def record(self,text,kind,outcome):
-        if outcome not in {'processed','cancelled','failed','dialogue'}:
+        if outcome not in {'processed','refused','cancelled','failed','dialogue'}:
             raise ValueError('Etat action invalide')
         self.turns.append((text[:5000],json.dumps({'turn_state':'closed','action':kind,
             'outcome':outcome,'pending_action':False},ensure_ascii=False)))
