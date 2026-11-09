@@ -10,6 +10,9 @@ décrites dans le [bilan de fiabilisation](../docs/technique/fiabilisation-20261
 - `scripts/protected_workspace.py` et `protected_dialogue.py` : documents versionnés.
 - `scripts/note_versions.py` : historique et restauration des notes.
 - `scripts/autonomy_policy.py` : refus de l'administration et du code libre.
+- `scripts/code_missions.py`, `codex_link.py`, `code_promotion.py` : missions
+  de code dans un atelier isolé, avec revue et restauration avant modification
+  du laboratoire ; [fonctionnement et limites](../docs/technique/missions-code.md).
 - `scripts/screen_*.py` : capture, analyse et réactions (OCR local non publié).
 - `scripts/search_*.py`, `brave_*.py`, `public_*navigation.py` : Web borné.
 - [Interface](../interface/laboratoire) : widgets, confirmations, services.

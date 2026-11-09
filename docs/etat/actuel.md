@@ -14,6 +14,7 @@ publique expose le code publiable, sans les ressources privées de l'installatio
 | Public | Accord sur le contenu avant diffusion, annulation contrôlée | Capture par logiciels externes non contrôlée |
 | Écran | Lecture locale, surveillance espacée et flux passif annulable | Erreurs possibles et événements brefs manqués |
 | Sécurité | Code libre, navigateur personnel et entrée administrateur refusés | Contrôles applicatifs, pas de VM ni confinement OS complet |
+| Missions de code | Atelier MXC local, journal, proposition de module avec accord et restauration | Code limité à un dossier de mission ; résultat à vérifier, installation privée requise |
 
 ## Lecture d'écran
 

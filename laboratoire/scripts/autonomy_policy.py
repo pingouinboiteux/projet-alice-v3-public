@@ -1,8 +1,8 @@
 """Non-configurable runtime restrictions for the protected autonomy perimeter."""
-CODE_REFUSAL = ('Execution de code desactivee sur le PC dans le mode protege. '
-                'Alice peut preparer du texte, mais aucun terminal, script, installation '
-                'ou agent de programmation ne sera lance. Les essais de code exigent '
-                'un environnement Windows separe et verifie.')
+CODE_REFUSAL = ('Execution de code desactivee dans cette voie. '
+                'Les missions /faire passent uniquement par la fenetre locale '
+                'Alice-Laboratoire et son atelier MXC verifie. Aucun terminal libre '
+                'ni installation sur Windows par cette voie.')
 BROWSER_REFUSAL = ('Ouverture dans le navigateur personnel desactivee dans le mode protege. '
                    'Demande plutot une recherche Internet : Alice utilise son navigateur isole '
                    'sans tes comptes personnels.')

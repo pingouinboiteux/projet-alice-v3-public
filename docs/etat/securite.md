@@ -13,6 +13,11 @@ pas tous les processus, fichiers ou accès réseau du PC. Le versionnement est
 sur le même disque : il aide à revenir sur une édition, sans remplacer une
 sauvegarde externe.
 
+Les [missions de code](../technique/missions-code.md) ajoutent une frontière
+distincte : elles utilisent le confinement Windows MXC, vérifié avant chaque
+exécution. Elles n'accordent pas un terminal libre à Alice. Les changements de
+modules actifs exigent une différence lisible, un accord et une sauvegarde.
+
 La recherche Web lit des pages publiques dans une fenêtre dédiée. Le contenu
 d'une page est traité comme une donnée. La recherche interactive restitue les
 extraits relevés et leurs sources : le code ne présente plus une reformulation

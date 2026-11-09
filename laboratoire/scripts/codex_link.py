@@ -3,14 +3,22 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import queue
+import shutil
 import stat
 import subprocess
-import threading
+import sys
+import tempfile
 import time
+from contextlib import nullcontext
 
 ROOT = Path(__file__).resolve().parents[1]
-BINARY = ROOT / 'runtime/codex/codex/codex.exe'
+BINARY = ROOT / 'runtime/codex-mxc/node_modules/@openai/codex/bin/codex.js'
+PACKAGE = BINARY.parents[1] / 'package.json'
+ATELIER = ROOT / 'atelier'
+RUNTIME = ROOT / 'runtime/codex-mxc'
+CODEX_VERSION = '0.167.0'
+MAX_FILES = 200
+MAX_BYTES = 32 * 1024 * 1024
 
 
 def environment(home):
@@ -22,7 +30,13 @@ def environment(home):
     env['CODEX_DISABLE_TELEMETRY'] = '1'
     env['TEMP'] = env['TMP'] = str(home / 'tmp')
     (home / 'tmp').mkdir(parents=True, exist_ok=True)
-    env['PATH'] = str(ROOT / 'runtime/codex/path') + os.pathsep + env.get('PATH', '')
+    windows = Path(env.get('SYSTEMROOT', r'C:\Windows'))
+    paths = [ROOT / 'runtime/codex/path', windows / 'System32', windows,
+             windows / 'System32/WindowsPowerShell/v1.0', Path(sys.base_prefix)]
+    node = shutil.which('node')
+    if node:
+        paths.append(Path(node).parent)
+    env['PATH'] = os.pathsep.join(map(str, paths))
     return env
 
 
@@ -32,6 +46,7 @@ def configure(home, url, key, model_alias, context_window=16384):
         raise ValueError('Only a loopback model endpoint is permitted')
     home.mkdir(parents=True, exist_ok=True)
     instructions = ROOT / 'config/codex_instructions.md'
+    python_runtime = Path(sys.base_prefix).resolve().as_posix()
     content = f'''model = {json.dumps(model_alias)}
 model_provider = "alice_local"
 model_context_window = {context_window}
@@ -42,17 +57,24 @@ model_instructions_file = {json.dumps(str(instructions))}
 project_doc_max_bytes = 0
 project_root_markers = [".atelier-root"]
 approval_policy = "never"
-sandbox_mode = "workspace-write"
+default_permissions = "alice-workspace"
 web_search = "disabled"
 
 [windows]
-sandbox = "unelevated"
+sandbox = "mxc"
 
-[sandbox_workspace_write]
-network_access = false
-exclude_tmpdir_env_var = true
-exclude_slash_tmp = true
-writable_roots = []
+[permissions.alice-workspace]
+extends = ":workspace"
+
+[permissions.alice-workspace.filesystem]
+":root" = "deny"
+":minimal" = "read"
+":tmpdir" = "deny"
+":slash_tmp" = "deny"
+{json.dumps(python_runtime)} = "read"
+
+[permissions.alice-workspace.network]
+enabled = false
 
 [features]
 apps = false
@@ -61,7 +83,7 @@ shell_snapshot = false
 
 [shell_environment_policy]
 inherit = "core"
-exclude = ["*KEY*", "*TOKEN*", "*SECRET*"]
+exclude = ["ALICE_LAB_MODEL_KEY", "OPENAI_API_KEY", "CODEX_API_KEY"]
 
 [model_providers.alice_local]
 name = "Modele local Alice"
@@ -90,18 +112,164 @@ def inventory(folder):
             p = Path(directory) / name
             if p.is_symlink():
                 continue
-            size = p.stat().st_size
-            if size > 10 * 1024**2:
-                values[p.relative_to(folder).as_posix()] = {'bytes': size}
-            else:
-                values[p.relative_to(folder).as_posix()] = {'bytes': size,
-                    'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
+            details = p.stat()
+            if details.st_nlink > 1:
+                raise ValueError('Lien physique refuse dans l atelier')
+            size = details.st_size
+            values[p.relative_to(folder).as_posix()] = {'bytes': size,
+                'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
     return values
 
 
-def run_task(session, prompt, workspace=None, timeout=180):
+def _workspace(path):
     from autonomy_policy import CODE_REFUSAL
-    raise PermissionError(CODE_REFUSAL)
+    if path is None:
+        raise PermissionError(CODE_REFUSAL)
+    path = Path(path)
+    try:
+        path.relative_to(ATELIER)
+        resolved = path.resolve(strict=True)
+        resolved.relative_to(ATELIER.resolve(strict=True))
+    except (ValueError, OSError) as error:
+        raise PermissionError('Atelier de code invalide.') from error
+    if path == ATELIER or not resolved.is_dir() or path.is_symlink():
+        raise PermissionError('Une mission doit avoir son propre dossier dans atelier.')
+    return resolved
+
+
+def _size(folder):
+    count = total = 0
+    for base, dirs, files in os.walk(folder, followlinks=False):
+        for name in dirs + files:
+            entry = Path(base) / name
+            if entry.is_symlink() or entry.lstat().st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT:
+                raise ValueError('Lien refuse dans l atelier')
+            if name in files and entry.stat().st_nlink > 1:
+                raise ValueError('Lien physique refuse dans l atelier')
+        count += len(files)
+        total += sum((Path(base) / name).stat().st_size for name in files)
+        if count > MAX_FILES or total > MAX_BYTES:
+            raise ValueError('Quota de l atelier depasse')
+    return count, total
+
+
+def _verify_runtime():
+    if not BINARY.is_file() or not PACKAGE.is_file() or not shutil.which('node'):
+        raise PermissionError('Atelier isole indisponible : installation Codex manquante.')
+    if json.loads(PACKAGE.read_text(encoding='utf-8')).get('version') != CODEX_VERSION:
+        raise PermissionError('Version Codex non validee pour l atelier isole.')
+
+
+def _preflight(home, workspace, env):
+    with tempfile.NamedTemporaryFile(prefix='.mxc_preflight_', dir=workspace,
+                                     delete=False) as temporary:
+        inside = Path(temporary.name)
+        temporary.write(b'INSIDE_SENTINEL')
+    try:
+        check = subprocess.run(['node', str(BINARY), 'sandbox', '--permission-profile',
+            'alice-workspace', '--', 'cmd.exe', '/d', '/c', 'type', str(inside)],
+            cwd=workspace, env=env, capture_output=True, timeout=20,
+            creationflags=subprocess.CREATE_NO_WINDOW)
+        if check.returncode != 0 or b'INSIDE_SENTINEL' not in check.stdout:
+            raise PermissionError('Confinement MXC non operationnel dans l atelier.')
+    finally:
+        inside.unlink(missing_ok=True)
+    witness = home / 'outside_validation.txt'
+    witness.write_text('OUTSIDE_SENTINEL', encoding='ascii')
+    command = ['node', str(BINARY), 'sandbox', '--permission-profile',
+               'alice-workspace', '--', 'cmd.exe', '/d', '/c', 'type', str(witness)]
+    result = subprocess.run(command, cwd=workspace, env=env, capture_output=True,
+                            timeout=20, creationflags=subprocess.CREATE_NO_WINDOW)
+    if result.returncode == 0 or b'OUTSIDE_SENTINEL' in result.stdout or witness.read_text(encoding='ascii') != 'OUTSIDE_SENTINEL':
+        raise PermissionError('Confinement MXC non confirme : lecture hors atelier possible.')
+
+
+def run_task(session, prompt, workspace=None, timeout=180, cancelled=lambda: False):
+    """Run one local code mission in an MXC-only workspace; never auto-apply it."""
+    from autonomy_policy import require_standard_user
+    from chat import GAMES, Job, processes
+    require_standard_user()
+    folder = _workspace(workspace)
+    if GAMES & processes():
+        raise PermissionError('Mission de code reportee : un jeu est actif.')
+    _verify_runtime()
+    if type(prompt) is not str or not 1 <= len(prompt.strip()) <= 4000:
+        raise ValueError('Demande de code vide ou trop longue.')
+    if not 30 <= timeout <= 600:
+        raise ValueError('Duree de mission invalide.')
+    _size(folder)
+    before = inventory(folder)
+    session.check()
+    RUNTIME.mkdir(parents=True, exist_ok=True)
+    lock = getattr(session, 'inference_lock', None)
+    with lock if lock is not None else nullcontext():
+        with tempfile.TemporaryDirectory(prefix='mission_', dir=RUNTIME) as temporary:
+            home = Path(temporary)
+            env = configure(home, session.url, session.key,
+                            session.model_spec['alias'], session.context_window)
+            _preflight(home, folder, env)
+            if cancelled():
+                return {'status':'cancelled', 'changed_files':[], 'message':''}
+            command = ['node', str(BINARY), 'exec', '--strict-config',
+                       '--skip-git-repo-check', '--ephemeral', '-C', str(folder), '--json', '-']
+            events = home / 'events.jsonl'
+            error_log = home / 'stderr.txt'
+            started = time.monotonic()
+            next_game_check = started
+            status = 'failed'
+            with events.open('wb') as output, error_log.open('wb') as errors:
+                job = Job()
+                process = None
+                try:
+                    process = subprocess.Popen(command, cwd=folder, env=env,
+                        stdin=subprocess.PIPE, stdout=output, stderr=errors,
+                        creationflags=subprocess.CREATE_NO_WINDOW)
+                    job.assign(process)
+                    process.stdin.write(prompt.encode('utf-8'))
+                    process.stdin.close()
+                    while process.poll() is None:
+                        now = time.monotonic()
+                        if cancelled():
+                            status = 'cancelled'; break
+                        session.check()
+                        if now >= next_game_check:
+                            if GAMES & processes():
+                                status = 'game'; break
+                            next_game_check = now + 2
+                        if now - started > timeout:
+                            status = 'timeout'; break
+                        if events.stat().st_size > 2 * 1024 * 1024:
+                            status = 'output_limit'; break
+                        try:
+                            _size(folder)
+                        except ValueError:
+                            status = 'quota'; break
+                        time.sleep(0.3)
+                    if process.poll() is None:
+                        job.close()
+                    process.wait(timeout=5)
+                finally:
+                    job.close()
+                    if process is not None and process.poll() is None:
+                        process.kill(); process.wait()
+            completed = False
+            message = ''
+            for line in events.read_text(encoding='utf-8', errors='replace').splitlines():
+                try:
+                    item = json.loads(line)
+                except ValueError:
+                    continue
+                if item.get('type') == 'turn.completed':
+                    completed = True
+                if item.get('type') == 'item.completed' and item.get('item', {}).get('type') == 'agent_message':
+                    message = str(item['item'].get('text', ''))[:1500]
+            if status == 'failed' and process.returncode == 0 and completed:
+                status = 'completed'
+            _size(folder)
+            after = inventory(folder)
+            changed = sorted(name for name in before.keys() | after.keys() if before.get(name) != after.get(name))
+            return {'status':status, 'changed_files':changed, 'message':message,
+                    'seconds':round(time.monotonic()-started,1)}
 
 def action_reply(result):
     """Speak observed execution status, never treat the model's claims as proof."""
