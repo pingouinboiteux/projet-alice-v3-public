@@ -163,6 +163,184 @@ assert not any(n in sys.modules for n in ('fastembed', 'numpy', 'chat', 'voice_p
             self.assertIsNone(memory.current)
         finally: memory.close()
 
+    def test_empty_episode_selection_preserves_memory_without_confirmation(self):
+        from memoire.laboratoire.memory_backend import create_memory
+        memory = create_memory(SimpleNamespace(), 'validation_empty_selection',
+                               self.folder / 'validation_empty_selection.db', FictionalSearch(), 'v5_context')
+        try:
+            identity = memory.episodes.add('2026-01-01T12:00:00Z',
+                                           [{'role': 'user', 'content': 'validation_old'}])
+            memory.current = identity
+            event, _ = memory.store.record_event(request_id='validation_empty_event', role='user',
+                                                  channel='text', content='validation souvenir fictif')
+            memory.store.remember(statement=event.content, kind='confirmed', confidence=1,
+                                  event_id=event.id, evidence_quote=event.content, key='validation.empty')
+            confirm = Mock(side_effect=AssertionError('Nothing should be confirmed'))
+            for ids in ([], ['validation_missing_episode']):
+                self.assertEqual(memory.forget(ids, confirm),
+                                 ('Aucun echange correspondant a oublier.', False))
+            confirm.assert_not_called()
+            self.assertIsNotNone(memory.episodes.get(identity))
+            self.assertEqual(memory.current, identity)
+            self.assertEqual(memory.store.integrity()['memories'], 1)
+            self.assertEqual(memory.store.integrity()['events'], 1)
+        finally: memory.close()
+
+    def test_forgetting_resumes_after_state_store_failure(self):
+        from memoire.laboratoire.memory_backend import create_memory
+        database = self.folder / 'validation_recovery.db'
+        memory = create_memory(SimpleNamespace(), 'validation_recovery', database,
+                               FictionalSearch(), 'v5_context')
+        try:
+            identity = memory.episodes.add('2026-01-01T12:00:00Z',
+                                           [{'role': 'user', 'content': 'validation_old'}])
+            event, _ = memory.store.record_event(request_id='validation_recovery_event', role='user',
+                                                  channel='text', content='validation souvenir fictif')
+            memory.store.remember(statement=event.content, kind='confirmed', confidence=1,
+                                  event_id=event.id, evidence_quote=event.content, key='validation.recovery')
+            with patch.object(memory.store, 'purge', side_effect=OSError('validation outage')):
+                with self.assertRaises(OSError):
+                    memory.forget(None, lambda _: True)
+            self.assertIsNone(memory.episodes.get(identity))
+            self.assertEqual(memory.episodes.pending_cleanup_stage(), 'store')
+            self.assertEqual(memory.store.integrity()['memories'], 1)
+        finally: memory.close()
+        reopened = create_memory(SimpleNamespace(), 'validation_recovery', database,
+                                 FictionalSearch(), 'v5_context')
+        try:
+            self.assertIsNone(reopened.episodes.pending_cleanup_stage())
+            self.assertEqual(reopened.store.integrity()['memories'], 0)
+            self.assertEqual(reopened.store.integrity()['events'], 0)
+        finally: reopened.close()
+
+    def test_failed_log_cleanup_retries_without_erasing_new_state(self):
+        from memoire.laboratoire.memory_backend import create_memory
+        database = self.folder / 'validation_log_retry.db'
+        memory = create_memory(SimpleNamespace(), 'validation_log_retry', database,
+                               FictionalSearch(), 'v5_context')
+        try:
+            memory.episodes.add('2026-01-01T12:00:00Z',
+                                [{'role': 'user', 'content': 'validation_old'}])
+            with patch('episode_conversation.purge', return_value=False):
+                self.assertEqual(memory.forget(None, lambda _: True),
+                                 ('Souvenirs effaces; nettoyage du journal a verifier.', True))
+            self.assertEqual(memory.episodes.pending_cleanup_stage(), 'log')
+            event, _ = memory.store.record_event(request_id='validation_after_log', role='user',
+                                                  channel='text', content='validation nouveau souvenir')
+            memory.store.remember(statement=event.content, kind='confirmed', confidence=1,
+                                  event_id=event.id, evidence_quote=event.content, key='validation.new')
+        finally: memory.close()
+        reopened = create_memory(SimpleNamespace(), 'validation_log_retry', database,
+                                 FictionalSearch(), 'v5_context')
+        try:
+            self.assertIsNone(reopened.episodes.pending_cleanup_stage())
+            self.assertEqual(reopened.store.integrity()['memories'], 1)
+        finally: reopened.close()
+
+    def test_failed_log_cleanup_removes_diagnostic_text_on_reopen(self):
+        from memoire.laboratoire.memory_backend import create_memory
+        from observation import Observation
+        database = self.folder / 'validation_log_trace.db'
+        observer = Observation(True, self.folder / 'validation_trace', background=False)
+        session = SimpleNamespace(observer=observer)
+        try:
+            memory = create_memory(session, 'validation_log_trace', database,
+                                   FictionalSearch(), 'v5_context')
+            try:
+                memory.episodes.add('2026-01-01T12:00:00Z',
+                                    [{'role': 'user', 'content': 'validation_old'}])
+                observer.begin_turn('validation_private_text', 'text')
+                observer.flush()
+                with patch('episode_conversation.purge', return_value=False):
+                    memory.forget(None, lambda _: True)
+                self.assertEqual(memory.episodes.pending_cleanup_stage(), 'log')
+            finally: memory.close()
+            self.assertIn('validation_private_text', observer.path.read_text(encoding='utf-8'))
+            reopened = create_memory(session, 'validation_log_trace', database,
+                                     FictionalSearch(), 'v5_context')
+            try:
+                self.assertIsNone(reopened.episodes.pending_cleanup_stage())
+                self.assertNotIn('validation_private_text', observer.path.read_text(encoding='utf-8'))
+            finally: reopened.close()
+        finally: observer.close()
+
+    def test_active_mood_uses_contextual_hostility_in_existing_model_call(self):
+        from memoire.laboratoire.memory_backend import create_memory
+        memory = create_memory(SimpleNamespace(), 'validation_mood_context',
+                               self.folder / 'validation_mood_context.db', FictionalSearch(), 'v5_context')
+        try:
+            for text in ('Je ne pense pas que tu es stupide.',
+                         "Explique l expression 'tu es inutile'."):
+                memory.store.set_mood(valence=0.0, arousal=0.25, label='calme')
+                self.assertEqual(memory.mood.react(memory.store, text).label, 'calme')
+            cases = [
+                ('Je ne pense pas que tu es stupide.', 'none', 'calme'),
+                ("Explique l expression 'tu es inutile'.", 'none', 'calme'),
+                ('Tu es stupide.', 'hostile', 'vexee'),
+            ]
+            for text, hostility, expected in cases:
+                memory.store.set_mood(valence=0.0, arousal=0.25, label='calme')
+                def classify(_, data, schema):
+                    self.assertEqual(data, {'message': text})
+                    self.assertEqual(schema['properties']['hostility']['enum'],
+                                     ['none', 'disrespect', 'hostile'])
+                    return {'feeling': '', 'hostility': hostility}
+                memory.ask_json = classify
+                answer = {'reply': 'validation_answer', 'reflection': '', 'evidence_ids': []}
+                with self.subTest(message=text), patch('v5_context_memory.V5Reader.answer', return_value=answer):
+                    memory.answer(text, [], '', lambda _: True)
+                    self.assertEqual(memory.last_review['mood'], expected)
+        finally: memory.close()
+
+    def test_reply_archive_distinguishes_heard_interrupted_and_crashed(self):
+        from memoire.laboratoire.memory_backend import create_memory
+        placeholder = '[Reponse interrompue : le texte effectivement entendu est inconnu.]'
+        for state in ('heard', 'interrupted', 'crashed'):
+            with self.subTest(state=state):
+                database = self.folder / ('validation_delivery_' + state + '.db')
+                identity_name = 'validation_delivery_' + state
+                memory = create_memory(SimpleNamespace(), identity_name, database,
+                                       FictionalSearch(), 'v5_context')
+                try:
+                    memory.ask_json = lambda *a, **k: {'feeling': '', 'hostility': 'none'}
+                    reply = {'reply': 'validation_reply', 'reflection': '', 'evidence_ids': []}
+                    with patch('v5_context_memory.V5Reader.answer', return_value=reply):
+                        memory.answer('validation_question', [], '', lambda _: False)
+                    identity = memory.current
+                    self.assertEqual(memory.episodes.pending_reply_ids(), [identity])
+                    if state != 'crashed':
+                        memory.mark_reply_delivered(state == 'heard')
+                finally: memory.close()
+                reopened = create_memory(SimpleNamespace(), identity_name, database,
+                                         FictionalSearch(), 'v5_context')
+                try:
+                    self.assertEqual(reopened.episodes.pending_reply_ids(), [])
+                    archived = reopened.episodes.get(identity)['messages'][-1]['content']
+                    self.assertEqual(archived, 'validation_reply' if state == 'heard' else placeholder)
+                finally: reopened.close()
+
+    def test_episode_list_is_bounded_and_reports_corrupt_rows(self):
+        from memoire.laboratoire.memory_backend import create_memory
+        memory = create_memory(SimpleNamespace(), 'validation_list',
+                               self.folder / 'validation_list.db', FictionalSearch(), 'v5_context')
+        try:
+            identity = memory.episodes.add('2026-01-01T12:00:00Z',
+                [{'role': 'user', 'content': 'validation_' + 'x' * 900}])
+            listing = memory.list_text()
+            self.assertIn(identity, listing)
+            self.assertLess(len(listing), 400)
+            memory.episodes.db.execute('UPDATE episodes SET messages=? WHERE id=?',
+                                       ('{invalid json', identity))
+            memory.episodes.db.commit()
+            listing = memory.list_text()
+            self.assertIn(identity, listing)
+            self.assertIn('archive illisible', listing)
+            confirm = Mock(side_effect=AssertionError('Missing source must not prompt'))
+            self.assertEqual(memory.correct_source('validation_missing', 1, [], confirm),
+                             ('Echange introuvable ou deja oublie.', False))
+            confirm.assert_not_called()
+        finally: memory.close()
+
     def test_subject_forgetting_plan_is_applied_atomically(self):
         from memoire.laboratoire.episodic_memory import Episodes, Conflict
         from memoire.laboratoire.memory_forgetting import prepare
@@ -179,6 +357,22 @@ assert not any(n in sys.modules for n in ('fastembed', 'numpy', 'chat', 'voice_p
             store.apply_forgetting(plan['plan'], plan['version'])
             self.assertEqual(store.get(identity)['messages'], [{'role': 'user', 'content': 'validation_new'}])
             with self.assertRaises(Conflict): store.apply_forgetting(plan['plan'], plan['version'])
+        finally: store.close()
+
+    def test_partial_forgetting_removes_stale_reply_delivery_marker(self):
+        from memoire.laboratoire.episodic_memory import Episodes
+        store = Episodes(self.folder / 'validation_partial_reply.db',
+                         'validation_partial_reply', FictionalSearch())
+        try:
+            identity = store.add('2026-01-01T12:00:00Z', [
+                {'role': 'user', 'content': 'validation_old'},
+                {'role': 'assistant', 'content': 'validation_reply'}], delivery_pending=True)
+            self.assertEqual(store.pending_reply_ids(), [identity])
+            store.apply_forgetting([{'id': identity, 'revision': 1, 'keep': [0]}],
+                                   store.version(), cleanup=True)
+            self.assertEqual(store.pending_reply_ids(), [])
+            self.assertEqual(store.get(identity)['messages'],
+                             [{'role': 'user', 'content': 'validation_old'}])
         finally: store.close()
 
 

@@ -64,7 +64,12 @@ def analyze(session, image, question, previous='', *, cancelled=lambda:False, pa
             'chat_template_kwargs':{'enable_thinking':False},
             'response_format':{'type':'json_object','schema':SCHEMA}}
         started = time.monotonic()
-        result = session.request('/v1/chat/completions',payload,timeout=45)
+        if passive and hasattr(session,'request_stream_cancelable'):
+            result=session.request_stream_cancelable('/v1/chat/completions',payload,
+                cancelled=cancelled,timeout=45)
+            if result is None:return None
+        else:
+            result=session.request('/v1/chat/completions',payload,timeout=45)
         if cancelled() or time.monotonic()-started>45: return None
         choice = result['choices'][0]
         if choice.get('finish_reason')!='stop': raise ValueError('Observation incomplete.')

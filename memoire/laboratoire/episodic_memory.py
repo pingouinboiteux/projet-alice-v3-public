@@ -43,6 +43,12 @@ class Episodes:
                 self.db.execute('CREATE TABLE IF NOT EXISTS state(version INTEGER NOT NULL)')
                 if not self.db.execute('SELECT 1 FROM state').fetchone():
                     self.db.execute('INSERT INTO state VALUES(0)')
+                self.db.execute('''CREATE TABLE IF NOT EXISTS pending_cleanup(
+                    id INTEGER PRIMARY KEY CHECK(id=1),
+                    stage TEXT NOT NULL CHECK(stage IN ('store','log')))''')
+                self.db.execute('''CREATE TABLE IF NOT EXISTS pending_reply(
+                    episode TEXT PRIMARY KEY REFERENCES episodes(id) ON DELETE CASCADE,
+                    revision INTEGER NOT NULL, message_index INTEGER NOT NULL)''')
                 self.db.execute('''CREATE TABLE IF NOT EXISTS passages(
                     episode TEXT NOT NULL REFERENCES episodes(id) ON DELETE CASCADE,
                     digest TEXT NOT NULL, vector BLOB NOT NULL,
@@ -110,7 +116,7 @@ class Episodes:
             raise ValueError('Episode too large; split at conversation boundaries')
         return stamp, json.dumps(messages, ensure_ascii=False), self._vector(text), origin
 
-    def add(self, date, messages, origin='local_text'):
+    def add(self, date, messages, origin='local_text', *, delivery_pending=False):
         values = self._prepare(date, messages, origin)
         passages = self._passages(messages)
         if any(len(v)!=len(values[2]) for v in passages.values()):
@@ -124,9 +130,10 @@ class Episodes:
                             (identity, values[0], values[1], values[2], values[3]))
             self._write_passages(identity, passages)
             self.db.execute('UPDATE state SET version=version+1')
+            if delivery_pending:self._mark_pending_reply(identity,1,messages)
         return identity
 
-    def correct(self, identity, expected_revision, date, messages, origin='local_text'):
+    def correct(self, identity, expected_revision, date, messages, origin='local_text', *, cleanup=False, delivery_pending=False):
         values = self._prepare(date, messages, origin)
         passages = self._passages(messages, identity)
         with self.db:
@@ -136,16 +143,50 @@ class Episodes:
                 raise Conflict('Source changed or was forgotten; reload before correcting')
             self._write_passages(identity, passages)
             self.db.execute('UPDATE state SET version=version+1')
+            self.db.execute('DELETE FROM pending_reply WHERE episode=?',(identity,))
+            if delivery_pending:self._mark_pending_reply(identity,expected_revision+1,messages)
+            if cleanup:self._mark_cleanup('store')
+
+    def _mark_pending_reply(self, identity, revision, messages):
+        if messages[-1]['role']!='assistant':raise ValueError('Pending reply requires an assistant turn')
+        self.db.execute('INSERT OR REPLACE INTO pending_reply VALUES(?,?,?)',
+                        (identity,revision,len(messages)-1))
+
+    def pending_reply_ids(self):
+        return [row[0] for row in self.db.execute('SELECT episode FROM pending_reply').fetchall()]
+
+    def resolve_pending_reply(self, identity, delivered, placeholder='[Reponse interrompue : le texte effectivement entendu est inconnu.]'):
+        row=self.db.execute('SELECT revision,message_index FROM pending_reply WHERE episode=?',(identity,)).fetchone()
+        if not row:return False
+        if delivered:
+            with self.db:self.db.execute('DELETE FROM pending_reply WHERE episode=?',(identity,))
+            return True
+        source=self.get(identity)
+        if not source or source['revision']!=row[0]:raise Conflict('Pending reply changed before delivery')
+        messages=source['messages']
+        if not 0<=row[1]<len(messages) or messages[row[1]]['role']!='assistant':
+            raise ValueError('Invalid pending reply')
+        messages[row[1]]={'role':'assistant','content':placeholder}
+        values=self._prepare(source['date'],messages,source['origin'])
+        passages=self._passages(messages,identity)
+        with self.db:
+            changed=self.db.execute('''UPDATE episodes SET date=?,messages=?,vector=?,origin=?,revision=revision+1
+                WHERE id=? AND revision=?''',(*values,identity,row[0])).rowcount
+            if changed!=1:raise Conflict('Pending reply changed before delivery')
+            self._write_passages(identity,passages)
+            self.db.execute('DELETE FROM pending_reply WHERE episode=?',(identity,))
+            self.db.execute('UPDATE state SET version=version+1')
+        return True
 
     def forget(self, identity, expected_revision):
         self.forget_many([(identity, expected_revision)])
 
-    def forget_many(self, sources):
+    def forget_many(self, sources, *, cleanup=False):
         """All selected revisions are removed together, or none are."""
         sources = list(sources)
         if len({identity for identity, _ in sources}) != len(sources):
             raise ValueError('Duplicate forgetting source')
-        if not sources:return
+        if not sources and not cleanup:return
         with self.db:
             for identity, expected_revision in sources:
                 changed = self.db.execute('DELETE FROM episodes WHERE id=? AND revision=?',
@@ -153,11 +194,25 @@ class Episodes:
                 if changed != 1:
                     raise Conflict('Source changed or was forgotten; reload before forgetting')
             self.db.execute('UPDATE state SET version=version+1')
+            if cleanup:self._mark_cleanup('store')
 
     def version(self):
         return self.db.execute('SELECT version FROM state').fetchone()[0]
 
-    def apply_forgetting(self, plan, expected_version):
+    def pending_cleanup_stage(self):
+        row=self.db.execute('SELECT stage FROM pending_cleanup WHERE id=1').fetchone()
+        return row[0] if row else None
+
+    def _mark_cleanup(self, stage):
+        self.db.execute('INSERT OR REPLACE INTO pending_cleanup(id,stage) VALUES(1,?)',(stage,))
+
+    def advance_cleanup(self):
+        with self.db:self._mark_cleanup('log')
+
+    def clear_cleanup(self):
+        with self.db:self.db.execute('DELETE FROM pending_cleanup WHERE id=1')
+
+    def apply_forgetting(self, plan, expected_version, *, cleanup=False):
         """Apply confirmed verbatim deletions atomically, never model rewrites."""
         if len({p['id'] for p in plan})!=len(plan):raise ValueError('Duplicate source')
         prepared=[]
@@ -182,8 +237,10 @@ class Episodes:
                     self.db.execute('''UPDATE episodes SET date=?,messages=?,vector=?,origin=?,revision=revision+1
                         WHERE id=? AND revision=?''',(*values,source['id'],source['revision']))
                     self._write_passages(source['id'],passages)
+                    self.db.execute('DELETE FROM pending_reply WHERE episode=?',(source['id'],))
                 else:self.db.execute('DELETE FROM episodes WHERE id=?',(source['id'],))
             if prepared:self.db.execute('UPDATE state SET version=version+1')
+            if cleanup:self._mark_cleanup('store')
 
     @staticmethod
     def _decode(row):

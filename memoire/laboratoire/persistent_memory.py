@@ -17,6 +17,9 @@ from observation import emit, span, purge
 
 ROOT = (Path(__file__).resolve().parents[2] / 'laboratoire')
 DIALOGUE_HISTORY_MESSAGES = 12
+FEELING_TTL_SECONDS = 6 * 3600
+REFLECTION_TTL_SECONDS = 24 * 3600
+RECENT_AFFECT_LIMIT = 2
 
 
 class Store(MemoryStore):
@@ -49,6 +52,22 @@ class Store(MemoryStore):
 
     def rows(self):
         return self._connection.execute("SELECT * FROM memories WHERE status='active' ORDER BY updated_at DESC").fetchall()
+
+    def record_feeling(self, event_id, label):
+        self._connection.execute('INSERT INTO feelings VALUES(?,?,?,?)',
+            (uuid.uuid4().hex,event_id,label,time.time()+FEELING_TTL_SECONDS))
+
+    def record_reflection(self, event_id, text):
+        self._connection.execute('INSERT INTO reflections VALUES(?,?,?,?)',
+            (uuid.uuid4().hex,event_id,text,time.time()+REFLECTION_TTL_SECONDS))
+
+    def recent_feelings(self):
+        return [r[0] for r in self._connection.execute(
+            'SELECT label FROM feelings ORDER BY expires DESC LIMIT ?', (RECENT_AFFECT_LIMIT,))]
+
+    def recent_reflections(self):
+        return [r[0] for r in self._connection.execute(
+            'SELECT text FROM reflections ORDER BY expires DESC LIMIT ?', (RECENT_AFFECT_LIMIT,))]
 
     def purge(self, ids=None):
         """Remove complete evidence-connected components and all derived reflection.
@@ -353,12 +372,10 @@ class Memory:
             emit(self.session,'memory.written',{'correction':index>=0},
                 {'id':stored.id,'text':f['quote'],'previous':related[index]['statement'] if index>=0 else None})
         accepted=stored_facts
-        if feeling:
-            self.store._connection.execute('INSERT INTO feelings VALUES(?,?,?,?)',
-                (uuid.uuid4().hex,event.id,feeling,time.time()+6*3600))
+        if feeling:self.store.record_feeling(event.id,feeling)
         memories=self.recall(text)
-        feelings=[r[0] for r in self.store._connection.execute('SELECT label FROM feelings ORDER BY expires DESC LIMIT 2')]
-        reflections=[r[0] for r in self.store._connection.execute('SELECT text FROM reflections ORDER BY expires DESC LIMIT 2')]
+        feelings=self.store.recent_feelings()
+        reflections=self.store.recent_reflections()
         schema=obj({'reply':{'type':'string'},'reflection':{'type':'string',
             'enum':['','ecouter','clarifier','explorer','repondre','laisser_de_l_espace']}})
         data={'message':text,'conversation_recente':history[-DIALOGUE_HISTORY_MESSAGES:],
@@ -390,9 +407,7 @@ class Memory:
             result={'reply':'Je n ai pas enregistre cette mise a jour de souvenir. '
                 'Precise quelle personne ou quelle information elle remplace : '+unresolved[0],
                 'reflection':'clarifier'}
-        if result['reflection']:
-            self.store._connection.execute('INSERT INTO reflections VALUES(?,?,?,?)',
-                (uuid.uuid4().hex,event.id,result['reflection'],time.time()+24*3600))
+        if result['reflection']:self.store.record_reflection(event.id,result['reflection'])
         self.last_review={'accepted':len(accepted),'selected':[r['id'] for r in memories],'mood':mood.label,'feeling':feeling}
         emit(self.session,'memory.state',{'accepted':len(accepted),'selected':len(memories),'mood':mood.label,
             'valence':mood.valence,'arousal':mood.arousal,'feeling':feeling,'intention':result['reflection']})
