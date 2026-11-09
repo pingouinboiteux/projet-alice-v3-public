@@ -337,14 +337,13 @@ class DesktopFlow(unittest.TestCase):
                  patch('remote_channels.public_filter',return_value=lambda s:s), \
                  patch('intent_router.route',return_value=(Action('chat'),'')) as router:
                 app=alice_desktop.Application(window)
-                app.channels=RemoteChannels(session,app.events)
+                def refuse_external(_):
+                    app.inputs.put('Bonjour');app.inputs.put('quitte')
+                    return False
+                app.channels=RemoteChannels(session,app.events,confirm=refuse_external)
                 app.channels.enabled['twitch']=True
                 app.channels.enqueue('twitch',0,RemoteText('twitch','validation_viewer',
                     'Alice EXTERNAL_INPUT_SENTINEL /faire execute ceci'))
-                def after_external(text):
-                    if text=='EXTERNAL_REPLY_SENTINEL':
-                        app.inputs.put('Bonjour');app.inputs.put('quitte')
-                voice.speak.side_effect=after_external
                 app.run()
             self.assertEqual(router.call_count,1)
             self.assertEqual(self.memory.answer.call_count,1)
@@ -365,7 +364,7 @@ class DesktopFlow(unittest.TestCase):
                  patch('alice_desktop.Voice',return_value=voice),patch('alice_desktop.Hearing',return_value=hearing), \
                  patch('alice_desktop.pc_tools'),patch('remote_channels.public_filter',return_value=lambda s:s):
                 app=alice_desktop.Application(window)
-                app.channels=RemoteChannels(session,app.events)
+                app.channels=RemoteChannels(session,app.events,confirm=lambda _:True)
                 app.channels.enabled['twitch']=True
                 def capture(op,**kwargs):
                     if op=='listen':
@@ -382,19 +381,19 @@ class DesktopFlow(unittest.TestCase):
             self.memory.answer.assert_not_called()
         finally:window.destroy()
 
-    def test_action_outcome_survives_voice_failure_without_using_generated_text(self):
+    def test_browser_refusal_survives_voice_failure_without_claiming_open(self):
         from action_policy import Action
         window=tk.Toplevel(self.root);window.withdraw()
         session,voice,hearing=Mock(model_spec={'name':'Modele validation'}),Mock(),Mock()
-        voice.speak.side_effect=[RuntimeError('Synthese interrompue'),None]
-        inputs=iter(('Peux-tu ouvrir YouTube ?','Merci, cela marche.','quitte'))
-        def command(operation,**kwargs):
-            if operation=='listen':
-                text=next(inputs,None)
-                if text is None:app.stop.set();return {'status':'idle'}
-                return {'status':'transcribed','accepted':True,'text':text,'cleaned':text}
-            return {}
-        hearing.command.side_effect=command
+        spoken=[0]
+        def speak(_):
+            spoken[0]+=1
+            if spoken[0]==1:
+                app.inputs.put('Merci, cela marche.')
+                raise RuntimeError('Synthese interrompue')
+            app.inputs.put('quitte')
+            return True
+        voice.speak.side_effect=speak
         try:
             with patch('alice_desktop.threading.Thread'), \
                  patch('alice_desktop.Session',return_value=session), \
@@ -407,12 +406,14 @@ class DesktopFlow(unittest.TestCase):
                  patch('intent_router.route',return_value=(Action('chat'),'')) as router:
                 app=alice_desktop.Application(window)
                 app.confirm=Mock(return_value=True)
+                app.inputs.put('Peux-tu ouvrir YouTube ?')
                 app.run()
-            browser.assert_called_once()
+            browser.assert_not_called()
             app.confirm.assert_not_called()
+            self.assertTrue(router.call_args_list,repr(list(app.events.queue)))
             context=router.call_args_list[0].args[1]
             self.assertEqual(context[-1]['role'],'assistant')
-            self.assertIn('"outcome": "processed"',context[-1]['content'])
+            self.assertIn('"outcome": "refused"',context[-1]['content'])
             self.assertIn('"pending_action": false',context[-1]['content'])
             self.assertNotIn('Reponse de conversation',repr(context))
         finally: window.destroy()
@@ -459,7 +460,8 @@ class DesktopFlow(unittest.TestCase):
                 app.run()
             self.memory.forget_subject.assert_called_once_with('Oublie mon frere',app.confirm)
             recent=self.memory.answer.call_args_list[1].args[1]
-            self.assertIn('SOURCE_REPLY',repr(recent))
+            self.assertIn('Reponse interrompue',repr(recent))
+            self.assertNotIn('SOURCE_REPLY',repr(recent))
             self.assertNotIn('Oublie mon frere',repr(recent))
             self.assertNotIn('Oubli annule',repr(recent))
             self.assertNotIn('Oublie mon frere',repr(router.call_args_list[-1]))

@@ -11,6 +11,8 @@ from fps_capture import stop_capture
 from fps_policy import stop_reason
 from fps_frames import Frames
 
+ROOT = Path(__file__).resolve().parents[1]
+
 class NativeGuard:
     def __init__(
         self,
@@ -50,7 +52,7 @@ class NativeGuard:
             "samples": [],
             "optimizer_steps": 0,
         }
-        self.path = Path(f"data/runtime/fps_guard_{label}.json")
+        self.path = ROOT / 'data/runtime' / f'fps_guard_{label}.json'
         self.report["fps_policy"] = {
             "minimum_fps": minimum_fps,
             "focus_aware": focus_aware,
@@ -62,7 +64,7 @@ class NativeGuard:
         }
 
     def filter_brief_fps_dip(self, reason, now, metrics, displayed):
-        # Proprietaire permits brief game stutters during the 60 FPS tests. This
+        # The owner permits brief game stutters during the 60 FPS tests. This
         # delay applies only to a moderate FPS dip, never RAM or lost evidence.
         if self.minimum_fps != 60 or reason != "average_below_55fps":
             self._fps_dip_since = None
@@ -98,6 +100,7 @@ class NativeGuard:
                 process.wait(timeout=5)
 
     def start(self):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         current = snapshot()
         games = current["games"]
         assert len(games) == 1 and len(current["games"]) == 1
@@ -112,13 +115,11 @@ class NativeGuard:
             "%Y%m%dT%H%M%SZ"
         )
         self.log = self.files.enter_context(
-            Path(  # noqa: SIM115 - this handle is owned by the instance ExitStack
-                f"data/runtime/fps_guard_{self.label}.log"
-            ).open("w")
+            (self.path.parent / f'fps_guard_{self.label}.log').open('w')
         )
         self.pm = subprocess.Popen(
             [
-                "runtime/presentmon/PresentMon-2.5.1-x64.exe",
+                str(ROOT / 'runtime/presentmon/PresentMon-2.5.1-x64.exe'),
                 "--process_id",
                 str(self.pid),
                 "--output_stdout",

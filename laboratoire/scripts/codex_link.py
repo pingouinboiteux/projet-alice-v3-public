@@ -1,4 +1,4 @@
-"""Historical configuration helpers; execution is disabled in protected mode."""
+"""Run bounded local code missions through the Windows MXC atelier."""
 import hashlib
 import json
 import os

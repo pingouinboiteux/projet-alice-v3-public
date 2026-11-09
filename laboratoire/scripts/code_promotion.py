@@ -79,7 +79,34 @@ def proposal(relative, expected_sha, workspace):
     return original, current, changed, diff
 
 
-def apply(identity, relative, expected_sha, workspace, confirm):
+def transition_state(identity, relative, source_sha, candidate_sha, phase):
+    """Read-only crash recovery; ambiguous files require manual review."""
+    if phase not in {'applying', 'restoring'} or not candidate_sha:
+        return 'review'
+    try:
+        current = _source(relative).read_bytes()
+        backup = BACKUPS / identity / relative
+        if backup.exists() or backup.is_symlink():
+            details = backup.lstat()
+            if (backup.is_symlink() or details.st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT
+                    or details.st_nlink != 1 or _hash(backup.read_bytes()) != source_sha):
+                return 'review'
+            has_backup = True
+        else:
+            has_backup = False
+        digest = _hash(current)
+        if phase == 'applying':
+            if digest == source_sha:return 'executed'
+            if digest == candidate_sha and has_backup:return 'applied'
+        if phase == 'restoring' and has_backup:
+            if digest == source_sha:return 'restored'
+            if digest == candidate_sha:return 'applied'
+    except (OSError, ValueError):
+        pass
+    return 'review'
+
+
+def apply(identity, relative, expected_sha, workspace, confirm, before_write=None):
     original, current, changed, diff = proposal(relative, expected_sha, workspace)
     description = ('Appliquer cette modification au laboratoire ?\n'
                    + str(original) + '\n\n' + diff + '\n\n'
@@ -89,12 +116,20 @@ def apply(identity, relative, expected_sha, workspace, confirm):
     # Confirm may take minutes. Never overwrite a file edited during the dialog.
     if _hash(_source(relative).read_bytes()) != expected_sha:
         raise ValueError('Le fichier original a change pendant la confirmation.')
+    if before_write is not None:
+        before_write(_hash(changed))
     backup = BACKUPS / identity / relative
-    backup.parent.mkdir(parents=True, exist_ok=False)
-    with backup.open('xb') as stream:
-        stream.write(current)
-        stream.flush()
-        os.fsync(stream.fileno())
+    backup.parent.mkdir(parents=True, exist_ok=True)
+    if backup.exists() or backup.is_symlink():
+        if (backup.is_symlink() or backup.lstat().st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT
+                or backup.lstat().st_nlink != 1
+                or backup.read_bytes() != current):
+            raise ValueError('Copie de retour existante non conforme.')
+    else:
+        with backup.open('xb') as stream:
+            stream.write(current)
+            stream.flush()
+            os.fsync(stream.fileno())
     if backup.read_bytes() != current:
         raise OSError('Copie de retour non verifiee.')
     temporary = None
@@ -115,20 +150,24 @@ def apply(identity, relative, expected_sha, workspace, confirm):
     return True
 
 
-def restore(identity, relative, expected_sha, workspace, confirm):
+def restore(identity, relative, expected_sha, workspace, confirm, *, applied_sha=None,
+            before_write=None):
     original = _source(relative)
     backup = BACKUPS / identity / relative
-    if not backup.is_file() or backup.is_symlink() or backup.lstat().st_nlink != 1:
+    if (not backup.is_file() or backup.is_symlink()
+            or backup.lstat().st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT
+            or backup.lstat().st_nlink != 1):
         raise ValueError('Copie de retour absente.')
     old = backup.read_bytes()
     if _hash(old) != expected_sha:
         raise ValueError('Copie de retour non conforme a la version source.')
-    candidate = Path(workspace) / relative
-    if not candidate.is_file() or candidate.is_symlink() or not candidate.resolve(strict=True).is_relative_to(Path(workspace).resolve(strict=True)):
-        raise ValueError('Copie de mission invalide.')
-    proposed = _preserve_line_endings(old, candidate.read_bytes())
     current = original.read_bytes()
-    if current != proposed:
+    if applied_sha is None:
+        candidate = Path(workspace) / relative
+        if not candidate.is_file() or candidate.is_symlink() or not candidate.resolve(strict=True).is_relative_to(Path(workspace).resolve(strict=True)):
+            raise ValueError('Copie de mission invalide.')
+        applied_sha = _hash(_preserve_line_endings(old, candidate.read_bytes()))
+    if _hash(current) != applied_sha:
         raise ValueError('Le fichier a change depuis l application ; restauration manuelle requise.')
     previous_text = old.decode('utf-8')
     current_text = current.decode('utf-8')
@@ -141,6 +180,8 @@ def restore(identity, relative, expected_sha, workspace, confirm):
         return False
     if _source(relative).read_bytes() != current:
         raise ValueError('Le fichier a change pendant la confirmation.')
+    if before_write is not None:
+        before_write()
     temporary = None
     try:
         with tempfile.NamedTemporaryFile(prefix='.alice_restore_', suffix='.py',

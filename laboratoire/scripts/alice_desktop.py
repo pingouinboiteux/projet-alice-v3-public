@@ -613,14 +613,18 @@ class Application:
                     elif action.kind != 'chat':
                         with self.observation.span('action_execute'):
                             answer = actions.execute(action,automatic_open=automatic_open,cancelled=opening_cancelled)
-                        outcome='cancelled' if answer in {'Modification annulee.','Ouverture annulee.'} else 'processed'
+                        if action.kind in {'open','search'}:
+                            from autonomy_policy import BROWSER_REFUSAL
+                            outcome='refused' if answer==BROWSER_REFUSAL else 'processed'
+                        else:
+                            outcome='cancelled' if answer in {'Modification annulee.','Ouverture annulee.'} else 'processed'
                         self.observation.emit('action.result',{'kind':action.kind,'status':'returned'}, {'result':answer})
                         self.say(answer)
                         messages += [{'role': 'user', 'content': text}, {'role': 'assistant', 'content': answer}]
                     messages = messages[:1] + messages[1:][-DIALOGUE_HISTORY_MESSAGES:]
                     hearing.command('extend')
                 except (ValueError, RuntimeError, OSError, http.client.HTTPException, LookupError) as error:
-                    if outcome!='processed': outcome='failed'
+                    if outcome not in {'processed','refused','cancelled'}: outcome='failed'
                     self.observation.emit('turn.error',{'error_type':type(error).__name__}, {'message':str(error)})
                     self.session.check()
                     self.events.put(('text', ('Action non terminee', str(error))))

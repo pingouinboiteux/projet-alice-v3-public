@@ -1,10 +1,15 @@
 from types import SimpleNamespace
 
-from fps_guard import NativeGuard
+from fps_guard import NativeGuard, ROOT
 
 
 def guard(fps=60):
     return NativeGuard(SimpleNamespace(), 'validation_brief_dips', minimum_fps=fps)
+
+
+def test_report_path_stays_in_laboratory_when_started_elsewhere(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    assert guard().path.parent == ROOT / 'data/runtime'
 
 
 def test_single_hitch_recovers_and_does_not_accumulate_across_dips():
