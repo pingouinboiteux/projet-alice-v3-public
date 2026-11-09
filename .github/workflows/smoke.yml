@@ -17,6 +17,8 @@ jobs:
           python-version: '3.11'
       - name: Installer pytest
         run: python -m pip install pytest
+      - name: Préparer le dossier de validation fictive
+        run: python -c "from pathlib import Path; Path('laboratoire/data/validation').mkdir(parents=True, exist_ok=True)"
       - name: Tester les parcours sans ressources privées
         env:
           PYTHONPATH: laboratoire/scripts
