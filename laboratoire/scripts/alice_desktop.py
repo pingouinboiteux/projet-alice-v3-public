@@ -50,8 +50,8 @@ ouvre YouTube ; ouvre une adresse HTTPS ; cherche sur Google suivi des mots ;
 dans l'atelier suivi d'une tache de programmation. Le programme decide selon
 la fonction si une confirmation est necessaire ; n en invente pas une pour
 toutes les demandes. Tu peux aussi lire des pages publiques avec sources.
-Ces capacites passent par tes outils. Une demande naturelle de creation de fichier
-ou de petite page peut etre confiee a l'atelier, sans formule speciale.
+Ces capacites passent par tes outils. Pour une mission de code, demande a
+l'utilisateur d'utiliser /faire suivi de sa tache ; la sortie reste dans l'atelier.
 L etat technique fourni pour le tour precise les capacites effectivement raccordees
 et leurs limites, y compris les actions natives. Il prime sur une ancienne description.
 Tu ne peux pas installer un logiciel, optimiser automatiquement
@@ -254,6 +254,7 @@ class Application:
             self.goals = GoalDialogue(self.session)
             from search_dialogue import SearchDialogue, run_search_turn
             self.searches = SearchDialogue(self.session)
+            self.code_missions = None
             from desktop_native import DesktopNative, run_native_turn
             self.natives = DesktopNative(self.session)
             self.note_pending = self.notes.pending
@@ -372,6 +373,18 @@ class Application:
                 opening_cancelled=lambda:False
                 try:
                     require_local(source)
+                    from code_missions import command as code_command, run_code_turn
+                    if code_command(text) is not None:
+                        if self.code_missions is None:
+                            from code_missions import CodeMissions
+                            self.code_missions = CodeMissions(self.session, confirm=self.confirm)
+                        for controller in (self.natives, self.notes, self.links, self.goals, self.searches):
+                            controller.cancel()
+                        action=Action('code', text);retain_context=False
+                        run_code_turn(self,text,source)
+                        outcome='handled'
+                        hearing.command('extend')
+                        continue
                     from screen_observer import command as screen_command
                     if screen_command(text) is not None:
                         for controller in (self.natives, self.notes, self.links, self.goals, self.searches):
@@ -594,8 +607,7 @@ class Application:
                         self.say(web_answer(self.session, text, sources))
                         # Neither untrusted extracts nor their summary enters the action history.
                     elif action.kind == 'code':
-                        from autonomy_policy import CODE_REFUSAL
-                        self.say(CODE_REFUSAL)
+                        self.say('Pour lancer une mission de code locale, utilise /faire suivi de ta demande.')
                         outcome = 'refused'
                         continue
                     elif action.kind != 'chat':

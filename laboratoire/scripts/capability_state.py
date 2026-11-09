@@ -15,7 +15,14 @@ def channel_state(channels):
 
 def dialogue_context(channels):
     states=channel_state(channels)
-    return ('\nMode protege : execution de code et navigateur personnel desactives. '
+    return ('\nMode protege : code libre et navigateur personnel desactives. '
+        'Une mission de code locale avec /faire travaille dans un atelier MXC si son confinement est verifie. '
+        'Son resultat reste a verifier avant toute utilisation hors atelier. '
+        'Suivi : /missions, /mission identifiant, /reprendre identifiant. '
+        'Un module Python ordinaire de laboratoire/scripts peut etre copie avec '
+        '/faire fichier scripts/nom.py : demande ; /appliquer identifiant affiche '
+        'la difference et demande un accord, /restaurer-code identifiant restaure '
+        'la copie precedente apres accord. '
         'Documents texte versionnes via /documents ; copies importees uniquement dans le dossier reserve. '
         'Reponses publiques soumises a accord local pour chaque contenu. '
         'Historique des notes : /versions-note titre ; restauration : /restaurer-note titre | version. '

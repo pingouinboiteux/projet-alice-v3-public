@@ -11,6 +11,7 @@ anciens restent utiles pour comprendre les décisions, sans remplacer
 | [Évolution](pilotage/evolution.md) | Direction du projet et critères de progression. |
 | [Mise à jour du 9 novembre](technique/mise-a-jour-20261109.md) | Changements et vérifications de la sélection publiée. |
 | [Fiabilisation du 9 novembre](technique/fiabilisation-20261109.md) | Réparations de mémoire, humeur, vision et Web après les relectures. |
+| [Missions de code](technique/missions-code.md) | Atelier local, commandes, protections et limites. |
 | [Vérification de publication](technique/verification-publication.md) | Contrôles historiques avant publication. |
 | [Pièges techniques](technique/pieges.md) | Difficultés rencontrées et décisions techniques. |
 | [Audit des éléments obsolètes](technique/audit-obsoletes.md) | Classement des anciens éléments. |

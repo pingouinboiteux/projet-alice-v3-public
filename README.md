@@ -2,7 +2,8 @@
 
 Alice est un prototype personnel de compagnon vocal en français pour Windows.
 Son laboratoire sait dialoguer, mémoriser des échanges, lire certaines pages Web
-et observer un écran à la demande ou à intervalles espacés. Son propriétaire
+et observer un écran à la demande ou à intervalles espacés. Il peut aussi
+préparer une mission de code dans un atelier isolé. Son propriétaire
 garde la main sur les actions qui modifient des documents ou diffusent une réponse.
 
 Ce dépôt s'adresse aux personnes qui veulent **étudier le code et les choix du
@@ -19,6 +20,8 @@ les paramètres privés et certaines dépendances natives n'y figurent pas.
 - [Carte du code](structure.md) et [index des documents](docs/INDEX.md).
 - [Code courant du laboratoire](laboratoire/README.md) et
   [modifications de cette sélection](docs/technique/mise-a-jour-20261109.md).
+- [Missions de code](docs/technique/missions-code.md) : commandes, protections
+  et limites de l'atelier local.
 - [Réparations fonctionnelles](docs/technique/fiabilisation-20261109.md) et
   [provenance des fichiers corrigés](docs/provenance/fiabilisation-20261109.json).
 - [Direction du projet](docs/pilotage/evolution.md) et
@@ -29,6 +32,8 @@ utilise une fenêtre Brave isolée ; la lecture d'écran peut être demandée ou
 surveiller un écran sélectionné. Les réponses publiques exigent un accord. Le
 mode protégé refuse l'exécution libre de code, le navigateur personnel et les
 lancements administrateur. Il ne confine pas Windows comme une machine virtuelle.
+Les missions de code ont leur propre confinement Windows et ne peuvent modifier
+un module du laboratoire qu'après revue et accord local.
 
 Une fenêtre fictive sur un vrai écran a servi à vérifier lecture et voix. Un
 ancien essai en jeu s'était interrompu après une chute des FPS pendant un
