@@ -7,7 +7,7 @@ préparer une mission de code dans un atelier isolé. Son propriétaire
 garde la main sur les actions qui modifient des documents ou diffusent une réponse.
 
 Ce dépôt s'adresse aux personnes qui veulent **étudier le code et les choix du
-projet**. Il contient une sélection publique mise à jour le **10 novembre 2026** : ce
+projet**. Il contient une sélection publique mise à jour le **12 novembre 2026** : ce
 n'est pas une installation prête à lancer. Les modèles, les voix personnelles,
 les paramètres privés et certaines dépendances natives n'y figurent pas.
 
@@ -22,6 +22,8 @@ les paramètres privés et certaines dépendances natives n'y figurent pas.
   [modifications de cette sélection](docs/technique/mise-a-jour-20261109.md).
 - [Missions de code](docs/technique/missions-code.md) : commandes, protections
   et limites de l'atelier local, ainsi que le résultat de l'essai final.
+- [Alice joue à Slay the Spire](docs/technique/slay-the-spire-20261112.md) :
+  décisions du modèle, commentaires pendant la partie et limites mesurées.
 - [Réparations fonctionnelles](docs/technique/fiabilisation-20261109.md) et
   [provenance des fichiers corrigés](docs/provenance/fiabilisation-20261109.json).
 - [Direction du projet](docs/pilotage/evolution.md) et
@@ -35,6 +37,11 @@ lancements administrateur. Il ne confine pas Windows comme une machine virtuelle
 Les missions de code ont leur propre confinement Windows et ne peuvent modifier
 un module du laboratoire qu'après revue et accord local.
 
+Dans Slay the Spire, Alice choisit les actions parmi les options transmises par
+un mod local. La conversation et les choix partagent le même modèle. Le lancement
+depuis l'interface et le commentaire sont présents dans cette sélection ; leur
+installation complète nécessite le jeu, les mods et les ressources privées.
+
 Une fenêtre fictive sur un vrai écran a servi à vérifier lecture et voix. Un
 ancien essai en jeu s'était interrompu après une chute des FPS pendant un
 chargement. Depuis, deux essais silencieux de lecture passive et un essai avec
@@ -46,7 +53,7 @@ parties ni tous les services simultanés : voir [les mesures](docs/etat/actuel.m
 
 Une [petite suite autonome](.github/workflows/smoke.yml) vérifie les versions de
 notes, la livraison visuelle, l'humeur, la mémoire, la priorité visuelle et les
-réponses Web avec des données fictives. Elle ne lance ni Alice, ni modèle, ni
+réponses Web et le pilotage du jeu avec des données fictives. Elle ne lance ni Alice, ni modèle, ni
 microphone, ni navigateur. La
 majorité des tests du projet exige encore des ressources absentes de ce dépôt.
 

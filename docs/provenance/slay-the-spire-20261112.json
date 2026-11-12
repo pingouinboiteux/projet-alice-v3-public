@@ -1,0 +1,104 @@
+{
+  "date": "2026-11-12",
+  "base_commit": "a792bf7cacae6457ef0556fc7b6f78d8b574c078",
+  "scope": "Pilotage de Slay the Spire par Alice, commentaire et lancement depuis l interface.",
+  "normalization": "UTF-8 LF ; noms personnalises neutralises ; journaux, experiences, sauvegardes, ressources et rapports bruts exclus.",
+  "files": [
+    {
+      "path": "interface/laboratoire/desktop_commands.py",
+      "sha256": "05d8f0055a5e626f3d158bcee19425226bf70ee702e1d8b35668fad64098f227"
+    },
+    {
+      "path": "interface/laboratoire/desktop_delivery.py",
+      "sha256": "70c0873b62bf49230b10384a34ceb1a98e62b6d9e6e6e874e7ff1f239d2b2ffe"
+    },
+    {
+      "path": "interface/laboratoire/desktop_style.py",
+      "sha256": "a11fba3c5012a3001fb9b988f7a2b413c6a75eff90b86b9c78b920ce5c83124a"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/Afficher_bilan.cmd",
+      "sha256": "dc932a8d53f43461e04c37d749f0288bda6d39bb510e5b80fd2353846ed4bd78"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/Journal_decisions.cmd",
+      "sha256": "063f08ac05c1ec305059434eb303b115fae8cf1f192c6df461e474075f4f27db"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/Lancer_Alice.cmd",
+      "sha256": "7d9dbe4062ff2355f7cb354a60c233342cf9ff554181f0e0525f65fee287e999"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/README.md",
+      "sha256": "d57f5c986f6ac912e52a305d4cfbd15743dc8f81ba00f07e91ba22b71bed1eb5"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/agent.py",
+      "sha256": "0e80642cd6cc076221868432bc9df796943f01b71a33a8212730d2e8412d2ee6"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/experience.py",
+      "sha256": "48144d1c901ffbaff8378145134a88d3c57df72723d038ae3ae8b8f2c4a53043"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/installer.ps1",
+      "sha256": "754378353083446333e92b7d42096a556771b56b2a1f26b2d38f31d134e22e62"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/journal_decisions.py",
+      "sha256": "dc1f8917ca2efbf90bcd56dacf3b15e0900569ebc53e3173ea9a9a477d2a6960"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/lancer.ps1",
+      "sha256": "c3e25e05e89fc52b9f006fce4dfe222edb7b6aca6241a7dfd2093f67cd59b4a9"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/rapport.py",
+      "sha256": "871257048dbcbf1cd0a9525ed50e89cfe5201696c86434746e848153a6af964d"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/steam_paths.ps1",
+      "sha256": "be1300007b8281d19cae3f145af602edd0fb9d6a3fe6dcb0e1212a7249b9ac42"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/test_agent.py",
+      "sha256": "0490568930d76571dd0d7e2bc7d5828659e4f00a29df05dc02c867c7a55c5fda"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/test_bridge.py",
+      "sha256": "8aeb480cd9220afdfa1e5a3ab2633c56bf95d5796dbd1c786cebf7f16fe6f36b"
+    },
+    {
+      "path": "laboratoire/jeux/slay_spire/test_ui_launch.py",
+      "sha256": "9f742d3a6ed6faf75ea0baedae851298a765f92c17c4be4358fad5e1f615b63b"
+    },
+    {
+      "path": "laboratoire/scripts/alice_desktop.py",
+      "sha256": "880484080c81065d562b5bd73e69cabc41d6ae8bdde1c34ef2330f0a345e7695"
+    },
+    {
+      "path": "laboratoire/scripts/chat.py",
+      "sha256": "44ad2d44227e110521f49240fffd2b0869e987c891123a923ffa597d54b5bb8f"
+    },
+    {
+      "path": "laboratoire/scripts/desktop_game.py",
+      "sha256": "78ddcf4d065189bfbb125f98be66a7e115b5a3dec47593406ee40677c1b3535b"
+    },
+    {
+      "path": "laboratoire/scripts/desktop_initiative.py",
+      "sha256": "e9f7f98579268b54abb8992eb096fcd760e4306a75389d7b97043a36f5b02947"
+    },
+    {
+      "path": "laboratoire/scripts/episode_protocol.py",
+      "sha256": "50c1ebf2775d9abd16601617eef4ffe00ebcbb51c0fb4dddb849dda9d2602840"
+    },
+    {
+      "path": "laboratoire/scripts/game_stream_bridge.py",
+      "sha256": "d825d7ec33cac7e64f8df941b1abf79e18befc57d999607be0e6d76a683a1ce0"
+    },
+    {
+      "path": "laboratoire/scripts/initiative_sequence.py",
+      "sha256": "ba3555ceaf38768497b4a17f915a682a601736bfd76620ac0b4f34b09e3fd6b0"
+    }
+  ]
+}

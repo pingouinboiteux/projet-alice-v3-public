@@ -51,7 +51,7 @@ dans l'atelier suivi d'une tache de programmation. Le programme decide selon
 la fonction si une confirmation est necessaire ; n en invente pas une pour
 toutes les demandes. Tu peux aussi lire des pages publiques avec sources.
 Ces capacites passent par tes outils. Pour une mission de code, demande a
-l'utilisateur d'utiliser /faire suivi de sa tache ; la sortie reste dans l'atelier.
+au proprietaire d'utiliser /faire suivi de sa tache ; la sortie reste dans l'atelier.
 L etat technique fourni pour le tour precise les capacites effectivement raccordees
 et leurs limites, y compris les actions natives. Il prime sur une ancienne description.
 Tu ne peux pas installer un logiciel, optimiser automatiquement
@@ -95,6 +95,11 @@ class Application:
         self.paused = threading.Event()
         self.finished = threading.Event()
         self.session = None
+        self.game_context = None
+        self.game_bridge = None
+        self.game_launcher = None
+        self.game_previous_mode = None
+        self.game_animation_delay = None
         self.screen = None
         self.screen_busy = threading.Event()
         self.hearing = None
@@ -106,7 +111,7 @@ class Application:
         if '--twitch' in sys.argv:self.channel_commands.put('twitch')
         self.confirmations = []
         self.validation_folder = None
-        if validation_notes or validation_native_window is not None:
+        if validation_notes or validation_native_window is not None or '--sts-validation' in sys.argv:
             import tempfile
             self.validation_folder = tempfile.TemporaryDirectory(prefix='validation_interface_', dir=ROOT/'data/validation')
         self.observation = Observation(content='--diagnostic' in sys.argv,
@@ -119,6 +124,7 @@ class Application:
         self.append('Alice', 'Mode de validation isole : utilise la zone de demande ci-dessous.' if (validation_notes or validation_native_window is not None) else "Dis Alice, puis ta demande. Tu peux aussi écrire ci-dessous. "
                     "Le micro se ferme pendant mon travail et mes réponses. "
                     "Les boutons Discussion et Animer le stream activent mes initiatives ; Calme les coupe. "
+                    "Le bouton Jouer à Slay the Spire lance le jeu sur mon profil réservé et active mes commentaires. "
                     "Pour guider le sujet public, dis Alice pour le stream suivi de ta consigne, ou ecris /scene ta consigne. "
                     "Tu peux creer, lister, lire ou remplacer le texte d une note nommee ; une demande claire peut etre executee sans bouton. "
                     "Pour observer une page publique rendue : /voir https://adresse ta question. "
@@ -161,6 +167,14 @@ class Application:
     def channel_command(self,source):
         from desktop_commands import channel_command
         return channel_command(self, source)
+
+    def start_slay_spire(self):
+        if self.game_launcher is None:
+            self.events.put(('text', ('Slay the Spire',
+                'Alice termine encore son chargement. Reessaie dans un instant.')))
+            return
+        if self.game_launcher.launch() and self.hearing:
+            self.hearing.cancel()
 
     def toggle_diagnostic(self):
         from desktop_commands import toggle_diagnostic
@@ -235,7 +249,25 @@ class Application:
             hearing, memory = services.hearing, services.memory
             library, public_memory = services.library, services.public_memory
             thoughts = services.thoughts
-            self.initiative = DesktopInitiative(self.session, confirm=self.confirm)
+            game_stream = '--sts-stream' in sys.argv
+            from game_stream_bridge import GameContext, GameBridge
+            from desktop_game import DesktopGameLauncher
+            self.game_context = GameContext()
+            self.game_launcher = DesktopGameLauncher(self, ROOT)
+            self.initiative = DesktopInitiative(
+                self.session, confirm=self.confirm, game_context=self.game_context,
+                auto_game_speech=True)
+            if game_stream:
+                self.game_bridge = GameBridge(
+                    self.session, self.game_context,
+                    os.environ['ALICE_STS_BRIDGE_FILE'],
+                    os.environ['ALICE_STS_BRIDGE_TOKEN'],
+                    on_notice=lambda event: self.events.put(('text',
+                        ('Alice joue', event['action'] +
+                         (' : ' + event['reason'] if event['reason'] else '')))))
+                self.game_bridge.start()
+                self.events.put(('text', ('Slay the Spire',
+                    'Liaison locale prete. Alice prendra les decisions et pourra commenter sa partie.')))
             from screen_observer import ScreenObserver
             self.screen = ScreenObserver(self.session,
                 lambda title, body: self.events.put(('text', (title, body))),
@@ -270,8 +302,31 @@ class Application:
             from stream_recipient import StreamRecipient
             from desktop_recipient import accept_speech
             self.stream_recipient=StreamRecipient()
+            if '--sts-validation' not in sys.argv:
+                self.events.put(('game_button', ('Jouer à Slay the Spire', 'normal')))
             while not self.stop.is_set():
                 self.session.check()
+                if self.game_context and self.game_context.started.is_set():
+                    self.game_context.started.clear()
+                    self.game_previous_mode = self.initiative.mode
+                    self.game_animation_delay = self.initiative.core.delays['animation']
+                    self.initiative.core.delays['animation'] = 15
+                    self.initiative.set_mode('animation')
+                    self.initiative.idle(messages[1:], self.channels)
+                    self.events.put(('game_button', ('Jeu en cours', 'disabled')))
+                    self.events.put(('text', ('Alice joue',
+                        'Partie de Slay the Spire en cours. Les choix du jeu et la voix utilisent le meme modele.')))
+                if self.game_context and self.game_context.finished.is_set():
+                    self.game_context.finished.clear()
+                    if self.game_animation_delay is not None:
+                        self.initiative.core.delays['animation'] = self.game_animation_delay
+                        self.game_animation_delay = None
+                    if self.initiative.mode == 'animation':
+                        self.initiative.set_mode(self.game_previous_mode or 'quiet')
+                    self.game_previous_mode = None
+                    self.events.put(('game_button', ('Jouer a Slay the Spire', 'normal')))
+                    self.events.put(('text', ('Slay the Spire',
+                        'Pilotage arrete. Le jeu peut encore etre ouvert.')))
                 self.initiative.refresh_public(self.channels)
                 if self.paused.is_set(): self.initiative.active()
                 if not self.channel_commands.empty():
@@ -288,6 +343,7 @@ class Application:
                 source='text'
                 if not self.inputs.empty():
                     text = self.inputs.get_nowait()
+                    self.screen_busy.set()
                 elif self.channels and self.channels.handle_one(hearing,self.session.voice):
                     self.initiative.active()
                     self.initiative.idle(messages[1:], self.channels)
@@ -319,7 +375,9 @@ class Application:
                     heard = hearing.command('listen', cancel_if=lambda:
                         self.paused.is_set() or self.stop.is_set() or not self.inputs.empty() or not self.channel_commands.empty(),
                         yield_if=lambda:self.initiative.has_ready() or bool(self.channels and self.channels.has_ready())
-                            or bool(self.screen and self.screen.has_ready()))
+                            or bool(self.screen and self.screen.has_ready())
+                            or bool(self.game_context and (self.game_context.started.is_set()
+                                or self.game_context.finished.is_set())))
                     if self.paused.is_set() or not self.inputs.empty() or self.stop.is_set() or not self.channel_commands.empty():
                         continue
                     if heard.get('status') != 'transcribed' or not heard.get('accepted'):
@@ -336,6 +394,7 @@ class Application:
                 except ValueError as error:
                     self.events.put(('text', ('Contexte du stream', str(error))))
                     self.initiative.idle(messages[1:], self.channels)
+                    self.screen_busy.clear()
                     continue
                 if shared is not None:
                     self.natives.cancel()
@@ -345,6 +404,7 @@ class Application:
                     self.searches.cancel()
                     self.initiative.share_directive(shared, self.channels)
                     self.events.put(('text', ('Consigne partagee avec le stream', shared)))
+                    self.screen_busy.clear()
                     continue
                 selected_mode = mode_command(text)
                 if selected_mode:
@@ -357,9 +417,9 @@ class Application:
                     self.initiative.set_mode(selected_mode)
                     self.initiative.idle(messages[1:], self.channels)
                     self.events.put(('text', ('Conversation', 'Mode : ' + {'quiet':'calme','discussion':'discussion','animation':'animation du stream'}[selected_mode])))
+                    self.screen_busy.clear()
                     continue
                 thoughts.active()
-                self.screen_busy.set()
                 self.observation.begin_turn(text,source,
                     speech_end_monotonic=heard.get('speech_end_monotonic') if source=='voice' else None)
                 turn_started=time.monotonic()
@@ -524,6 +584,7 @@ class Application:
                         if action.kind == 'chat':
                             with self.observation.span('memory_dialogue'):
                                 answer, forgotten = memory.answer(text, messages[1:], SYSTEM+dialogue_context(self.channels)+
+                                    (self.game_context.prompt() if self.game_context else '')+
                                     ('\nBibliotheque publique locale : disponible hors ligne.' if library.available else '\nBibliotheque locale indisponible.')+
                                     '\nTes pensees de fond sont silencieuses, temporaires, sans execution ni relance vocale.', self.confirm)
                             if forgotten:
@@ -543,11 +604,8 @@ class Application:
                                 continue
                             messages = messages[:1] + messages[1:][-DIALOGUE_HISTORY_MESSAGES:] + [
                                 {'role': 'user', 'content': text}, {'role': 'assistant', 'content': answer}]
-                            delivered=self.say(answer)
-                            memory.mark_reply_delivered(delivered is True)
-                            if delivered is not True:
-                                messages[-1] = {'role':'assistant', 'content':
-                                    '[Reponse interrompue : le texte effectivement entendu est inconnu.]'}
+                            from desktop_delivery import deliver_chat_reply
+                            deliver_chat_reply(self,memory,messages,answer)
                             hearing.command('extend')
                             continue
                         if action.kind not in {'status', 'open', 'search', 'code', 'web_read', 'web_observe', 'wiki_search'}:
@@ -640,6 +698,7 @@ class Application:
             self.events.put(('text', ('Arret', str(error))))
         finally:
             try:
+                self.screen_busy.clear()
                 if getattr(self, 'screen', None): self.screen.close()
                 if getattr(self, 'notes', None): self.notes.cancel()
                 if getattr(self, 'links', None): self.links.cancel()
@@ -647,6 +706,7 @@ class Application:
                 if getattr(self, 'searches', None): self.searches.cancel()
                 if getattr(self, 'natives', None): self.natives.cancel()
                 if getattr(self, 'initiative', None): self.initiative.close()
+                if getattr(self, 'game_bridge', None): self.game_bridge.close()
             finally:
                 services.close()
 

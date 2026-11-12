@@ -92,6 +92,10 @@ def build(app,root):
     for source in ('twitch','discord'):
         button(frame,'Connecter / couper '+source.title(),lambda s=source:app.channel_command(s)).pack(fill='x',pady=2)
     wrapped(frame,app.external_status)
+    frame=section('JEUX SOLO')
+    app.game_button=button(frame,'Jouer à Slay the Spire',app.start_slay_spire)
+    app.game_button.pack(fill='x')
+    app.game_button.configure(state='disabled')
     frame=section('MÉMOIRE & ATELIER')
     row=tk.Frame(frame,bg=PANEL);row.pack(fill='x')
     button(row,'Souvenirs',lambda:app.inputs.put('/memoire')).pack(side='left')

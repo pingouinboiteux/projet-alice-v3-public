@@ -33,3 +33,6 @@ jobs:
           laboratoire/tests/test_code_promotion.py
           laboratoire/tests/test_native_guard_brief_dips.py
           memoire/tests/test_private_core.py
+      - name: Tester le pilotage fictif de Slay the Spire
+        working-directory: laboratoire/jeux/slay_spire
+        run: python -B -m unittest test_agent test_bridge test_ui_launch -q

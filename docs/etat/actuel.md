@@ -1,4 +1,4 @@
-# État au 10 novembre 2026
+# État au 12 novembre 2026
 
 Le laboratoire et l'installation originale restent distincts. Cette sélection
 publique expose le code publiable, sans les ressources privées de l'installation.
@@ -15,6 +15,22 @@ publique expose le code publiable, sans les ressources privées de l'installatio
 | Écran | Lecture locale, surveillance espacée et flux passif annulable | Erreurs possibles et événements brefs manqués |
 | Sécurité | Code libre, navigateur personnel et entrée administrateur refusés | Contrôles applicatifs, pas de VM ni confinement OS complet |
 | Missions de code | Atelier MXC local, reprise après interruption, proposition de module avec accord et restauration | Code limité à un dossier de mission ; résultat à vérifier, refus pendant un jeu connu |
+| Slay the Spire | Choix des cartes et routes par le modèle local, commentaire, lancement depuis l'interface | Parties et essais courts seulement ; progression durable et voix avec le nouveau bouton à vérifier |
+
+## Jeu solo
+
+Le mod local transmet l'état du jeu et les actions possibles. Alice choisit
+parmi ces actions, relit ses choix non obligatoires et peut en parler avec la
+même session de modèle que la conversation. Une seule option est exécutée
+automatiquement. La liaison locale authentifiée arrête l'agent si le modèle
+ne répond plus. Les journaux et expériences restent sur le PC privé.
+
+Le 12 novembre, le bouton de l'interface a ouvert le vrai jeu avec un seul
+modèle. Alice a exécuté 44 actions jusqu'à l'étage 6, dont 30 décisions du modèle
+relues et 14 actions obligatoires. Elle a corrigé trois choix lors de la relecture.
+Deux commentaires ont été produits en texte. La partie a été interrompue pour
+le test. Un essai vocal antérieur par le raccourci a été entendu sans gêne
+signalée. Voir [le bilan technique](../technique/slay-the-spire-20261112.md).
 
 ## Lecture d'écran
 

@@ -1,4 +1,4 @@
-# Laboratoire Alice — sélection publique au 9 novembre 2026
+# Laboratoire Alice — sélection publique au 12 novembre 2026
 
 Le point d'entrée local est `scripts/alice_desktop.py`. Les lanceurs `Alice.bat`
 et `Alice-vision.bat` supposent une installation privée complète ; les ressources
@@ -21,10 +21,14 @@ décrites dans le [bilan de fiabilisation](../docs/technique/fiabilisation-20261
 - [Intégrations](../integrations/laboratoire) : frontières publiques et sous-titres.
 - `src/alice/` : modules d'écoute, voix et matériel déjà sélectionnés.
 - `tests/` : contrôles logiciels, distincts des campagnes réelles locales.
+- [Slay the Spire](jeux/slay_spire/README.md) : décisions du modèle, expérience
+  locale bornée, journal et bouton de lancement ;
+  [mesures et limites](../docs/technique/slay-the-spire-20261112.md).
 
 Les alias dans `scripts/` conservent les imports des composants déplacés.
 Configurations complètes, modèles, médias, données et bancs privés sont absents.
-Les tests publiés ne sont pas une suite autonome et ne doivent pas être raccordés
+Une suite autonome ciblée fonctionne avec des données fictives ; les autres
+tests peuvent demander des ressources privées. Aucun test ne doit être raccordé
 aux souvenirs réels. Aucun entraînement ni service n'est démarré par la publication.
 
 [État actuel](../docs/etat/actuel.md) · [Changements](../docs/technique/mise-a-jour-20261109.md)

@@ -257,7 +257,8 @@ class Session:
                 baseline_seconds=5)
             self.frame_guard.stop_owned = self.stop_owned
             self.frame_guard.start()
-        command = [engine.relative_to(ROOT).as_posix(), '-m', model.relative_to(ROOT).as_posix(),
+        # Windows resolves backend DLLs inconsistently when the executable is relative.
+        command = [str(engine), '-m', model.relative_to(ROOT).as_posix(),
                    '--host', '127.0.0.1', '--port', str(port), '--api-key-file',
                    key_path.relative_to(ROOT).as_posix(), '--device', device, '-ngl', '99',
                    '-c', str(self.context_window), '--alias', spec['alias'], '-t', '1', '-tb', '1', '-np', '1', '--cache-ram', '0',
