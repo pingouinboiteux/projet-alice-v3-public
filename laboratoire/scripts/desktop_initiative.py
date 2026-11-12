@@ -5,11 +5,14 @@ import json
 
 
 class DesktopInitiative:
-    def __init__(self, session, *, confirm=None):
+    def __init__(self, session, *, confirm=None, game_context=None,
+                 auto_game_speech=False):
         self.confirm_public = confirm
+        self.game_context = game_context
+        self.auto_game_speech = auto_game_speech
         self.core = Initiative(session)
         self.scene = PublicScene()
-        self.core.public_scene = self.scene.snapshot
+        self.core.public_scene = self._scene_with_game
         self._using_scene = True
         self.mode = 'quiet'
         self.public = []
@@ -19,6 +22,15 @@ class DesktopInitiative:
         self._public_entries = []
         self._next_external_id = 0
         self.core.start()
+
+    def _scene_with_game(self):
+        scene = self.scene.snapshot()
+        game = self.game_context.snapshot() if self.game_context else None
+        if game:
+            scene.append({'source': 'game', 'kind': 'status',
+                          'author': 'CommunicationMod', 'recipient': 'Alice',
+                          'text': json.dumps(game, ensure_ascii=False)})
+        return scene
 
     def _scene_history(self):
         return [{'role':'assistant' if e['kind']=='alice' else 'user',
@@ -131,8 +143,11 @@ class DesktopInitiative:
             return False
         target = self.public if self.mode == 'animation' or self.public_boundary else history
         if target is self.public:
-            if self.confirm_public is None or not self.confirm_public(
-                    'Diffuser cette intervention dans le contexte public ?\n\n'+proposal.reply):
+            game_speech = (self.auto_game_speech and self.mode == 'animation'
+                           and self.game_context is not None
+                           and self.game_context.snapshot() is not None)
+            if not game_speech and (self.confirm_public is None or not self.confirm_public(
+                    'Diffuser cette intervention dans le contexte public ?\n\n'+proposal.reply)):
                 return False
             if cancelled() or not self.core.valid(proposal):
                 return False

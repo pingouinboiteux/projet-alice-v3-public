@@ -122,6 +122,9 @@ def poll(self, ctypes, confirm_details):
                 self.stop_status.set('Stop vocal : ' + labels.get(value, value))
             elif kind == 'resources':
                 self.resources.set(value)
+            elif kind == 'game_button':
+                caption, state = value
+                self.game_button.configure(text=caption, state=state)
             elif kind == 'remote_status':
                 source,state=value
                 labels={'ready':'connecte','off':'coupe','connecting':'connexion...',

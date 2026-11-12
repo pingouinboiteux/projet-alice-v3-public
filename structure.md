@@ -1,6 +1,6 @@
 # Structure de la copie publique d'Alice
 
-Mise à jour du 9 novembre 2026 : [état courant](docs/etat/actuel.md).
+Mise à jour du 12 novembre 2026 : [état courant](docs/etat/actuel.md).
 
 ```text
 README.md                 présentation et liens utiles
@@ -17,6 +17,7 @@ docs/
 laboratoire/
   README.md              carte des composants courants
   scripts/               dialogue, mémoire, outils, voix et connexions
+  jeux/slay_spire/        agent, liaison, lanceur, journal et tests fictifs
   src/alice/             écoute, voix, matériel et services communs
   tests/                 tests logiciels et bancs de jugement
   personality/           consigne active neutralisée

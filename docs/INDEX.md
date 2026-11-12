@@ -6,12 +6,13 @@ anciens restent utiles pour comprendre les décisions, sans remplacer
 
 | Document | Contenu |
 | --- | --- |
-| [État actuel](etat/actuel.md) | Fonctions, mesures et limites de la sélection au 10 novembre. |
+| [État actuel](etat/actuel.md) | Fonctions, mesures et limites de la sélection au 12 novembre. |
 | [Protections](etat/securite.md) | Ce que le mode protégé encadre et ses limites Windows. |
 | [Évolution](pilotage/evolution.md) | Direction du projet et critères de progression. |
 | [Mise à jour du 9 novembre](technique/mise-a-jour-20261109.md) | Changements et vérifications de la sélection publiée. |
 | [Fiabilisation du 9 novembre](technique/fiabilisation-20261109.md) | Réparations de mémoire, humeur, vision et Web après les relectures. |
 | [Missions de code](technique/missions-code.md) | Atelier local, commandes, protections et limites. |
+| [Slay the Spire](technique/slay-the-spire-20261112.md) | Choix du modèle, lancement depuis l'interface, essais et limites. |
 | [Vérification de publication](technique/verification-publication.md) | Contrôles historiques avant publication. |
 | [Pièges techniques](technique/pieges.md) | Difficultés rencontrées et décisions techniques. |
 | [Audit des éléments obsolètes](technique/audit-obsoletes.md) | Classement des anciens éléments. |
@@ -25,3 +26,4 @@ anciens restent utiles pour comprendre les décisions, sans remplacer
 | [Provenance du 9 novembre](provenance/mise-a-jour-20261109.json) | Empreintes de la mise à jour actuelle. |
 | [Provenance des réparations](provenance/fiabilisation-20261109.json) | Empreintes des fichiers fonctionnels corrigés. |
 | [Provenance de l'atelier finalisé](provenance/autonomie-finalisation-20261110.json) | Empreintes des fichiers de missions, de protection et de tests publiés le 10 novembre. |
+| [Provenance du jeu](provenance/slay-the-spire-20261112.json) | Empreintes du code du jeu et de sa liaison publiés le 12 novembre. |
